@@ -2,6 +2,7 @@ import { Routes, Route, useLocation } from "react-router-dom";
 
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import ScrollToTop from "./components/ScrollToTop";
 import Home from "./pages/Home";
 import Tests from "./pages/Tests";
 import TestInstructions from "./pages/TestInstructions";
@@ -30,6 +31,7 @@ function App() {
       {!hideLayout && <Navbar />}
 
       <main className={!hideLayout ? "main-content" : ""}>
+        <ScrollToTop />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/tests" element={<Tests />} />
