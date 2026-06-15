@@ -18,6 +18,7 @@ import ReportIssue from "./pages/ReportIssue";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService";
 import Accessibility from "./pages/Accessibility";
+import Solutions from "./pages/Solutions";
 
 function App() {
   const location = useLocation();
@@ -38,7 +39,8 @@ function App() {
           <Route path="/instructions" element={<TestInstructions />} />
           <Route path="/test" element={<TestInterface />} />
           <Route path="/result" element={<TestResult />} />
-          <Route path="/analysis" element={<DetailedAnalysis />} />
+          <Route path="/analysis" element={<DetailedAnalysis />} />\
+          <Route path="/solutions" element={<Solutions />} />
 
           <Route path="/faq" element={<FAQ />} />
           <Route path="/contact" element={<ContactUs />} />

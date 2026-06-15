@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { sampleResult, questionBank } from "../data/demoData";
+import { questionBank } from "../data/demoData";
 import { useNavigate, useLocation } from "react-router-dom";
 
 const tabs = ["Overview", "Question Analysis", "Subject Analysis", "Time Analysis", "Compare"];
@@ -8,16 +8,56 @@ export default function DetailedAnalysis() {
   document.title = "Detailed Analysis - TestFlow";
   const navigate = useNavigate();
   const location = useLocation();
-  const { test, result } = location.state || {};
-  const r = result || sampleResult;
+  const {
+    test,
+    result,
+    answers = {},
+  } = location.state || {};
+  const r = result;
   const [tab, setTab] = useState("Overview");
   const questions = questionBank[test?.id] || questionBank[1];
+  const compareData = [
+    {
+      metric: "Score",
+      you: `${r.score}/${r.totalMarks}`,
+      avg: "185/300",
+      top: "268/300",
+    },
+    {
+      metric: "Accuracy",
+      you: `${r.scorePercent}%`,
+      avg: "62%",
+      top: "89%",
+    },
+    {
+      metric: "Percentile",
+      you: r.percentile,
+      avg: "50",
+      top: "90+",
+    },
+
+    // Dynamic Subject Scores
+    ...r.subjects.map((subject) => ({
+      metric: `${subject.name} Score`,
+      you: `${subject.score}/${subject.total}`,
+      avg: `${Math.floor(subject.total * 0.6)}/${subject.total}`,
+      top: `${Math.floor(subject.total * 0.9)}/${subject.total}`,
+    })),
+  ];
 
   return (
     <div className="analysis-page">
       <div className="analysis-header">
         <div className="ah-left">
-          <button className="back-btn" onClick={() => navigate("/result", { test, result: r })}>← Back</button>
+          <button className="back-btn" onClick={() =>
+            navigate("/result", {
+              state: {
+                test,
+                result: r,
+                answers,
+              },
+            })
+          }>← Back</button>
           <h2>{test?.title || r.testTitle}</h2>
         </div>
         <button className="btn-outline download-btn">⬇ Download Report</button>
@@ -66,20 +106,11 @@ export default function DetailedAnalysis() {
                 <div className="donut-wrap">
                   <svg viewBox="0 0 120 120" className="donut-svg">
                     <circle cx="60" cy="60" r="50" fill="none" stroke="#eee" strokeWidth="16" />
-                    <circle
-                      cx="60" cy="60" r="50"
-                      fill="none"
-                      stroke="#6C63FF"
-                      strokeWidth="16"
+                    <circle cx="60" cy="60" r="50" fill="none" stroke="#6C63FF" strokeWidth="16"
                       strokeDasharray={`${r.scorePercent * 3.14} ${(100 - r.scorePercent) * 3.14}`}
-                      strokeDashoffset="78.5"
-                      strokeLinecap="round"
+                      strokeDashoffset="78.5" strokeLinecap="round"
                     />
-                    <circle
-                      cx="60" cy="60" r="50"
-                      fill="none"
-                      stroke="#FF6B6B"
-                      strokeWidth="16"
+                    <circle cx="60" cy="60" r="50" fill="none" stroke="#FF6B6B" strokeWidth="16"
                       strokeDasharray={`${(r.incorrectCount / r.totalQuestions) * 100 * 3.14} 999`}
                       strokeDashoffset={`${78.5 - r.scorePercent * 3.14}`}
                     />
@@ -128,27 +159,76 @@ export default function DetailedAnalysis() {
         {tab === "Question Analysis" && (
           <div className="qa-section">
             <h4>Question-wise Analysis</h4>
+
             <div className="qa-table">
               <div className="qat-head">
                 <span>#</span>
                 <span>Question</span>
                 <span>Topic</span>
                 <span>Your Answer</span>
-                <span>Correct</span>
+                <span>Correct Answer</span>
                 <span>Status</span>
               </div>
+
               {questions.map((q, i) => {
-                const isCorrect = i % 3 !== 2;
-                const attempted = i !== 3;
+                const userAnswer = answers[q.id];
+
+                const attempted = !!userAnswer;
+
+                const isCorrect =
+                  userAnswer === q.correct;
+
+                const userOption =
+                  q.options.find(
+                    (o) => o.id === userAnswer
+                  );
+
+                const correctOption =
+                  q.options.find(
+                    (o) => o.id === q.correct
+                  );
+
                 return (
-                  <div key={q.id} className={`qat-row ${isCorrect ? "correct-row" : attempted ? "incorrect-row" : "unattempted-row"}`}>
+                  <div
+                    key={q.id}
+                    className={`qat-row ${isCorrect
+                      ? "correct-row"
+                      : attempted
+                        ? "incorrect-row"
+                        : "unattempted-row"
+                      }`}
+                  >
                     <span>{i + 1}</span>
-                    <span className="qat-q">{q.text.slice(0, 60)}...</span>
-                    <span className="qat-topic">{q.topic}</span>
-                    <span>{attempted ? (isCorrect ? q.options.find(o => o.id === q.correct)?.text.slice(0, 20) : q.options[1]?.text.slice(0, 20)) : "—"}</span>
-                    <span>{q.options.find(o => o.id === q.correct)?.text.slice(0, 20)}</span>
-                    <span className={`status-badge ${isCorrect ? "correct" : attempted ? "incorrect" : "unattempted"}`}>
-                      {isCorrect ? "✅ Correct" : attempted ? "❌ Wrong" : "— Skipped"}
+
+                    <span className="qat-q">
+                      {q.text.length > 60
+                        ? q.text.substring(0, 60) + "..."
+                        : q.text}
+                    </span>
+
+                    <span className="qat-topic"> {q.topic} </span>
+
+                    <span>
+                      {userOption
+                        ? userOption.text
+                        : "Not Attempted"}
+                    </span>
+
+                    <span> {correctOption?.text} </span>
+
+                    <span
+                      className={`status-badge ${isCorrect
+                        ? "correct"
+                        : attempted
+                          ? "incorrect"
+                          : "unattempted"
+                        }`}
+                    >
+                      {isCorrect
+                        ? "✅ Correct"
+                        : attempted
+                          ? "❌ Wrong"
+                          : "⚪ Skipped"}
                     </span>
                   </div>
                 );
@@ -156,7 +236,6 @@ export default function DetailedAnalysis() {
             </div>
           </div>
         )}
-
         {tab === "Subject Analysis" && (
           <div className="subject-analysis">
             {r.subjects.map((s) => (
@@ -233,14 +312,7 @@ export default function DetailedAnalysis() {
                 <span>Average</span>
                 <span>Top 10%</span>
               </div>
-              {[
-                { metric: "Score", you: `${r.score}/${r.totalMarks}`, avg: "185/300", top: "268/300" },
-                { metric: "Accuracy", you: `${r.scorePercent}%`, avg: "62%", top: "89%" },
-                { metric: "Percentile", you: r.percentile, avg: "50", top: "90+" },
-                { metric: "Physics Score", you: "88/120", avg: "72/120", top: "108/120" },
-                { metric: "Chemistry Score", you: "96/120", avg: "76/120", top: "110/120" },
-                { metric: "Maths Score", you: "50/120", avg: "37/120", top: "90/120" },
-              ].map((row) => (
+              {compareData.map((row) => (
                 <div key={row.metric} className="ct-row">
                   <span className="ct-metric">{row.metric}</span>
                   <span className="ct-you">{row.you}</span>
@@ -254,7 +326,15 @@ export default function DetailedAnalysis() {
       </div>
 
       <div className="analysis-footer-actions">
-        <button className="btn-outline" onClick={() => navigate("/result", { test, result: r })}>← Back to Results</button>
+        <button className="btn-outline" onClick={() =>
+          navigate("/result", {
+            state: {
+              test,
+              result: r,
+              answers,
+            },
+          })
+        }>← Back to Results</button>
         <button className="btn-primary" onClick={() => navigate("/tests")}>Browse More Tests</button>
       </div>
     </div>

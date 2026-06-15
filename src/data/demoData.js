@@ -165,158 +165,349 @@ export const tests = [
     attemptedBy: 5400,
     avgScore: 60,
   },
+  {
+    id: 7,
+    title: "JEE Main 2024 - Full Length Test 2",
+    category: "Engineering",
+    exam: "JEE Main",
+    subject: "Physics, Chemistry, Mathematics",
+    questions: 90,
+    duration: 180,
+    difficulty: "Hard",
+    marks: 300,
+    tags: ["Full Length", "2024"],
+    description: "Another full-length JEE Main 2024 mock test with a new set of questions across all three subjects.",
+    subjects: [
+      { name: "Physics", questions: 30, marks: 120 },
+      { name: "Chemistry", questions: 30, marks: 120 },
+      { name: "Mathematics", questions: 30, marks: 120 },
+    ],
+    instructions: [
+      "The test contains 90 multiple choice questions.",
+      "The duration of the test is 180 minutes.",
+      "Each question carries 4 marks.",
+      "There is negative marking. 1 mark will be deducted for each incorrect answer.",
+    ],
+    attemptedBy: 4500,
+    avgScore: 65,   
+  },
+  {
+    id: 8,
+    title: "BITSAT   2024 - Full Length Test 2",
+    category: "Medical",
+    exam: "BITSAT",
+    subject: "Physics, Chemistry, Mathematics",
+    questions: 90,
+    duration: 180,
+    difficulty: "Hard",
+    marks: 300,
+    tags: ["Full Length", "2024"],
+    description: "Another full-length BITSAT 2024 mock test with a new set of questions across all three subjects.",
+    subjects: [
+      { name: "Physics", questions: 30, marks: 120 },
+      { name: "Chemistry", questions: 30, marks: 120 },
+      { name: "Mathematics", questions: 30, marks: 120 },
+    ],
+    instructions: [
+      "The test contains 90 multiple choice questions.",
+      "The duration of the test is 180 minutes.",
+      "Each question carries 4 marks.",
+      "There is negative marking. 1 mark will be deducted for each incorrect answer.",
+    ],
+    attemptedBy: 4500,
+    avgScore: 65,   
+  }
 ];
 
 export const questionBank = {
-  1: [
-    {
-      id: "q1",
-      text: "If a function f(x) = ax² + bx + c has equal roots and f(1) = 0, f'(1) = 4, then the value of a + b + c is:",
-      topic: "Mathematics",
-      options: [
-        { id: "o1", text: "0" },
-        { id: "o2", text: "1" },
-        { id: "o3", text: "2" },
-        { id: "o4", text: "4" },
-      ],
-      correct: "o1",
-    },
-    {
-      id: "q2",
-      text: "A particle moves along a straight line. Its displacement at time t is given by s = 2t³ - 6t² + 4t. The velocity of the particle is zero at t =",
-      topic: "Physics",
-      options: [
-        { id: "o1", text: "t = 1/3 only" },
-        { id: "o2", text: "t = 2 only" },
-        { id: "o3", text: "t = 1/3 and t = 2" },
-        { id: "o4", text: "t = 1 and t = 3" },
-      ],
-      correct: "o3",
-    },
-    {
-      id: "q3",
-      text: "The hybridization of carbon in diamond is:",
-      topic: "Chemistry",
-      options: [
-        { id: "o1", text: "sp" },
-        { id: "o2", text: "sp²" },
-        { id: "o3", text: "sp³" },
-        { id: "o4", text: "sp³d" },
-      ],
-      correct: "o3",
-    },
-    {
-      id: "q4",
-      text: "Newton's Second Law of Motion states that the net force on an object is equal to:",
-      topic: "Physics",
-      options: [
-        { id: "o1", text: "F = ma" },
-        { id: "o2", text: "F = mv" },
-        { id: "o3", text: "F = m/a" },
-        { id: "o4", text: "F = v/t" },
-      ],
-      correct: "o1",
-    },
-    {
-      id: "q5",
-      text: "The value of ∫₀¹ x² dx is:",
-      topic: "Mathematics",
-      options: [
-        { id: "o1", text: "1/4" },
-        { id: "o2", text: "1/3" },
-        { id: "o3", text: "1/2" },
-        { id: "o4", text: "1" },
-      ],
-      correct: "o2",
-    },
-    {
-      id: "q6",
-      text: "What is the pH of a neutral solution at 25°C?",
-      topic: "Chemistry",
-      options: [
-        { id: "o1", text: "0" },
-        { id: "o2", text: "5" },
-        { id: "o3", text: "7" },
-        { id: "o4", text: "14" },
-      ],
-      correct: "o3",
-    },
-    {
-      id: "q7",
-      text: "The escape velocity from the Earth's surface is approximately:",
-      topic: "Physics",
-      options: [
-        { id: "o1", text: "7.9 km/s" },
-        { id: "o2", text: "11.2 km/s" },
-        { id: "o3", text: "15.6 km/s" },
-        { id: "o4", text: "3.0 km/s" },
-      ],
-      correct: "o2",
-    },
-    {
-      id: "q8",
-      text: "The number of sp² hybridized carbon atoms in benzene is:",
-      topic: "Chemistry",
-      options: [
-        { id: "o1", text: "2" },
-        { id: "o2", text: "4" },
-        { id: "o3", text: "6" },
-        { id: "o4", text: "8" },
-      ],
-      correct: "o3",
-    },
-    {
-      id: "q9",
-      text: "If the sum of roots of ax² + bx + c = 0 is -b/a, then the product of roots is:",
-      topic: "Mathematics",
-      options: [
-        { id: "o1", text: "b/a" },
-        { id: "o2", text: "-b/a" },
-        { id: "o3", text: "c/a" },
-        { id: "o4", text: "-c/a" },
-      ],
-      correct: "o3",
-    },
-    {
-      id: "q10",
-      text: "The unit of electric field intensity is:",
-      topic: "Physics",
-      options: [
-        { id: "o1", text: "Newton" },
-        { id: "o2", text: "Newton/Coulomb" },
-        { id: "o3", text: "Coulomb/Newton" },
-        { id: "o4", text: "Joule/Coulomb" },
-      ],
-      correct: "o2",
-    },
-  ],
+  1: generateJEEQuestions(),
+  2: generateNEETQuestions(),
+  3: generateSSCQuestions(),
+  4: generateCUETQuestions(),
+  5: generateAdvancedQuestions(),
+  6: generateUPSCQuestions(),
+  7: generateJEEQuestions(),
+  8: generateBITSATQuestions(),
 };
 
-export const sampleResult = {
-  testId: 1,
-  testTitle: "JEE Main 2024 - Full Length Test 1",
-  score: 234,
-  totalMarks: 300,
-  scorePercent: 78,
-  correctCount: 62,
-  incorrectCount: 18,
-  unattempted: 10,
-  totalQuestions: 90,
-  timeTaken: "02:45:18",
-  percentile: 82.45,
-  subjects: [
-    { name: "Physics", questions: 30, attempted: 28, correct: 20, incorrect: 6, score: 88, total: 120, accuracy: 71 },
-    { name: "Chemistry", questions: 30, attempted: 28, correct: 22, incorrect: 4, score: 96, total: 120, accuracy: 79 },
-    { name: "Mathematics", questions: 30, attempted: 27, correct: 20, incorrect: 8, score: 50, total: 120, accuracy: 67 },
-  ],
-  topicBreakdown: [
-    { topic: "Mechanics", score: 85 },
-    { topic: "Thermodynamics", score: 70 },
-    { topic: "Electromagnetism", score: 78 },
-    { topic: "Organic Chemistry", score: 82 },
-    { topic: "Inorganic Chemistry", score: 76 },
-    { topic: "Algebra", score: 65 },
-    { topic: "Calculus", score: 72 },
-    { topic: "Coordinate Geometry", score: 68 },
-  ],
-};
+function createQuestion(
+  id,
+  text,
+  topic,
+  correctIndex = 0
+) {
+  return {
+    id,
+    text,
+    topic,
+    options: [
+      { id: "o1", text: "Option A" },
+      { id: "o2", text: "Option B" },
+      { id: "o3", text: "Option C" },
+      { id: "o4", text: "Option D" },
+    ],
+    correct: `o${correctIndex + 1}`,
+  };
+}
+ 
+function generateBITSATQuestions() {
+  const questions = [];
+
+  const physicsTopics = [
+    "Mechanics",
+    "Thermodynamics",
+    "Optics",
+    "Modern Physics",
+    "Electrodynamics",
+  ];
+
+  const chemistryTopics = [
+    "Organic Chemistry",
+    "Inorganic Chemistry",
+    "Physical Chemistry",
+  ];
+
+  const mathsTopics = [
+    "Algebra",
+    "Calculus",
+    "Coordinate Geometry",
+    "Trigonometry",
+    "Probability",
+  ];
+
+  // let count = 1;
+
+  for (let i = 1; i <= 30; i++) {
+    questions.push(
+      createQuestion(
+        `bitsat-p-${i}`,
+        `Physics Question ${i}`,
+        physicsTopics[i % physicsTopics.length],
+        i % 4
+      )
+    );
+  }
+
+  for (let i = 1; i <= 30; i++) {
+    questions.push(
+      createQuestion(
+        `bitsat-c-${i}`,
+        `Chemistry Question ${i}`,
+        chemistryTopics[i % chemistryTopics.length],
+        i % 4
+      )
+    );
+  }
+
+  for (let i = 1; i <= 30; i++) {
+    questions.push(
+      createQuestion(
+        `bitsat-m-${i}`,
+        `Mathematics Question ${i}`,
+        mathsTopics[i % mathsTopics.length],
+        i % 4
+      )
+    );
+  }
+
+  return questions;
+}
+
+function generateJEEQuestions() {
+  const questions = [];
+
+  const physicsTopics = [
+    "Mechanics",
+    "Thermodynamics",
+    "Optics",
+    "Modern Physics",
+    "Electrodynamics",
+  ];
+
+  const chemistryTopics = [
+    "Organic Chemistry",
+    "Inorganic Chemistry",
+    "Physical Chemistry",
+  ];
+
+  const mathsTopics = [
+    "Algebra",
+    "Calculus",
+    "Coordinate Geometry",
+    "Trigonometry",
+    "Probability",
+  ];
+
+  // let count = 1;
+
+  for (let i = 1; i <= 30; i++) {
+    questions.push(
+      createQuestion(
+        `jee-p-${i}`,
+        `Physics Question ${i}`,
+        physicsTopics[i % physicsTopics.length],
+        i % 4
+      )
+    );
+  }
+
+  for (let i = 1; i <= 30; i++) {
+    questions.push(
+      createQuestion(
+        `jee-c-${i}`,
+        `Chemistry Question ${i}`,
+        chemistryTopics[i % chemistryTopics.length],
+        i % 4
+      )
+    );
+  }
+
+  for (let i = 1; i <= 30; i++) {
+    questions.push(
+      createQuestion(
+        `jee-m-${i}`,
+        `Mathematics Question ${i}`,
+        mathsTopics[i % mathsTopics.length],
+        i % 4
+      )
+    );
+  }
+
+  return questions;
+}
+
+function generateCUETQuestions() {
+  const questions = [];
+
+  const sections = [
+    "Current Affairs",
+    "Reasoning",
+    "English",
+  ];
+
+  sections.forEach((section) => {
+    for (let i = 1; i <= 20; i++) {
+      questions.push(
+        createQuestion(
+          `cuet-${section}-${i}`,
+          `${section} Question ${i}`,
+          section,
+          i % 4
+        )
+      );
+    }
+  });
+
+  return questions;
+}
+
+function generateAdvancedQuestions() {
+  const questions = [];
+
+  const subjects = ["Physics", "Chemistry", "Mathematics"];
+
+  subjects.forEach((subject) => {
+    for (let i = 1; i <= 18; i++) {
+      questions.push(
+        createQuestion(
+          `advanced-${subject}-${i}`,
+          `${subject} Question ${i}`,
+          subject,
+          i % 4
+        )
+      );
+    }
+  });
+
+  return questions;
+} 
+
+function generateNEETQuestions() {
+  const questions = [];
+
+  for (let i = 1; i <= 45; i++) {
+    questions.push(
+      createQuestion(
+        `neet-p-${i}`,
+        `Physics Question ${i}`,
+        "Physics",
+        i % 4
+      )
+    );
+  }
+
+  for (let i = 1; i <= 45; i++) {
+    questions.push(
+      createQuestion(
+        `neet-c-${i}`,
+        `Chemistry Question ${i}`,
+        "Chemistry",
+        i % 4
+      )
+    );
+  }
+
+  for (let i = 1; i <= 90; i++) {
+    questions.push(
+      createQuestion(
+        `neet-b-${i}`,
+        `Biology Question ${i}`,
+        "Biology",
+        i % 4
+      )
+    );
+  }
+
+  return questions;
+}
+function generateSSCQuestions() {
+  const questions = [];
+
+  const sections = [
+    "Reasoning",
+    "English",
+    "Quantitative Aptitude",
+    "General Awareness",
+  ];
+
+  sections.forEach((section) => {
+    for (let i = 1; i <= 25; i++) {
+      questions.push(
+        createQuestion(
+          `ssc-${section}-${i}`,
+          `${section} Question ${i}`,
+          section,
+          i % 4
+        )
+      );
+    }
+  });
+
+  return questions;
+}
+function generateUPSCQuestions() {
+  const questions = [];
+
+  const sections = [
+    ["History", 20],
+    ["Geography", 15],
+    ["Polity", 20],
+    ["Economy", 20],
+    ["Environment", 25],
+  ];
+
+  sections.forEach(([topic, count]) => {
+    for (let i = 1; i <= count; i++) {
+      questions.push(
+        createQuestion(
+          `upsc-${topic}-${i}`,
+          `${topic} Question ${i}`,
+          topic,
+          i % 4
+        )
+      );
+    }
+  });
+
+  return questions;
+}
