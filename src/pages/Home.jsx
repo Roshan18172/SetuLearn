@@ -7,6 +7,17 @@ export default function Home() {
   const featuredTests = tests.slice(0, 3);
   document.title = "Home - TestFlow";
 
+  const lastExam = JSON.parse(localStorage.getItem('lastexam')) || {};
+  const lastExamTitle = lastExam.testTitle || "N/A";
+  const lastExamScore = lastExam.securedScore || 0;
+  const lastExamTotal = lastExam.totalScore || 0;
+  const lastExamPercentage = lastExam.totalScore ? ((lastExam.securedScore / lastExam.totalScore) * 100).toFixed(2) : 0;
+  const lastExamCorrect = lastExam.correct || 0;
+  const lastExamIncorrect = lastExam.incorrect || 0;
+  const lastExamUnattempted = lastExam.unattempted || 0;
+  const lastExamQuestions = lastExam.totalQuestions || (lastExam.correct + lastExam.incorrect + lastExam.unattempted);
+  const lastExamPercentile = lastExam.percentile || 0;
+
   return (
     <div className="home-page">
       {/* Hero */}
@@ -118,12 +129,13 @@ export default function Home() {
           <div className="why-visual">
             <div className="score-card">
               <div className="sc-header">Test Completed!</div>
-              <div className="sc-score">234 <span>/300</span></div>
-              <div className="sc-percent">78% Score</div>
-              <div className="sc-row"><span>✅ Correct</span><b>62/90</b></div>
-              <div className="sc-row"><span>❌ Incorrect</span><b>18/90</b></div>
-              <div className="sc-row"><span>⬜ Unattempted</span><b>10/90</b></div>
-              <div className="sc-percentile">Percentile: <b>82.45</b></div>
+              <div className="sc-header">{lastExamTitle}</div>
+              <div className="sc-score">{lastExamScore} <span>/ {lastExamTotal}</span></div>
+              <div className="sc-percent">{lastExamPercentage}% Score</div>
+              <div className="sc-row"><span>✅ Correct</span><b>{lastExamCorrect}/{lastExamQuestions}</b></div>
+              <div className="sc-row"><span>❌ Incorrect</span><b>{lastExamIncorrect}/{lastExamQuestions}</b></div>
+              <div className="sc-row"><span>⬜ Unattempted</span><b>{lastExamUnattempted}/{lastExamQuestions}</b></div>
+              <div className="sc-percentile">Percentile: <b>{lastExamPercentile}</b></div>
             </div>
           </div>
         </div>

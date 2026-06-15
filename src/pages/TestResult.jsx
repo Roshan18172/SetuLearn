@@ -14,6 +14,25 @@ export default function TestResult() {
   const r = result || {};
 
   document.title = "Test Result - TestFlow";
+  // Save last exam summary to localStorage
+  try {
+    const lastExam = {
+      securedScore: r.score ?? 0,
+      totalScore: r.totalMarks ?? 0,
+      totalQuestions: r.totalQuestions ?? 0,
+      correct: r.correctCount ?? 0,
+      incorrect: r.incorrectCount ?? 0,
+      unattempted: r.unattempted ?? 0,
+      percentile: r.scorePercent ?? 0,
+      testId: test?.id ?? r.testId ?? null,
+      testTitle: test?.title ?? r.testTitle ?? null,
+      timestamp: Date.now(),
+    };
+    localStorage.setItem('lastexam', JSON.stringify(lastExam));
+  } catch (e) {
+    // ignore storage errors
+    // console.warn('Failed to save last exam', e);
+  }
 
   return (
     <div className="result-page">
