@@ -2,7 +2,7 @@ import { useState } from "react";
 
 export default function ReportIssue() {
     const [submitted, setSubmitted] = useState(false);
-    document.title = "Report an Issue - TestFlow";
+    document.title = "Report an Issue - SetuLearn";
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -54,7 +54,7 @@ export default function ReportIssue() {
                 <div className="issue-card">
                     <span>💡</span>
                     <h3>Suggestion</h3>
-                    <p>Share ideas to improve TestFlow.</p>
+                    <p>Share ideas to improve SetuLearn.</p>
                 </div>
             </section>
 

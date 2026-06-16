@@ -24,7 +24,7 @@ export default function Solutions() {
 
   const questions = questionBank[test.id] || [];
 
-  document.title = `${test.title} Solutions - TestFlow`;
+  document.title = `${test.title} Solutions - SetuLearn`;
 
   return (
     <div className="solution-page">

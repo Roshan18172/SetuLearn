@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function ContactUs() {
     const navigate = useNavigate();
-    document.title = "Contact Us - TestFlow";
+    document.title = "Contact Us - SetuLearn";
     const [formData, setFormData] = useState({
         name: "",
         email: "",
@@ -54,7 +54,7 @@ export default function ContactUs() {
                 <div className="contact-card">
                     <div className="contact-icon">📧</div>
                     <h3>Email Us</h3>
-                    <p>support@testflow.com</p>
+                    <p>support@SetuLearn.com</p>
                 </div>
 
                 <div className="contact-card">
@@ -137,7 +137,7 @@ export default function ContactUs() {
                     <div className="response-card">
                         <h3>💡 Suggestions Welcome</h3>
                         <p>
-                            We continuously improve TestFlow based
+                            We continuously improve SetuLearn based
                             on student feedback.
                         </p>
                     </div>

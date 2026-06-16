@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function HowItWorks() {
   const navigate = useNavigate();
-    document.title = "How It Works - TestFlow";
+    document.title = "How It Works - SetuLearn";
 
   const steps = [
     {
@@ -69,7 +69,7 @@ export default function HowItWorks() {
         </div>
 
         <h1>
-          How <span>TestFlow</span> Works
+          How <span>SetuLearn</span> Works
         </h1>
 
         <p>
@@ -126,7 +126,7 @@ export default function HowItWorks() {
       {/* Features */}
       <section className="how-section">
         <div className="section-heading">
-          <h2>Why Students Love TestFlow</h2>
+          <h2>Why Students Love SetuLearn</h2>
           <p>Everything you need to crack your exams.</p>
         </div>
 

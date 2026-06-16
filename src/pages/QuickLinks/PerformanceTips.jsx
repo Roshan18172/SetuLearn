@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function PerformanceTips() {
     const navigate = useNavigate();
-    document.title = "Performance Tips - TestFlow";
+    document.title = "Performance Tips - SetuLearn";
 
     const tips = [
         {

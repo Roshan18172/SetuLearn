@@ -13,7 +13,7 @@ export default function TestResult() {
 
   const r = result || {};
 
-  document.title = "Test Result - TestFlow";
+  document.title = "Test Result - SetuLearn";
   // Save last exam summary to localStorage
   try {
     const lastExam = {

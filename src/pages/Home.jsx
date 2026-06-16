@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 export default function Home() {
   const navigate = useNavigate();
   const featuredTests = tests.slice(0, 3);
-  document.title = "Home - TestFlow";
+  document.title = "Home - SetuLearn";
 
   const lastExam = JSON.parse(localStorage.getItem('lastexam')) || {};
   const lastExamTitle = lastExam.testTitle || "N/A";
@@ -107,7 +107,7 @@ export default function Home() {
       <section className="why-section">
         <div className="why-inner">
           <div className="why-text">
-            <div className="section-eyebrow">Why TestFlow?</div>
+            <div className="section-eyebrow">Why SetuLearn?</div>
             <h2 className="section-title">Why Take Mock Tests?</h2>
             <div className="why-points">
               {[
@@ -185,7 +185,7 @@ export default function Home() {
       <section className="cta-banner">
         <div className="cta-content">
           <h2>Ready to ace your exam?</h2>
-          <p>Join thousands of students who practice with TestFlow every day.</p>
+          <p>Join thousands of students who practice with SetuLearn every day.</p>
           <button className="btn-white" onClick={() => navigate("/tests")}>
             Browse All Tests →
           </button>

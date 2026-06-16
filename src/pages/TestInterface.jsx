@@ -49,7 +49,7 @@ export default function TestInterface() {
 
   useEffect(() => {
     if (test) {
-      document.title = `${test.title} - TestFlow`;
+      document.title = `${test.title} - SetuLearn`;
     }
   }, [test]);
 
@@ -199,7 +199,7 @@ export default function TestInterface() {
 
 
   return (
-    <div className="test-interface">
+    <div className="test-interface" style={{ userSelect: "none" }}>
       {/* TOP BAR */}
 
       <div className="ti-topbar">

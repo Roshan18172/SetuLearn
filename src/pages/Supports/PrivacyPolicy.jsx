@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 export default function PrivacyPolicy() {
     const navigate = useNavigate();
-    document.title = "Privacy Policy - TestFlow";
+    document.title = "Privacy Policy - SetuLearn";
     const sections = [
         {
             title: "Information We Collect",
@@ -19,7 +19,7 @@ export default function PrivacyPolicy() {
             title: "Cookies & Analytics",
             icon: "🍪",
             content:
-                "TestFlow may use cookies and analytics tools to understand user behavior, remember preferences, and improve website performance."
+                "SetuLearn may use cookies and analytics tools to understand user behavior, remember preferences, and improve website performance."
         },
         {
             title: "Data Security",
@@ -65,7 +65,7 @@ export default function PrivacyPolicy() {
                 <h1>Privacy Policy</h1>
 
                 <p>
-                    At TestFlow, protecting your privacy and personal information
+                    At SetuLearn, protecting your privacy and personal information
                     is one of our highest priorities. This page explains how we
                     collect, use, and safeguard your data.
                 </p>

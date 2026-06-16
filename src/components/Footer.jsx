@@ -1,4 +1,5 @@
 import {useNavigate} from "react-router-dom";
+import Setulogo from "../SetuLearn Logo.png";
 
 export default function Footer() {
   const navigate = useNavigate();
@@ -7,8 +8,9 @@ export default function Footer() {
       <div className="footer-main">
         <div className="footer-brand">
           <div className="footer-logo">
-            <div className="brand-icon">TF</div>
-            <span className="brand-name">TestFlow</span>
+            <div className="brand-icon">
+              <img src={Setulogo} alt="SetuLearn Logo" />
+            </div>
           </div>
           <p className="footer-tagline">
             Practice. Improve. Succeed. Your all-in-one platform for government and entrance exam preparation.
@@ -75,7 +77,7 @@ export default function Footer() {
       </div>
 
       <div className="footer-bottom">
-        <p>© 2024 TestFlow Platform. All rights reserved. Built for students, by educators.</p>
+        <p>© 2026 SetuLearn Platform. All rights reserved. Built for students, by educators.</p>
       </div>
     </footer>
   );

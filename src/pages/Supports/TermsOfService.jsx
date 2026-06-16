@@ -1,14 +1,14 @@
 import { useNavigate } from "react-router-dom";
 
 export default function TermsOfService() {
-    document.title = "Terms of Service - TestFlow";
+    document.title = "Terms of Service - SetuLearn";
     const navigate = useNavigate();
 
     const sections = [
         {
             icon: "📚",
             title: "Use of Platform",
-            text: "TestFlow provides mock tests and educational resources for exam preparation. Users may use the platform only for lawful educational purposes."
+            text: "SetuLearn provides mock tests and educational resources for exam preparation. Users may use the platform only for lawful educational purposes."
         },
         {
             icon: "👤",
@@ -18,12 +18,12 @@ export default function TermsOfService() {
         {
             icon: "🚫",
             title: "Prohibited Activities",
-            text: "You may not copy, distribute, modify, reverse engineer, or misuse any content, tests, or services provided by TestFlow."
+            text: "You may not copy, distribute, modify, reverse engineer, or misuse any content, tests, or services provided by SetuLearn."
         },
         {
             icon: "📝",
             title: "Intellectual Property",
-            text: "All test content, designs, logos, and educational materials remain the property of TestFlow unless otherwise stated."
+            text: "All test content, designs, logos, and educational materials remain the property of SetuLearn unless otherwise stated."
         },
         {
             icon: "⚠️",
@@ -33,7 +33,7 @@ export default function TermsOfService() {
         {
             icon: "🔒",
             title: "Privacy",
-            text: "Your use of TestFlow is also governed by our Privacy Policy, which explains how we collect and protect information."
+            text: "Your use of SetuLearn is also governed by our Privacy Policy, which explains how we collect and protect information."
         },
         {
             icon: "🔄",
@@ -59,7 +59,7 @@ export default function TermsOfService() {
                     </h1>
 
                     <p>
-                        These terms govern your use of TestFlow. By accessing our platform,
+                        These terms govern your use of SetuLearn. By accessing our platform,
                         you agree to comply with the following conditions and guidelines.
                     </p>
                 </div>
@@ -71,7 +71,7 @@ export default function TermsOfService() {
                     <h2>Agreement Overview</h2>
 
                     <p>
-                        TestFlow is designed to help students prepare for examinations
+                        SetuLearn is designed to help students prepare for examinations
                         through mock tests, analytics, and performance tracking.
                         By using our services, you acknowledge and agree to these terms.
                     </p>
@@ -98,7 +98,7 @@ export default function TermsOfService() {
 
                     <p>
                         Violation of these terms may result in temporary or permanent
-                        suspension of access to TestFlow services.
+                        suspension of access to SetuLearn services.
                     </p>
                 </div>
             </section>

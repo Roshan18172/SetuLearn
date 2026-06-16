@@ -2,9 +2,9 @@ import { useState } from "react";
 
 const faqData = [
   {
-    question: "What is TestFlow?",
+    question: "What is SetuLearn?",
     answer:
-      "TestFlow is a free online mock test platform designed to help students prepare for government, entrance, and competitive examinations."
+      "SetuLearn is a free online mock test platform designed to help students prepare for government, entrance, and competitive examinations."
   },
   {
     question: "Do I need to create an account?",
@@ -14,7 +14,7 @@ const faqData = [
   {
     question: "Are all mock tests free?",
     answer:
-      "Yes. All mock tests available on TestFlow are completely free."
+      "Yes. All mock tests available on SetuLearn are completely free."
   },
   {
     question: "Can I attempt a test multiple times?",
@@ -59,10 +59,10 @@ const faqData = [
   {
     question: "Can I see detailed performance analytics?",
     answer:
-      "Yes. TestFlow provides topic-wise and section-wise performance analysis."
+      "Yes. SetuLearn provides topic-wise and section-wise performance analysis."
   },
   {
-    question: "Can I use TestFlow on mobile devices?",
+    question: "Can I use SetuLearn on mobile devices?",
     answer:
       "Absolutely. The platform is fully responsive and works on mobiles, tablets, and desktops."
   },
@@ -80,7 +80,7 @@ const faqData = [
 
 export default function FAQ() {
   const [active, setActive] = useState(null);
-    document.title = "FAQ - TestFlow";
+    document.title = "FAQ - SetuLearn";
 
   const toggleFAQ = (index) => {
     setActive(active === index ? null : index);
@@ -92,7 +92,7 @@ export default function FAQ() {
         <div className="section-eyebrow">Help Center</div>
         <h1 className="faq-title">Frequently Asked Questions</h1>
         <p className="faq-subtitle">
-          Find answers to the most common questions about TestFlow.
+          Find answers to the most common questions about SetuLearn.
         </p>
       </div>
 

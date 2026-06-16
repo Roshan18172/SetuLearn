@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function Accessibility() {
     const navigate = useNavigate();
-    document.title = "Accessibility Statement - TestFlow";
+    document.title = "Accessibility Statement - SetuLearn";
 
     const features = [
         {
@@ -18,7 +18,7 @@ export default function Accessibility() {
         {
             icon: "📱",
             title: "Responsive Layout",
-            desc: "Access TestFlow seamlessly across desktop, tablet, and mobile devices."
+            desc: "Access SetuLearn seamlessly across desktop, tablet, and mobile devices."
         },
         {
             icon: "🔍",
@@ -50,7 +50,7 @@ export default function Accessibility() {
                 </h1>
 
                 <p>
-                    At TestFlow, we believe every student deserves equal access to quality
+                    At SetuLearn, we believe every student deserves equal access to quality
                     exam preparation resources. We are committed to creating an inclusive
                     learning experience for all users.
                 </p>
@@ -63,7 +63,7 @@ export default function Accessibility() {
 
                     <p>
                         We continuously work to improve accessibility so students can use
-                        TestFlow regardless of device, ability, or learning environment.
+                        SetuLearn regardless of device, ability, or learning environment.
                         Our goal is to make exam preparation simple, accessible, and
                         effective for everyone.
                     </p>
@@ -93,7 +93,7 @@ export default function Accessibility() {
                     <h2>🌍 Accessibility Standards</h2>
 
                     <p>
-                        TestFlow aims to follow modern web accessibility principles and
+                        SetuLearn aims to follow modern web accessibility principles and
                         continuously improve usability through user feedback and best
                         practices.
                     </p>
@@ -115,7 +115,7 @@ export default function Accessibility() {
                     <h2>💬 Need Assistance?</h2>
 
                     <p>
-                        If you encounter accessibility barriers while using TestFlow,
+                        If you encounter accessibility barriers while using SetuLearn,
                         please let us know. Your feedback helps us improve the experience
                         for everyone.
                     </p>

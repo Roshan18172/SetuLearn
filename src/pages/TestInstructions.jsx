@@ -6,7 +6,7 @@ export default function TestInstructions() {
   const location = useLocation();
   const navigate = useNavigate();
   const { test } = location.state || {};
-  document.title = "Test Instructions - TestFlow";
+  document.title = "Test Instructions - SetuLearn";
 
   if (!test) {
     return (

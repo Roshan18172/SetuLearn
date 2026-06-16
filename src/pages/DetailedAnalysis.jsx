@@ -5,7 +5,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 const tabs = ["Overview", "Question Analysis", "Subject Analysis", "Time Analysis", "Compare"];
 
 export default function DetailedAnalysis() {
-  document.title = "Detailed Analysis - TestFlow";
+  document.title = "Detailed Analysis - SetuLearn";
   const navigate = useNavigate();
   const location = useLocation();
   const {

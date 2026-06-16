@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function About() {
   const navigate = useNavigate();
-  document.title = "About Us - TestFlow";
+  document.title = "About Us - SetuLearn";
 
   return (
     <div className="about-page">
@@ -15,11 +15,11 @@ export default function About() {
           </span>
 
           <h1>
-            About <span>TestFlow</span>
+            About <span>SetuLearn</span>
           </h1>
 
           <p>
-            TestFlow is a modern online mock test platform designed to help
+            SetuLearn is a modern online mock test platform designed to help
             students prepare smarter, track performance, and build confidence
             before real examinations.
           </p>
@@ -39,14 +39,14 @@ export default function About() {
             </p>
 
             <p>
-              That's why TestFlow was created — a platform where students can
+              That's why SetuLearn was created — a platform where students can
               practice exam-oriented questions, analyze their performance, and
               continuously improve.
             </p>
 
             <p>
               Whether you're preparing for JEE, NEET, UPSC, SSC, Banking,
-              Railway, or CUET, TestFlow provides an exam-like experience that
+              Railway, or CUET, SetuLearn provides an exam-like experience that
               helps you succeed.
             </p>
           </div>
@@ -82,7 +82,7 @@ export default function About() {
             Why Students Choose Us
           </span>
 
-          <h2>What Makes TestFlow Different?</h2>
+          <h2>What Makes SetuLearn Different?</h2>
         </div>
 
         <div className="features-grid">
@@ -176,7 +176,7 @@ export default function About() {
           </p>
 
           <p>
-            TestFlow aims to become a trusted companion for millions of
+            SetuLearn aims to become a trusted companion for millions of
             learners preparing for competitive examinations.
           </p>
         </div>

@@ -3,6 +3,7 @@ import { Routes, Route, useLocation } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import ScrollToTop from "./components/ScrollToTop";
+
 import Home from "./pages/Home";
 import Tests from "./pages/Tests";
 import TestInstructions from "./pages/TestInstructions";
@@ -10,15 +11,17 @@ import TestInterface from "./pages/TestInterface";
 import TestResult from "./pages/TestResult";
 import DetailedAnalysis from "./pages/DetailedAnalysis";
 import About from "./pages/About";
-import ContactUs from "./pages/ContactUs";
-import FAQ from "./pages/FAQ";
-import HowItWorks from "./pages/HowItWorks";
-import PerformanceTips from "./pages/PerformanceTips";
-import ReportIssue from "./pages/ReportIssue";
-import PrivacyPolicy from "./pages/PrivacyPolicy";
-import TermsOfService from "./pages/TermsOfService";
-import Accessibility from "./pages/Accessibility";
 import Solutions from "./pages/Solutions";
+
+import FAQ from "./pages/QuickLinks/FAQ";
+import HowItWorks from "./pages/QuickLinks/HowItWorks";
+import PerformanceTips from "./pages/QuickLinks/PerformanceTips";
+
+import ContactUs from "./pages/Supports/ContactUs";
+import ReportIssue from "./pages/Supports/ReportIssue";
+import PrivacyPolicy from "./pages/Supports/PrivacyPolicy";
+import TermsOfService from "./pages/Supports/TermsOfService";
+import Accessibility from "./pages/Supports/Accessibility";
 
 function App() {
   const location = useLocation();

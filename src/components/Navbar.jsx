@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import SetuLogo from "../SetuLearn Logo.png"
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -11,34 +12,21 @@ export default function Navbar() {
     <nav className="navbar">
       <div className="navbar-inner">
 
-        <div
-          className="navbar-brand"
-          onClick={() => navigate("/")}
-          style={{ cursor: "pointer" }}
-        >
-          <div className="brand-icon">TF</div>
-
-          <div className="brand-text">
-            <span className="brand-name">TestFlow</span>
-            <span className="brand-sub">Platform</span>
-          </div>
+        <div className="navbar-brand" onClick={() => navigate("/")} style={{ cursor: "pointer" }} >
+          <div className="brand-icon"><img src={SetuLogo} alt="SetuLearn" /></div>
         </div>
 
         <div className={`navbar-links ${menuOpen ? "open" : ""}`}>
 
           <button
-            className={`nav-link ${location.pathname === "/" ? "active" : ""
-              }`}
-            onClick={() => navigate("/")}
-          >
+            className={`nav-link ${location.pathname === "/" ? "active" : "" }`}
+            onClick={() => navigate("/")} >
             Home
           </button>
 
           <button
-            className={`nav-link ${location.pathname === "/tests" ? "active" : ""
-              }`}
-            onClick={() => navigate("/tests")}
-          >
+            className={`nav-link ${location.pathname === "/tests" ? "active" : "" }`}
+            onClick={() => navigate("/tests")} >
             Tests
           </button>
 
