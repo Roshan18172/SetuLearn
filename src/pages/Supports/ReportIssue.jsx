@@ -85,17 +85,9 @@ export default function ReportIssue() {
                 <form className="report-form" onSubmit={handleSubmit}>
 
                     <div className="form-row">
-                        <input
-                            type="text"
-                            placeholder="Your Name"
-                            required
-                        />
+                        <input type="text" placeholder="Your Name" required />
 
-                        <input
-                            type="email"
-                            placeholder="Your Email"
-                            required
-                        />
+                        <input type="email" placeholder="Your Email" required />
                     </div>
 
                     <select required>
@@ -110,21 +102,11 @@ export default function ReportIssue() {
                         <option>Other</option>
                     </select>
 
-                    <input
-                        type="text"
-                        placeholder="Page / Test Name (Optional)"
-                    />
+                    <input type="text" placeholder="Page / Test Name (Optional)" />
 
-                    <textarea
-                        rows="6"
-                        placeholder="Describe the issue in detail..."
-                        required
-                    />
+                    <textarea rows="6" placeholder="Describe the issue in detail..." required />
 
-                    <button
-                        type="submit"
-                        className="btn-primary submit-btn"
-                    >
+                    <button type="submit" className="btn-primary submit-btn" >
                         Submit Report →
                     </button>
 

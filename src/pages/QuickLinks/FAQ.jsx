@@ -98,16 +98,12 @@ export default function FAQ() {
 
       <div className="faq-wrapper">
         {faqData.map((faq, index) => (
-          <div
-            key={index}
+          <div key={index}
             className={`faq-card ${
               active === index ? "faq-active" : ""
             }`}
           >
-            <button
-              className="faq-question"
-              onClick={() => toggleFAQ(index)}
-            >
+            <button className="faq-question" onClick={() => toggleFAQ(index)} >
               <span>{faq.question}</span>
               <span className="faq-icon">
                 {active === index ? "−" : "+"}
@@ -129,9 +125,7 @@ export default function FAQ() {
           Our support team is always ready to help you.
         </p>
 
-        <button className="btn-primary">
-          Contact Support
-        </button>
+        <button className="btn-primary"> Contact Support </button>
       </div>
     </div>
   );

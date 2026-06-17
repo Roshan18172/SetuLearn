@@ -48,17 +48,11 @@ export default function TestInstructions() {
         <div className="mode-toggle-section">
           <h3>Select Mode</h3>
           <div className="mode-toggle">
-            <button
-              className={`mode-btn ${mode === "timed" ? "active" : ""}`}
-              onClick={() => setMode("timed")}
-            >
+            <button className={`mode-btn ${mode === "timed" ? "active" : ""}`} onClick={() => setMode("timed")} >
               ⏱️ Timed Mode
               <span>Simulates real exam with countdown</span>
             </button>
-            <button
-              className={`mode-btn ${mode === "untimed" ? "active" : ""}`}
-              onClick={() => setMode("untimed")}
-            >
+            <button className={`mode-btn ${mode === "untimed" ? "active" : ""}`} onClick={() => setMode("untimed")} >
               📖 Practice Mode
               <span>No timer, go at your own pace</span>
             </button>
@@ -131,10 +125,7 @@ export default function TestInstructions() {
 
         <div className="instr-actions">
           <button className="btn-outline" onClick={() => navigate("/tests")}>← Back</button>
-          <button
-            className="btn-primary btn-lg"
-            onClick={() => navigate("/test", { state: { test, mode } })}
-          >
+          <button className="btn-primary btn-lg" onClick={() => navigate("/test", { state: { test, mode } })} >
             Start Test →
           </button>
         </div>  

@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+ import { useNavigate } from "react-router-dom";
 
 export default function PerformanceTips() {
     const navigate = useNavigate();
@@ -145,10 +145,7 @@ export default function PerformanceTips() {
                     Put these strategies into action and start improving today.
                 </p>
 
-                <button
-                    className="btn-primary"
-                    onClick={() => navigate("/tests")}
-                >
+                <button className="btn-primary" onClick={() => navigate("/tests")} >
                     Start Practicing →
                 </button>
             </section>

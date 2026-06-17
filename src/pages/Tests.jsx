@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { tests, categories } from "../data/demoData";
 import { useNavigate } from "react-router-dom";
-
 const difficulties = ["All Difficulty", "Easy", "Medium", "Hard"];
 const durations = ["All Duration", "< 60 Mins", "60-120 Mins", "> 120 Mins"];
 
@@ -55,12 +54,8 @@ export default function Tests() {
 
         <div className="search-box">
           <span className="search-icon">🔍</span>
-          <input
-            type="text"
-            placeholder="Search tests..."
-            value={search}
-            onChange={(e) => { setSearch(e.target.value); setVisible(4); }}
-          />
+          <input type="text" placeholder="Search tests..." value={search}
+            onChange={(e) => { setSearch(e.target.value); setVisible(4); }} />
         </div>
       </div>
 
@@ -94,10 +89,8 @@ export default function Tests() {
                   </div>
                 </div>
               </div>
-              <button
-                className="btn-primary"
-                onClick={() => navigate("/instructions", { state: { test, mode: "timed" } })}
-              >
+              <button className="btn-primary"
+                onClick={() => navigate("/instructions", { state: { test, mode: "timed" } })} >
                 Start Test
               </button>
             </div>

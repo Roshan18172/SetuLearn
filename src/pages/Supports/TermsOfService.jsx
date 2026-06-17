@@ -111,10 +111,7 @@ export default function TermsOfService() {
                     Explore mock tests, improve your performance, and achieve your goals.
                 </p>
 
-                <button
-                    className="btn-primary btn-lg"
-                    onClick={() => navigate("/tests")}
-                >
+                <button className="btn-primary btn-lg" onClick={() => navigate("/tests")} >
                     Browse Tests →
                 </button>
             </section>

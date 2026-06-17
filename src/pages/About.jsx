@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+ import { useNavigate } from "react-router-dom";
 
 export default function About() {
   const navigate = useNavigate();
@@ -166,41 +166,25 @@ export default function About() {
 
       {/* Vision */}
       <section className="vision-section">
-
         <div className="vision-card">
           <h2>🌍 Our Vision</h2>
-
           <p>
             We envision a future where every student, regardless of background,
             has access to quality exam preparation resources.
           </p>
-
           <p>
             SetuLearn aims to become a trusted companion for millions of
             learners preparing for competitive examinations.
           </p>
         </div>
-
       </section>
 
       {/* CTA */}
       <section className="about-cta">
-
         <h2>Ready To Start Practicing?</h2>
-
-        <p>
-          Explore mock tests and begin your journey toward success today.
-        </p>
-
-        <button
-          className="btn-white"
-          onClick={() => navigate("/tests")}
-        >
-          Browse Tests →
-        </button>
-
+        <p>Explore mock tests and begin your journey toward success today.</p>
+        <button className="btn-white" onClick={() => navigate("/tests")} > Browse Tests → </button>
       </section>
-
     </div>
   );
 }

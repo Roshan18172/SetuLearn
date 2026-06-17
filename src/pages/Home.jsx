@@ -88,10 +88,7 @@ export default function Home() {
         </div>
         <div className="categories-grid">
           {categories.map((cat) => (
-            <div
-              key={cat.id}
-              className="category-card"
-              onClick={() => navigate("/tests")}
+            <div key={cat.id} className="category-card" onClick={() => navigate("/tests")}
               style={{ "--cat-color": cat.color }}
             >
               <div className="cat-icon">{cat.icon}</div>
@@ -170,10 +167,7 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-              <button
-                className="btn-primary"
-                onClick={() => navigate("/instructions", { state: { test, mode: "timed" } })}
-              >
+              <button className="btn-primary" onClick={() => navigate("/instructions", { state: { test, mode: "timed" } })} >
                 Start Test
               </button>
             </div>

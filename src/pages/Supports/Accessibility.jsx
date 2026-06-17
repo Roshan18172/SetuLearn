@@ -120,10 +120,7 @@ export default function Accessibility() {
                         for everyone.
                     </p>
 
-                    <button
-                        className="btn-primary btn-lg"
-                        onClick={() => navigate("/contact")}
-                    >
+                    <button className="btn-primary btn-lg" onClick={() => navigate("/contact")} >
                         Contact Support →
                     </button>
                 </div>

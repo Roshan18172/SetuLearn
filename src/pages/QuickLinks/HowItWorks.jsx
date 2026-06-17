@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+ import { useNavigate } from "react-router-dom";
 
 export default function HowItWorks() {
   const navigate = useNavigate();
@@ -176,10 +176,7 @@ export default function HowItWorks() {
           Take your first mock test and discover your strengths today.
         </p>
 
-        <button
-          className="btn-primary btn-lg"
-          onClick={() => navigate("/tests")}
-        >
+        <button className="btn-primary btn-lg" onClick={() => navigate("/tests")} >
           🚀 Browse Tests
         </button>
       </section>

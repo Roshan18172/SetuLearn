@@ -66,11 +66,7 @@ export default function DetailedAnalysis() {
       {/* Tabs */}
       <div className="analysis-tabs">
         {tabs.map((t) => (
-          <button
-            key={t}
-            className={`analysis-tab ${tab === t ? "active" : ""}`}
-            onClick={() => setTab(t)}
-          >
+          <button key={t} className={`analysis-tab ${tab === t ? "active" : ""}`} onClick={() => setTab(t)} >
             {t}
           </button>
         ))}
@@ -172,11 +168,8 @@ export default function DetailedAnalysis() {
 
               {questions.map((q, i) => {
                 const userAnswer = answers[q.id];
-
                 const attempted = !!userAnswer;
-
-                const isCorrect =
-                  userAnswer === q.correct;
+                const isCorrect = userAnswer === q.correct;
 
                 const userOption =
                   q.options.find(
@@ -189,8 +182,7 @@ export default function DetailedAnalysis() {
                   );
 
                 return (
-                  <div
-                    key={q.id}
+                  <div key={q.id}
                     className={`qat-row ${isCorrect
                       ? "correct-row"
                       : attempted

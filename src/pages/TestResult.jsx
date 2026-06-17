@@ -199,17 +199,13 @@ export default function TestResult() {
 
           <div className="topic-bars">
             {r.topicBreakdown?.map((t) => (
-              <div
-                key={t.topic}
-                className="topic-bar-row"
-              >
+              <div key={t.topic} className="topic-bar-row" >
                 <span className="tb-label">
                   {t.topic}
                 </span>
 
                 <div className="tb-track">
-                  <div
-                    className="tb-fill"
+                  <div className="tb-fill"
                     style={{
                       width: `${t.score}%`,
                       background:
@@ -232,10 +228,7 @@ export default function TestResult() {
 
         {/* Action Buttons */}
         <div className="result-actions">
-
-          <button
-            className="btn-outline"
-            onClick={() =>
+          <button className="btn-outline" onClick={() =>
               navigate("/instructions", {
                 state: {
                   test,
@@ -262,9 +255,7 @@ export default function TestResult() {
             📊 View Detailed Analysis
           </button>
 
-          <button
-            className="btn-primary"
-            onClick={() =>
+          <button className="btn-primary" onClick={() =>
               navigate("/solutions", {
                 state: {
                   test,
@@ -277,12 +268,7 @@ export default function TestResult() {
             📖 View Solutions
           </button>
 
-          <button
-            className="btn-outline"
-            onClick={() => navigate("/tests")}
-          >
-            Browse More Tests
-          </button>
+          <button className="btn-outline" onClick={() => navigate("/tests")} > Browse More Tests </button>
 
         </div>
       </div>
