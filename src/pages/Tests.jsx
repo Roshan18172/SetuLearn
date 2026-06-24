@@ -1,23 +1,11 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-<<<<<<< Updated upstream
-import examService from "../api/examService";
-import { mapExamToCategory, mapTestToFrontend } from "../api/dataMapper";
-import { getErrorMessage } from "../api/apiErrorHandler";
-=======
->>>>>>> Stashed changes
 
 const difficulties = ["All Difficulty", "Easy", "Medium", "Hard"];
 const durations = ["All Duration", "< 60 Mins", "60-120 Mins", "> 120 Mins"];
 
 export default function Tests() {
   const navigate = useNavigate();
-<<<<<<< Updated upstream
-  const [categories, setCategories] = useState([]);
-  const [tests, setTests] = useState([]);
-  const [fetchError, setFetchError] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-=======
   
   // State for raw data and aggregated exams
   const [exams, setExams] = useState([]);
@@ -25,46 +13,11 @@ export default function Tests() {
   const [loading, setLoading] = useState(true);
 
   // Filter and Search States
->>>>>>> Stashed changes
   const [catFilter, setCatFilter] = useState("All Categories");
   const [diffFilter, setDiffFilter] = useState("All Difficulty");
   const [durFilter, setDurFilter] = useState("All Duration");
   const [search, setSearch] = useState("");
   const [visible, setVisible] = useState(4);
-<<<<<<< Updated upstream
-
-  useEffect(() => {
-    document.title = "Tests - SetuLearn";
-  }, []);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
-      setFetchError(null);
-      try {
-        const [exams, allTests] = await Promise.all([
-          examService.getExams(),
-          examService.getAllTests(),
-        ]);
-
-        setCategories(exams.map((e) => mapExamToCategory(e)));
-
-        const mapped = allTests.map((t) =>
-          mapTestToFrontend(t, t.exam?.name || "")
-        );
-        setTests(mapped);
-      } catch (err) {
-        const message = getErrorMessage(err, "Could not load tests. Please ensure the backend is running.");
-        console.error("Failed to fetch tests:", err);
-        setFetchError(message);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
-=======
->>>>>>> Stashed changes
 
   document.title = "Exams - SetuLearn";
 
@@ -153,44 +106,10 @@ export default function Tests() {
     return matchCat && matchDiff && matchDur && matchSearch;
   });
 
-<<<<<<< Updated upstream
-  // Show loading state
-  if (isLoading) {
-    return (
-      <div className="tests-page">
-        <div className="tests-header">
-          <h1>All Tests</h1>
-        </div>
-        <div className="empty-state" style={{ padding: "80px 20px" }}>
-          <div className="empty-icon">⏳</div>
-          <h3>Loading tests...</h3>
-          <p>Please wait while we fetch the available tests.</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Show error state with retry
-  if (fetchError) {
-    return (
-      <div className="tests-page">
-        <div className="tests-header">
-          <h1>All Tests</h1>
-        </div>
-        <div className="empty-state" style={{ padding: "80px 20px" }}>
-          <div className="empty-icon">⚠️</div>
-          <h3>Could not load tests</h3>
-          <p style={{ maxWidth: 500, margin: "0 auto 20px" }}>{fetchError}</p>
-          <button className="btn-primary" onClick={() => window.location.reload()}>
-            🔄 Retry
-          </button>
-        </div>
-=======
   if (loading) {
     return (
       <div className="tests-page" style={{ textAlign: "center", padding: "100px 0" }}>
         <h2>Loading Exams...</h2>
->>>>>>> Stashed changes
       </div>
     );
   }
