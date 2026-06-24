@@ -1,275 +1,299 @@
-// import { sampleResult } from "../data/demoData";
+import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+
+/**
+ * Aggregates and calculates metrics across multiple backend submissions
+ * @param {Array|Object} resultsData - A single result object or an array of result objects from the backend
+ * @param {Object} test - The parent test configuration metadata containing section/subtest details
+ * @returns {Object} Combined metrics summary
+ */
+export function calculateAggregatedResults(resultsData, test = {}) {
+  // Normalize input into an array of submission data items
+  console.log("Calculating aggregated results for:", resultsData, test);
+  const submissionsList = Array.isArray(resultsData)
+    ? resultsData
+    : (resultsData?.data ? [resultsData.data] : [resultsData]);
+
+  let totalScore = 0;
+  let totalCorrect = 0;
+  let totalIncorrect = 0;
+  let totalUnattempted = 0;
+  let totalQuestionsCount = 0;
+  let totalTimeSpent = 0;
+
+  const displaySubjects = [];
+
+  submissionsList.forEach((sub, index) => {
+    if (!sub) return;
+
+    // Direct performance summary fields per submission chunk
+    const subScore = sub.score ?? sub.obtainedMarks ?? 0;
+    const subCorrect = sub.correct ?? sub.correctAnswers ?? 0;
+    const subIncorrect = sub.incorrect ?? sub.incorrectAnswers ?? 0;
+    const subUnattempted = sub.unattempted ?? 0;
+    totalTimeSpent += (sub.timeSpent ?? 0);
+
+    // Safely deduce question quantity per module context
+    let subQuestionsCount = 0;
+    if (sub.questionAnalysis && Array.isArray(sub.questionAnalysis)) {
+      subQuestionsCount = sub.questionAnalysis.length;
+    } else if (sub.totalQuestions) {
+      subQuestionsCount = sub.totalQuestions;
+    } else {
+      subQuestionsCount = subCorrect + subIncorrect + subUnattempted;
+    }
+
+    totalScore += subScore;
+    totalCorrect += subCorrect;
+    totalIncorrect += subIncorrect;
+    totalUnattempted += subUnattempted;
+    totalQuestionsCount += subQuestionsCount;
+
+    // --- STRATEGY TO FIND THE REAL SUBJECT NAME ---
+    let sectionName = "";
+
+    // Step A: Check if the backend explicitly returned a name directly on this result element
+    // include `title` which some pages (instruction) use for subject/paper section
+    if (sub.subjectName || sub.sectionName || sub.subject || sub.title) {
+      sectionName = sub.subjectName || sub.sectionName || sub.subject || sub.title;
+    }
+
+    // Step B: Match via ID mapping against test layout configuration schema
+    if (!sectionName && test) {
+      const targetId = sub.subTestId || sub.sectionId || sub.id;
+      const originalSubtestArray = test.subTests || test.sections || [];
+      const foundMatch = originalSubtestArray.find(
+        (item) => item && String(item.id) === String(targetId)
+      );
+      if (foundMatch && (foundMatch.name || foundMatch.title)) {
+        sectionName = foundMatch.name || foundMatch.title;
+      } else if (originalSubtestArray[index] && (originalSubtestArray[index].name || originalSubtestArray[index].title)) {
+        // Fallback positional configuration index matching
+        sectionName = originalSubtestArray[index].name || originalSubtestArray[index].title;
+      }
+    }
+
+    // Step C: Automated RegEx extraction from dummy solution explanations string matching
+    if (!sectionName && sub.questionAnalysis && sub.questionAnalysis[0]?.explanation) {
+      const match = sub.questionAnalysis[0].explanation.match(/SSC CGL - (.*?) Question/);
+      if (match && match[1]) sectionName = match[1];
+    }
+
+    // Default Fallback if completely undetected
+    if (!sectionName) {
+      sectionName = `Section ${index + 1}`;
+    }
+
+    const subAttempted = subCorrect + subIncorrect;
+    const subAccuracy = subAttempted === 0 ? 0 : Math.round((subCorrect / subAttempted) * 100);
+
+    displaySubjects.push({
+      name: sectionName,
+      questions: subQuestionsCount,
+      attempted: subAttempted,
+      correct: subCorrect,
+      incorrect: subIncorrect,
+      score: subScore,
+      total: subQuestionsCount * 4,
+      accuracy: subAccuracy
+    });
+  });
+
+  const grandTotalMarks = totalQuestionsCount * 4;
+  const grandPercentage = grandTotalMarks > 0
+    ? Math.max(0, Math.round((totalScore / grandTotalMarks) * 100))
+    : 0;
+
+  // Format timeSpent into human readable string
+  const hrs = Math.floor(totalTimeSpent / 3600);
+  const mins = Math.floor((totalTimeSpent % 3600) / 60);
+  const secs = totalTimeSpent % 60;
+  const formattedTime = hrs > 0 
+    ? `${hrs}h ${mins}m ${secs}s` 
+    : `${mins}m ${secs}s`;
+
+  return {
+    score: totalScore,
+    totalMarks: grandTotalMarks,
+    percentage: grandPercentage,
+    correct: totalCorrect,
+    incorrect: totalIncorrect,
+    unattempted: totalUnattempted,
+    totalQuestions: totalQuestionsCount,
+    timeSpent: totalTimeSpent > 0 ? formattedTime : "00m 00s",
+    subjects: displaySubjects
+  };
+}
 
 export default function TestResult() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  // Safely grab payload variables passed via state routing engine
   const {
     test,
-    result,
+    result,   // Can now safely be an array of multi-subject submission responses
     answers = {},
+    questions = [],
+    subjectsMap = {},
   } = location.state || {};
 
-  const r = result || {};
+  document.title = "Test Performance Result - SetuLearn";
 
-  document.title = "Test Result - SetuLearn";
-  // Save last exam summary to localStorage
+  // Parse and aggregate cross-sectional metrics seamlessly passing the test context
+  const metrics = calculateAggregatedResults(result, test);
+
+  // Sync aggregate summaries back into persistent storage for dashboard widgets
   try {
-    const lastExam = {
-      securedScore: r.score ?? 0,
-      totalScore: r.totalMarks ?? 0,
-      totalQuestions: r.totalQuestions ?? 0,
-      correct: r.correctCount ?? 0,
-      incorrect: r.incorrectCount ?? 0,
-      unattempted: r.unattempted ?? 0,
-      percentile: r.scorePercent ?? 0,
-      testId: test?.id ?? r.testId ?? null,
-      testTitle: test?.title ?? r.testTitle ?? null,
+    const multiExamLog = {
+      securedScore: metrics.score,
+      totalScore: metrics.totalMarks,
+      totalQuestions: metrics.totalQuestions,
+      correct: metrics.correct,
+      incorrect: metrics.incorrect,
+      unattempted: metrics.unattempted,
+      percentile: metrics.percentage,
+      testId: test?.id || null,
+      testTitle: test?.title || test?.examName || "Comprehensive Mock Test",
       timestamp: Date.now(),
     };
-    localStorage.setItem('lastexam', JSON.stringify(lastExam));
+    localStorage.setItem('lastexam', JSON.stringify(multiExamLog));
   } catch (e) {
-    // ignore storage errors
-    // console.warn('Failed to save last exam', e);
+    console.error("Local storage summary sync failed:", e);
   }
 
   return (
     <div className="result-page">
-      {/* Completion Banner */}
+      {/* Visual Header Banner */}
       <div className="result-banner">
         <div className="result-trophy">🏆</div>
-        <h2>Test Completed!</h2>
-        <p>Great job! Here's your performance summary.</p>
+        <h2>Test Completed Successfully!</h2>
+        <p>Combined performance summary compiled from all subject submissions.</p>
         <div className="result-test-name">
-          {test?.title || r.testTitle}
+          {test?.title || test?.examName || "SSC CGL Composite Assessment"}
         </div>
       </div>
 
       <div className="result-body">
-
-        {/* Score Card */}
+        {/* Core Consolidated Scorecard Metrics */}
         <div className="scorecard">
           <div className="sc-circle-wrap">
             <div className="sc-circle">
-              <div className="sc-big-score">{r.score}</div>
-              <div className="sc-total">/{r.totalMarks}</div>
-              <div className="sc-pct">{r.scorePercent}%</div>
+              <div className="sc-big-score">{metrics.score}</div>
+              <div className="sc-total">/{metrics.totalMarks}</div>
+              <div className="sc-pct">{metrics.percentage}%</div>
             </div>
           </div>
 
           <div className="sc-details">
             <div className="sc-detail-row">
-
               <div className="scd-item correct">
                 <span className="scd-icon">✅</span>
                 <div>
-                  <div className="scd-label">
-                    Correct Answers
-                  </div>
-                  <div className="scd-val">
-                    {r.correctCount} / {r.totalQuestions}
-                  </div>
+                  <div className="scd-label">Correct Answers</div>
+                  <div className="scd-val">{metrics.correct} / {metrics.totalQuestions}</div>
                 </div>
               </div>
 
               <div className="scd-item incorrect">
                 <span className="scd-icon">❌</span>
                 <div>
-                  <div className="scd-label">
-                    Incorrect Answers
-                  </div>
-                  <div className="scd-val">
-                    {r.incorrectCount} / {r.totalQuestions}
-                  </div>
+                  <div className="scd-label">Incorrect Answers</div>
+                  <div className="scd-val">{metrics.incorrect} / {metrics.totalQuestions}</div>
                 </div>
               </div>
 
               <div className="scd-item unattempted">
                 <span className="scd-icon">⬜</span>
                 <div>
-                  <div className="scd-label">
-                    Unattempted
-                  </div>
-                  <div className="scd-val">
-                    {r.unattempted}
-                  </div>
+                  <div className="scd-label">Unattempted</div>
+                  <div className="scd-val">{metrics.unattempted}</div>
                 </div>
               </div>
 
               <div className="scd-item total">
                 <span className="scd-icon">📋</span>
                 <div>
-                  <div className="scd-label">
-                    Total Questions
-                  </div>
-                  <div className="scd-val">
-                    {r.totalQuestions}
-                  </div>
+                  <div className="scd-label">Total Items</div>
+                  <div className="scd-val">{metrics.totalQuestions}</div>
                 </div>
               </div>
-
             </div>
 
             <div className="sc-extra">
               <div className="sce-item">
-                <div className="sce-label">Time Taken</div>
-                <div className="sce-val">
-                  ⏱️ {r.timeTaken}
-                </div>
+                <div className="sce-label">Status</div>
+                <div className="sce-val" style={{ color: '#00BFA6' }}>Completed Sync</div>
               </div>
-
               <div className="sce-item">
-                <div className="sce-label">Percentile</div>
-                <div className="sce-val">
-                  📈 {r.percentile}
+                <div className="sce-label">Time Spent</div>
+                <div className="sce-val">⏱️ {metrics.timeSpent}</div>
+              </div>
+              <div className="sce-item">
+                <div className="sce-label">Overall Accuracy</div>
+                <div className="sce-val">📈 {metrics.correct + metrics.incorrect > 0 ? Math.round((metrics.correct / (metrics.correct + metrics.incorrect)) * 100) : 0}%</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Aggregated Cross-Section Summary Matrix */}
+        {metrics.subjects.length > 0 && (
+          <div className="result-section">
+            <h3 className="rs-title">Subject-wise Breakdown Matrix</h3>
+            <div className="subject-summary-table">
+              <div className="sst-head">
+                <span>Subject / Section</span>
+                <span>Questions</span>
+                <span>Attempted</span>
+                <span>Correct</span>
+                <span>Incorrect</span>
+                <span>Score Contribution</span>
+                <span>Accuracy</span>
+              </div>
+
+              {metrics.subjects.map((s, idx) => (
+                <div key={s.name || idx} className="sst-row">
+                  <span className="sst-name"><b>{s.name || test?.title || test?.examName || `Section ${idx + 1}`}</b></span>
+                  <span>{s.questions}</span>
+                  <span>{s.attempted}</span>
+                  <span className="green">{s.correct}</span>
+                  <span className="red">{s.incorrect}</span>
+                  <span>{s.score} / {s.total}</span>
+                  <span className={s.accuracy >= 75 ? "green" : s.accuracy >= 50 ? "orange" : "red"}>
+                    {s.accuracy}%
+                  </span>
                 </div>
+              ))}
+
+              {/* Matrix Evaluation Footer Row Summary */}
+              <div className="sst-row sst-total">
+                <span className="sst-name">Total Consolidated</span>
+                <span>{metrics.totalQuestions}</span>
+                <span>{metrics.correct + metrics.incorrect}</span>
+                <span className="green">{metrics.correct}</span>
+                <span className="red">{metrics.incorrect}</span>
+                <span>{metrics.score} / {metrics.totalMarks}</span>
+                <span className="green">{metrics.percentage}%</span>
               </div>
             </div>
           </div>
-        </div>
+        )}
 
-        {/* Section Summary */}
-        <div className="result-section">
-          <h3 className="rs-title">Section Summary</h3>
-
-          <div className="subject-summary-table">
-            <div className="sst-head">
-              <span>Section</span>
-              <span>Questions</span>
-              <span>Attempted</span>
-              <span>Correct</span>
-              <span>Incorrect</span>
-              <span>Score</span>
-              <span>Accuracy</span>
-            </div>
-
-            {r.subjects?.map((s) => (
-              <div key={s.name} className="sst-row">
-                <span className="sst-name">{s.name}</span>
-                <span>{s.questions}</span>
-                <span>{s.attempted}</span>
-                <span className="green">{s.correct}</span>
-                <span className="red">{s.incorrect}</span>
-                <span>
-                  {s.score}/{s.total}
-                </span>
-
-                <span
-                  className={
-                    s.accuracy >= 75
-                      ? "green"
-                      : s.accuracy >= 60
-                      ? "orange"
-                      : "red"
-                  }
-                >
-                  {s.accuracy}%
-                </span>
-              </div>
-            ))}
-
-            <div className="sst-row sst-total">
-              <span className="sst-name">Total</span>
-              <span>{r.totalQuestions}</span>
-              <span>
-                {r.correctCount + r.incorrectCount}
-              </span>
-              <span className="green">
-                {r.correctCount}
-              </span>
-              <span className="red">
-                {r.incorrectCount}
-              </span>
-              <span>
-                {r.score}/{r.totalMarks}
-              </span>
-              <span className="green">
-                {r.scorePercent}%
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {/* Topic Wise Performance */}
-        <div className="result-section">
-          <h3 className="rs-title">
-            Topic-wise Performance
-          </h3>
-
-          <div className="topic-bars">
-            {r.topicBreakdown?.map((t) => (
-              <div key={t.topic} className="topic-bar-row" >
-                <span className="tb-label">
-                  {t.topic}
-                </span>
-
-                <div className="tb-track">
-                  <div className="tb-fill"
-                    style={{
-                      width: `${t.score}%`,
-                      background:
-                        t.score >= 80
-                          ? "#00BFA6"
-                          : t.score >= 65
-                          ? "#6C63FF"
-                          : "#FF6B6B",
-                    }}
-                  />
-                </div>
-
-                <span className="tb-val">
-                  {t.score}%
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Action Buttons */}
+        {/* Form Interactive Operational Buttons */}
         <div className="result-actions">
-          <button className="btn-outline" onClick={() =>
-              navigate("/instructions", {
-                state: {
-                  test,
-                  mode: "timed",
-                },
-              })
-            }
-          >
+          <button className="btn-outline" onClick={() => navigate("/instructions", { state: { test, mode: "timed" } })}>
             🔄 Retake Test
           </button>
-
-          <button
-            className="btn-primary"
-            onClick={() =>
-              navigate("/analysis", {
-                state: {
-                  test,
-                  result: r,
-                  answers,
-                },
-              })
-            }
-          >
+          <button className="btn-primary" onClick={() => navigate("/analysis", { state: { test, result, answers, metrics, questions, subjectsMap } })}>
             📊 View Detailed Analysis
           </button>
-
-          <button className="btn-primary" onClick={() =>
-              navigate("/solutions", {
-                state: {
-                  test,
-                  answers,
-                  result: r,
-                },
-              })
-            }
-          >
+          <button className="btn-primary" onClick={() => navigate("/solutions", { state: { test, answers, result } })}>
             📖 View Solutions
           </button>
-
-          <button className="btn-outline" onClick={() => navigate("/tests")} > Browse More Tests </button>
-
+          <button className="btn-outline" onClick={() => navigate("/tests")}>
+            Browse More Tests
+          </button>
         </div>
       </div>
     </div>

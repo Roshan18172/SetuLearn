@@ -3224,3 +3224,52 @@ html::-webkit-scrollbar-thumb:hover {
     gap: 8px;
   }
 }
+
+
+/* Question Analysis — row highlight by status */
+.qat-row.correct-row {
+  background-color: rgba(0, 191, 166, 0.08);
+  border-left: 3px solid #00BFA6;
+}
+
+.qat-row.correct-row span {
+  color: #00BFA6;
+}
+
+.qat-row.incorrect-row {
+  background-color: rgba(255, 107, 107, 0.08);
+  border-left: 3px solid #FF6B6B;
+}
+
+.qat-row.incorrect-row span {
+  color: #FF6B6B;
+}
+
+.qat-row.unattempted-row {
+  background-color: rgba(100, 116, 139, 0.06);
+  border-left: 3px solid #475569;
+}
+
+.qat-row.unattempted-row span {
+  color: #64748b;
+}
+
+/* Keep status badge colors independent of row color */
+.qat-row .status-badge {
+  color: inherit;
+}
+
+.qat-row.correct-row .status-badge.correct {
+  background: rgba(0, 191, 166, 0.15);
+  color: #00BFA6;
+}
+
+.qat-row.incorrect-row .status-badge.incorrect {
+  background: rgba(255, 107, 107, 0.15);
+  color: #FF6B6B;
+}
+
+.qat-row.unattempted-row .status-badge.unattempted {
+  background: rgba(71, 85, 105, 0.2);
+  color: #64748b;
+}

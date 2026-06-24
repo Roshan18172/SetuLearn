@@ -42,7 +42,7 @@ function App() {
           <Route path="/instructions" element={<TestInstructions />} />
           <Route path="/test" element={<TestInterface />} />
           <Route path="/result" element={<TestResult />} />
-          <Route path="/analysis" element={<DetailedAnalysis />} />\
+          <Route path="/analysis" element={<DetailedAnalysis />} />
           <Route path="/solutions" element={<Solutions />} />
 
           <Route path="/faq" element={<FAQ />} />

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate , useLocation} from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 export default function TestInstructions() {
   const [mode, setMode] = useState("timed");
@@ -18,6 +18,13 @@ export default function TestInstructions() {
     );
   }
 
+  // Handle both array formatting or single text string instructions safely
+  const formattedInstructions = Array.isArray(test.instructions)
+    ? test.instructions
+    : typeof test.instructions === "string"
+    ? test.instructions.split(/(?<=\.)\s+/) // Splits long text blocks nicely by sentences
+    : ["Attempt all questions carefully.", "Each question carries defined marks.", "Wrong answers carry penalty rules if active."];
+
   return (
     <div className="instructions-page">
       <div className="instructions-card">
@@ -25,9 +32,9 @@ export default function TestInstructions() {
           <h1>Test Instructions</h1>
         </div>
 
-        {/* Test meta strip */}
+        {/* Test master meta strip */}
         <div className="instr-meta-strip">
-          <div className="instr-test-title">{test.title}</div>
+          <div className="instr-test-title">{test.examName} Master Test</div>
           <div className="instr-stats">
             <div className="istat">
               <b>{test.questions}</b>
@@ -67,7 +74,7 @@ export default function TestInstructions() {
               General Instructions
             </div>
             <ul className="instr-list">
-              {test.instructions.map((instr, i) => (
+              {formattedInstructions.map((instr, i) => (
                 <li key={i}>{instr}</li>
               ))}
             </ul>
@@ -96,26 +103,29 @@ export default function TestInstructions() {
             </ul>
           </div>
 
-          <div className="instr-section subject-section">
-            <div className="instr-section-title">
-              <span className="instr-num">4</span>
-              Subject Breakdown
-            </div>
-            <div className="subject-table">
-              <div className="st-header">
-                <span>Subject</span>
-                <span>Questions</span>
-                <span>Marks</span>
+          {/* Subject Breakdown generated dynamically from the combined aggregated sub-tests */}
+          {test.subTests && test.subTests.length > 0 && (
+            <div className="instr-section subject-section">
+              <div className="instr-section-title">
+                <span className="instr-num">4</span>
+                Subject Breakdown
               </div>
-              {test.subjects.map((s) => (
-                <div key={s.name} className="st-row">
-                  <span>{s.name}</span>
-                  <span>{s.questions}</span>
-                  <span>{s.marks}</span>
+              <div className="subject-table">
+                <div className="st-header">
+                  <span>Subject / Paper Section</span>
+                  <span>Questions</span>
+                  <span>Marks</span>
                 </div>
-              ))}
+                {test.subTests.map((sub, i) => (
+                  <div key={sub.id || i} className="st-row">
+                    <span>{sub.title}</span>
+                    <span>{sub.totalQuestions}</span>
+                    <span>{sub.totalMarks}</span>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
         <div className="instr-notice">
