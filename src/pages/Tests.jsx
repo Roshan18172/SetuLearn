@@ -10,12 +10,12 @@ export default function Tests() {
   // State for raw data and aggregated exams
   const [exams, setExams] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [loading, setLoading] = useState(true);
-
+  const [isLoading, setIsLoading] = useState(true);
   // Filter and Search States
   const [catFilter, setCatFilter] = useState("All Categories");
   const [diffFilter, setDiffFilter] = useState("All Difficulty");
   const [durFilter, setDurFilter] = useState("All Duration");
+  const [fetchError, setFetchError] = useState(null);
   const [search, setSearch] = useState("");
   const [visible, setVisible] = useState(4);
 
@@ -24,8 +24,9 @@ export default function Tests() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        setLoading(true);
-        
+        setIsLoading(true);
+        setFetchError(null);
+
         // 1. Fetch categories/exams definitions
         const examsResponse = await fetch("https://setulearn-backend.onrender.com/api/v1/exams");
         const examsJson = await examsResponse.json();
@@ -84,8 +85,9 @@ export default function Tests() {
         setExams(aggregatedExams);
       } catch (error) {
         console.error("Error aggregating exam data:", error);
+        setFetchError("Failed to load exam data. Please try again.");
       } finally {
-        setLoading(false);
+        setIsLoading(false);
       }
     };
 
@@ -106,10 +108,37 @@ export default function Tests() {
     return matchCat && matchDiff && matchDur && matchSearch;
   });
 
-  if (loading) {
+   // Show loading state
+  if (isLoading) {
     return (
-      <div className="tests-page" style={{ textAlign: "center", padding: "100px 0" }}>
-        <h2>Loading Exams...</h2>
+      <div className="tests-page">
+        <div className="tests-header">
+          <h1>All Tests</h1>
+        </div>
+        <div className="empty-state" style={{ padding: "80px 20px" }}>
+          <div className="empty-icon">⏳</div>
+          <h3>Loading tests...</h3>
+          <p>Please wait while we fetch the available tests.</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show error state with retry
+  if (fetchError) {
+    return (
+      <div className="tests-page">
+        <div className="tests-header">
+          <h1>All Tests</h1>
+        </div>
+        <div className="empty-state" style={{ padding: "80px 20px" }}>
+          <div className="empty-icon">⚠️</div>
+          <h3>Could not load tests</h3>
+          <p style={{ maxWidth: 500, margin: "0 auto 20px" }}>{fetchError}</p>
+          <button className="btn-primary" onClick={() => window.location.reload()}>
+            🔄 Retry
+          </button>
+        </div>
       </div>
     );
   }
