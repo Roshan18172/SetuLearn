@@ -257,46 +257,46 @@ export default function Home() {
           </button>
         </div>
         <div className="tests-list">
-          {featuredTests.map((test) => (
-            <div key={test.id} className="test-card-home">
-              <div className="tc-left">
-                <div
-                  className="tc-badge"
-                  style={{
-                    background:
-                      categories.find((c) => c.name === test.category)?.color ||
-                      "#6C63FF",
-                  }}
-                >
-                  {test.exam.slice(0, 3).toUpperCase()}
-                </div>
-                <div className="tc-info">
-                  <div className="tc-title">{test.title}</div>
-                  <div className="tc-meta">
-                    <span>{test.category}</span>
-                    <span>•</span>
-                    <span>{test.questions} Questions</span>
-                    <span>•</span>
-                    <span>{test.duration} Mins</span>
-                    <span>•</span>
-                    <span
-                      className={`diff-badge ${test.difficulty.toLowerCase()}`}
-                    >
-                      {test.difficulty}
-                    </span>
+          {featuredTests.map((test) => {
+            const category =
+              categories.find((cat) => cat.name === test.category) || {};
+            const catColor = category.color || "#6C63FF";
+            const catIcon = category.icon || "/icons/default.png";
+
+            return (
+              <div key={test.id} className="test-card-home">
+                <div className="tc-left">
+                  <div className="tr-icon" style={{ background: catColor }}>
+                    <img src={catIcon} alt={test.exam} width={34} height={34} />
+                  </div>
+                  <div className="tc-info">
+                    <div className="tc-title">{test.title}</div>
+                    <div className="tc-meta">
+                      <span>{test.category}</span>
+                      <span>•</span>
+                      <span>{test.questions} Questions</span>
+                      <span>•</span>
+                      <span>{test.duration} Mins</span>
+                      <span>•</span>
+                      <span
+                        className={`diff-badge ${test.difficulty.toLowerCase()}`}
+                      >
+                        {test.difficulty}
+                      </span>
+                    </div>
                   </div>
                 </div>
+                <button
+                  className="btn-primary"
+                  onClick={() =>
+                    navigate("/instructions", { state: { test, mode: "timed" } })
+                  }
+                >
+                  Start Test
+                </button>
               </div>
-              <button
-                className="btn-primary"
-                onClick={() =>
-                  navigate("/instructions", { state: { test, mode: "timed" } })
-                }
-              >
-                Start Test
-              </button>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </section>
 
