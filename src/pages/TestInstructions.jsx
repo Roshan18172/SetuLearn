@@ -22,8 +22,8 @@ export default function TestInstructions() {
   const formattedInstructions = Array.isArray(test.instructions)
     ? test.instructions
     : typeof test.instructions === "string"
-    ? test.instructions.split(/(?<=\.)\s+/) // Splits long text blocks nicely by sentences
-    : ["Attempt all questions carefully.", "Each question carries defined marks.", "Wrong answers carry penalty rules if active."];
+      ? test.instructions.split(/(?<=\.)\s+/) // Splits long text blocks nicely by sentences
+      : ["Attempt all questions carefully.", "Each question carries defined marks.", "Wrong answers carry penalty rules if active."];
 
   return (
     <div className="instructions-page">
@@ -34,7 +34,7 @@ export default function TestInstructions() {
 
         {/* Test master meta strip */}
         <div className="instr-meta-strip">
-          <div className="instr-test-title">{test.examName} Master Test</div>
+          <div className="instr-test-title">{test.title}</div>
           <div className="instr-stats">
             <div className="istat">
               <b>{test.questions}</b>
@@ -104,23 +104,25 @@ export default function TestInstructions() {
           </div>
 
           {/* Subject Breakdown generated dynamically from the combined aggregated sub-tests */}
-          {test.subTests && test.subTests.length > 0 && (
+          {test.subjects?.length > 0 && (
             <div className="instr-section subject-section">
               <div className="instr-section-title">
                 <span className="instr-num">4</span>
                 Subject Breakdown
               </div>
+
               <div className="subject-table">
                 <div className="st-header">
-                  <span>Subject / Paper Section</span>
+                  <span>Subject</span>
                   <span>Questions</span>
                   <span>Marks</span>
                 </div>
-                {test.subTests.map((sub, i) => (
-                  <div key={sub.id || i} className="st-row">
-                    <span>{sub.title}</span>
-                    <span>{sub.totalQuestions}</span>
-                    <span>{sub.totalMarks}</span>
+
+                {test.subjects.map((subject) => (
+                  <div key={subject.id} className="st-row">
+                    <span>{subject.name}</span>
+                    <span>{subject.questions}</span>
+                    <span>{subject.marks}</span>
                   </div>
                 ))}
               </div>
@@ -138,7 +140,7 @@ export default function TestInstructions() {
           <button className="btn-primary btn-lg" onClick={() => navigate("/test", { state: { test, mode } })} >
             Start Test →
           </button>
-        </div>  
+        </div>
       </div>
     </div>
   );

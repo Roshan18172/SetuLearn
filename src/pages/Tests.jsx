@@ -82,6 +82,26 @@ export default function Tests() {
 
   const resetVisible = () => setVisible(8);
 
+  const handleStartTest = async (test) => {
+    try {
+      const fullTest = await examService.getTestById(test.id);
+
+      const mappedTest = mapTestToFrontend(
+        fullTest,
+        fullTest.exam?.name || test.exam
+      );
+
+      navigate("/instructions", {
+        state: {
+          test: mappedTest,
+          mode: "timed",
+        },
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const filtered = tests.filter((t) => {
     const matchExam = examFilter === "All Exams" || t.exam === examFilter;
     const matchDiff =
@@ -215,12 +235,7 @@ export default function Tests() {
                 </div>
               </div>
 
-              <button
-                className="btn-primary"
-                onClick={() =>
-                  navigate("/instructions", { state: { test, mode: "timed" } })
-                }
-              >
+              <button className="btn-primary" onClick={() => handleStartTest(test)} >
                 Start Test
               </button>
             </div>
