@@ -111,21 +111,19 @@ export default function TestInstructions() {
                 Subject Breakdown
               </div>
 
-              <div className="subject-table">
-                <div className="st-header">
-                  <span>Subject</span>
-                  <span>Questions</span>
-                  <span>Marks</span>
-                </div>
-
-                {test.subjects.map((subject) => (
-                  <div key={subject.id} className="st-row">
-                    <span>{subject.name}</span>
-                    <span>{subject.questions}</span>
-                    <span>{subject.marks}</span>
-                  </div>
-                ))}
+              <div className="st-header">
+                <div className="subject-col">Subject</div>
+                <div>Questions</div>
+                <div>Marks</div>
               </div>
+
+              {test.subjects.map((subject) => (
+                <div key={subject.id} className="st-row">
+                  <div className="subject-col">{subject.name}</div>
+                  <div>{subject.questions}</div>
+                  <div>{subject.marks}</div>
+                </div>
+              ))}
             </div>
           )}
         </div>
