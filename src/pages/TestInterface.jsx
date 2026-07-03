@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { MathJax } from "better-react-mathjax";
 
 function padTwo(n) {
   return String(n).padStart(2, "0");
@@ -13,7 +14,9 @@ function formatTime(secs) {
 }
 
 function pickFirstAnswerValue(...values) {
-  return values.find((value) => value !== undefined && value !== null && value !== "");
+  return values.find(
+    (value) => value !== undefined && value !== null && value !== "",
+  );
 }
 
 export default function TestInterface() {
@@ -26,6 +29,7 @@ export default function TestInterface() {
   const [questions, setQuestions] = useState([]);
   const [subjectsMap, setSubjectsMap] = useState({});
   const [loadingQuestions, setLoadingQuestions] = useState(true);
+  const [isReady, setIsReady] = useState(false);
 
   // Key fix: Maintain a dictionary mapping questionId to its corresponding backend sub-test submission UUID
   const [submissionMap, setSubmissionMap] = useState({});
@@ -51,7 +55,8 @@ export default function TestInterface() {
 
   // Helper function to dynamically retrieve standard auth tokens securely
   const getAuthHeaders = useCallback(() => {
-    const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+    const token =
+      localStorage.getItem("token") || sessionStorage.getItem("token");
     const headers = {
       "Content-Type": "application/json",
     };
@@ -88,22 +93,31 @@ export default function TestInterface() {
         const questionPromises = subTestsToFetch.map(async (sub) => {
           try {
             // 1. Initialize session at sub-test scope level
-            const startResponse = await fetch(`https://setulearn-backend.onrender.com/api/v1/tests/${sub.id}/start`, {
-              method: "POST",
-              headers: getAuthHeaders(),
-              body: JSON.stringify({})
-            });
+            const startResponse = await fetch(
+              `https://setulearn-backend.onrender.com/api/v1/tests/${sub.id}/start`,
+              {
+                method: "POST",
+                headers: getAuthHeaders(),
+                body: JSON.stringify({}),
+              },
+            );
             const startJson = await startResponse.json();
 
             let currentSubTestSubmissionId = null;
             if (startJson.success && startJson.data) {
-              currentSubTestSubmissionId = startJson.data.submissionId || startJson.data.id || (startJson.data.data && startJson.data.data.submissionId);
+              currentSubTestSubmissionId =
+                startJson.data.submissionId ||
+                startJson.data.id ||
+                (startJson.data.data && startJson.data.data.submissionId);
             }
 
             // 2. Fetch the corresponding questions data structure
-            const dataResponse = await fetch(`https://setulearn-backend.onrender.com/api/v1/tests/${sub.id}`, {
-              headers: getAuthHeaders()
-            });
+            const dataResponse = await fetch(
+              `https://setulearn-backend.onrender.com/api/v1/tests/${sub.id}`,
+              {
+                headers: getAuthHeaders(),
+              },
+            );
             const dataJson = await dataResponse.json();
 
             if (dataJson.success && dataJson.data) {
@@ -111,13 +125,13 @@ export default function TestInterface() {
 
               // Map backend subject array to quickly look up real subject names via ID later
               const subMap = {};
-              (dataJson.data.subjects || []).forEach(s => {
+              (dataJson.data.subjects || []).forEach((s) => {
                 subMap[s.id] = s.name;
               });
-              setSubjectsMap(prev => ({ ...prev, ...subMap }));
+              setSubjectsMap((prev) => ({ ...prev, ...subMap }));
 
               // Process questions and link them with the correct sub-test session identifier
-              return fetchedQuestions.map(q => {
+              return fetchedQuestions.map((q) => {
                 if (currentSubTestSubmissionId) {
                   internalSubmissionMapping[q.id] = currentSubTestSubmissionId;
                 }
@@ -129,7 +143,13 @@ export default function TestInterface() {
                   q.answer,
                   q.correctOption?.id,
                   q.correctOption?.optionId,
-                  (q.options || []).find(opt => opt.isCorrect === true || opt.correct === true || opt.isCorrect === 1 || opt.correct === 1)?.id
+                  (q.options || []).find(
+                    (opt) =>
+                      opt.isCorrect === true ||
+                      opt.correct === true ||
+                      opt.isCorrect === 1 ||
+                      opt.correct === 1,
+                  )?.id,
                 );
 
                 return {
@@ -145,18 +165,21 @@ export default function TestInterface() {
                   correctOptionId,
                   correctOption: q.correctOption,
                   correctOptionText: q.correctOptionText || q.correctAnswerText,
-                  options: (q.options || []).map(opt => ({
+                  options: (q.options || []).map((opt) => ({
                     id: opt.id,
                     text: opt.optionText || opt.text,
                     // Keep isCorrect flag if backend provides it per-option
                     isCorrect: opt.isCorrect ?? opt.correct ?? false,
-                  }))
+                  })),
                 };
               });
             }
             return [];
           } catch (err) {
-            console.error(`Failed loading workflow actions for chunk element ${sub.id}:`, err);
+            console.error(
+              `Failed loading workflow actions for chunk element ${sub.id}:`,
+              err,
+            );
             return [];
           }
         });
@@ -204,7 +227,7 @@ export default function TestInterface() {
         if (!submissionsGrouped[question.subTestId]) {
           submissionsGrouped[question.subTestId] = {
             submissionId: targetSubmissionId,
-            answers: []
+            answers: [],
           };
         }
 
@@ -212,7 +235,7 @@ export default function TestInterface() {
         if (selectedOptionId) {
           submissionsGrouped[question.subTestId].answers.push({
             questionId: question.id,
-            selectedOptionId: selectedOptionId
+            selectedOptionId: selectedOptionId,
           });
         }
       });
@@ -223,7 +246,7 @@ export default function TestInterface() {
         if (targetSubmissionId && !submissionsGrouped[question.subTestId]) {
           submissionsGrouped[question.subTestId] = {
             submissionId: targetSubmissionId,
-            answers: []
+            answers: [],
           };
         }
       });
@@ -238,19 +261,27 @@ export default function TestInterface() {
       const finalMergedResultsArray = [];
 
       for (const subTestId of submissionTargets) {
-        const payload = { ...submissionsGrouped[subTestId], timeSpent: timeSpentRef.current };
+        const payload = {
+          ...submissionsGrouped[subTestId],
+          timeSpent: timeSpentRef.current,
+        };
         console.log("Submitting payload structure:", payload);
 
-        const response = await fetch(`https://setulearn-backend.onrender.com/api/v1/tests/${subTestId}/submit`, {
-          method: "POST",
-          headers: getAuthHeaders(),
-          body: JSON.stringify(payload),
-        });
+        const response = await fetch(
+          `https://setulearn-backend.onrender.com/api/v1/tests/${subTestId}/submit`,
+          {
+            method: "POST",
+            headers: getAuthHeaders(),
+            body: JSON.stringify(payload),
+          },
+        );
 
         const json = await response.json();
         if (!json.success) {
           console.error("Validation details:", json.errors || json.message);
-          alert(`Submission processing failed: ${json.message || "Validation Error"}`);
+          alert(
+            `Submission processing failed: ${json.message || "Validation Error"}`,
+          );
           return;
         }
 
@@ -266,10 +297,10 @@ export default function TestInterface() {
           test,
           result: finalMergedResultsArray,
           answers,
-          questions,     // full question list for Question Analysis tab
-          subjectsMap,   // id→name map for topic labels
-          timeSpent: timeSpentRef.current  // Always the real elapsed seconds, not stale closure
-        }
+          questions, // full question list for Question Analysis tab
+          subjectsMap, // id→name map for topic labels
+          timeSpent: timeSpentRef.current, // Always the real elapsed seconds, not stale closure
+        },
       });
     } catch (err) {
       console.error("Error submitting exam:", err);
@@ -280,10 +311,10 @@ export default function TestInterface() {
 
   const handleExitExam = () => {
     navigate("/instructions", {
-      state: { test }
+      state: { test },
     });
   };
-//eslint-disable-next-line 
+  //eslint-disable-next-line
   const [tabSwitchCount, setTabSwitchCount] = useState(0);
 
   useEffect(() => {
@@ -349,7 +380,10 @@ export default function TestInterface() {
 
   if (!test || loadingQuestions) {
     return (
-      <div className="empty-state" style={{ padding: "100px 20px", textAlign: "center" }}>
+      <div
+        className="empty-state"
+        style={{ padding: "100px 20px", textAlign: "center" }}
+      >
         <div className="empty-icon">⏳</div>
         <h2>Assembling Exam Questions...</h2>
         <p>Please wait while we prepare your master question sheet.</p>
@@ -359,11 +393,17 @@ export default function TestInterface() {
 
   if (questions.length === 0) {
     return (
-      <div className="empty-state" style={{ padding: "80px 20px", textAlign: "center" }}>
+      <div
+        className="empty-state"
+        style={{ padding: "80px 20px", textAlign: "center" }}
+      >
         <div className="empty-icon">📝</div>
         <h2>No Questions Found</h2>
         <p>This exam currently has no configured questions available.</p>
-        <button className="btn-primary" onClick={() => navigate("/tests")}> Browse Tests </button>
+        <button className="btn-primary" onClick={() => navigate("/tests")}>
+          {" "}
+          Browse Tests{" "}
+        </button>
       </div>
     );
   }
@@ -394,7 +434,7 @@ export default function TestInterface() {
 
         <div className="ti-timer-wrap">
           {mode === "timed" ? (
-            <div className={`ti-timer ${timeLeft < 300 ? "timer-warn" : ""}`} >
+            <div className={`ti-timer ${timeLeft < 300 ? "timer-warn" : ""}`}>
               <span className="timer-label"> Time Left </span>
               <span className="timer-value"> {formatTime(timeLeft)} </span>
             </div>
@@ -406,9 +446,18 @@ export default function TestInterface() {
           )}
         </div>
 
-        <div style={{ display: "flex", gap: "10px" }} >
-          <button className="btn-outline" onClick={() => setShowExitModal(true)} > Exit </button>
-          <button className="btn-end-test" onClick={() => setShowConfirm(true)} > End Test </button>
+        <div style={{ display: "flex", gap: "10px" }}>
+          <button
+            className="btn-outline"
+            onClick={() => setShowExitModal(true)}
+          >
+            {" "}
+            Exit{" "}
+          </button>
+          <button className="btn-end-test" onClick={() => setShowConfirm(true)}>
+            {" "}
+            End Test{" "}
+          </button>
         </div>
       </div>
 
@@ -421,7 +470,8 @@ export default function TestInterface() {
               Question {current + 1} of {questions.length}
             </div>
 
-            <button className={`mark-review-btn ${marked[q.id] ? "active" : ""}`}
+            <button
+              className={`mark-review-btn ${marked[q.id] ? "active" : ""}`}
               onClick={() =>
                 setMarked((prev) => ({
                   ...prev,
@@ -433,16 +483,31 @@ export default function TestInterface() {
             </button>
           </div>
 
-          <div className="ti-q-topic"> Section: {subjectsMap[q.subjectId] || "General Section"} </div>
+          <div className="ti-q-topic">
+            {" "}
+            Section: {subjectsMap[q.subjectId] || "General Section"}{" "}
+          </div>
 
-          <div className="ti-question"> {q.text} </div>
+          <div
+            className="ti-question"
+            style={{
+              opacity: isReady ? 1 : 0,
+              transition: "opacity 0.2s ease-in-out",
+            }}
+          >
+            <MathJax dynamic onTypeset={() => setIsReady(true)}>
+              {q.text}
+            </MathJax>
+          </div>
 
           <div className="ti-options">
             {(q.options || []).map((opt, i) => (
-              <label key={opt.id || i}
+              <label
+                key={opt.id || i}
                 className={`ti-option ${answers[q.id] === opt.id ? "selected" : ""}`}
               >
-                <input type="radio"
+                <input
+                  type="radio"
                   name={`q-${q.id}`}
                   checked={answers[q.id] === opt.id}
                   onChange={() =>
@@ -452,14 +517,26 @@ export default function TestInterface() {
                     }))
                   }
                 />
-                <span className="opt-letter"> {String.fromCharCode(65 + i)} </span>
-                <span className="opt-text"> {opt.text} </span>
+                <span className="opt-letter">
+                  {String.fromCharCode(65 + i)}
+                </span>
+                <span
+                  className="opt-text"
+                  style={{
+                    opacity: isReady ? 1 : 0,
+                  }}
+                >
+                  <MathJax dynamic onTypeset={() => setIsReady(true)}>
+                    {opt.text}
+                  </MathJax>
+                </span>
               </label>
             ))}
           </div>
 
           <div className="ti-q-actions">
-            <button className="btn-outline"
+            <button
+              className="btn-outline"
               onClick={() =>
                 setAnswers((prev) => {
                   const copy = { ...prev };
@@ -473,14 +550,27 @@ export default function TestInterface() {
           </div>
 
           <div className="ti-nav">
-            <button className="btn-outline" disabled={current === 0} onClick={() => setCurrent((prev) => prev - 1)} >
+            <button
+              className="btn-outline"
+              disabled={current === 0}
+              onClick={() => setCurrent((prev) => prev - 1)}
+            >
               ← Previous
             </button>
 
             {current < questions.length - 1 ? (
-              <button className="btn-primary" onClick={() => setCurrent((prev) => prev + 1)} > Next → </button>
+              <button
+                className="btn-primary"
+                onClick={() => setCurrent((prev) => prev + 1)}
+              >
+                {" "}
+                Next →{" "}
+              </button>
             ) : (
-              <button className="btn-primary" onClick={() => setShowConfirm(true)}>
+              <button
+                className="btn-primary"
+                onClick={() => setShowConfirm(true)}
+              >
                 Submit Test ✓
               </button>
             )}
@@ -491,18 +581,30 @@ export default function TestInterface() {
         <div className={`ti-sidebar ${paletteOpen ? "open" : ""}`}>
           <div className="palette-header">
             <span>Questions</span>
-            <button className="palette-close" onClick={() => setPaletteOpen(false)}>✕</button>
+            <button
+              className="palette-close"
+              onClick={() => setPaletteOpen(false)}
+            >
+              ✕
+            </button>
           </div>
 
           <div className="palette-legend">
             <span className="pal-dot answered" /> Answered ({answered})
-            <span className="pal-dot unanswered" style={{ marginLeft: 12 }} /> Unanswered ({questions.length - answered})
-            <span className="pal-dot marked" style={{ marginLeft: 12 }} /> Marked ({markedCount})
+            <span
+              className="pal-dot unanswered"
+              style={{ marginLeft: 12 }}
+            />{" "}
+            Unanswered ({questions.length - answered})
+            <span className="pal-dot marked" style={{ marginLeft: 12 }} />{" "}
+            Marked ({markedCount})
           </div>
 
           <div className="palette-grid">
             {questions.map((_, index) => (
-              <button key={index} className={`pal-btn ${getQStatus(index)} ${current === index ? "current" : ""}`}
+              <button
+                key={index}
+                className={`pal-btn ${getQStatus(index)} ${current === index ? "current" : ""}`}
                 onClick={() => {
                   setCurrent(index);
                   setPaletteOpen(false);
@@ -532,12 +634,18 @@ export default function TestInterface() {
             </div>
           </div>
 
-          <button className="btn-primary w-full" onClick={() => setShowConfirm(true)}> Submit Test </button>
+          <button
+            className="btn-primary w-full"
+            onClick={() => setShowConfirm(true)}
+          >
+            {" "}
+            Submit Test{" "}
+          </button>
         </div>
       </div>
 
       {/* MOBILE FAB */}
-      <button className="palette-fab" onClick={() => setPaletteOpen(true)} >
+      <button className="palette-fab" onClick={() => setPaletteOpen(true)}>
         📋 Questions ({answered}/{questions.length})
       </button>
 
@@ -547,7 +655,8 @@ export default function TestInterface() {
           <div className="modal-box" onClick={(e) => e.stopPropagation()}>
             <h3>Submit Test?</h3>
             <p>
-              You have answered <b>{answered}</b> out of <b>{questions.length}</b> questions.
+              You have answered <b>{answered}</b> out of{" "}
+              <b>{questions.length}</b> questions.
             </p>
             {questions.length - answered > 0 && (
               <p className="modal-warn">
@@ -555,21 +664,39 @@ export default function TestInterface() {
               </p>
             )}
             <div className="modal-actions">
-              <button className="btn-outline" onClick={() => setShowConfirm(false)}> Continue Test </button>
-              <button className="btn-primary" onClick={handleSubmit}> Submit Now </button>
+              <button
+                className="btn-outline"
+                onClick={() => setShowConfirm(false)}
+              >
+                {" "}
+                Continue Test{" "}
+              </button>
+              <button className="btn-primary" onClick={handleSubmit}>
+                {" "}
+                Submit Now{" "}
+              </button>
             </div>
           </div>
         </div>
       )}
 
       {showExitModal && (
-        <div className="modal-overlay" onClick={() => setShowExitModal(false)} >
-          <div className="modal-box" onClick={(e) => e.stopPropagation()} >
+        <div className="modal-overlay" onClick={() => setShowExitModal(false)}>
+          <div className="modal-box" onClick={(e) => e.stopPropagation()}>
             <h3>Exit Exam?</h3>
             <p>Your current progress may be lost if you leave this exam.</p>
             <div className="modal-actions">
-              <button className="btn-primary" onClick={() => setShowExitModal(false)} > Continue Exam </button>
-              <button className="btn-outline" onClick={handleExitExam} > Exit Exam </button>
+              <button
+                className="btn-primary"
+                onClick={() => setShowExitModal(false)}
+              >
+                {" "}
+                Continue Exam{" "}
+              </button>
+              <button className="btn-outline" onClick={handleExitExam}>
+                {" "}
+                Exit Exam{" "}
+              </button>
             </div>
           </div>
         </div>
