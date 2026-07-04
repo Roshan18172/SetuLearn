@@ -49,6 +49,50 @@ export function calculateAggregatedResults(resultsData, test = {}) {
     totalUnattempted += subUnattempted;
     totalQuestionsCount += subQuestionsCount;
 
+    // Backend now provides subject-wise analysis
+    if (Array.isArray(sub.subjectAnalysis) && sub.subjectAnalysis.length > 0) {
+
+      sub.subjectAnalysis.forEach((subject) => {
+
+        const attempted = subject.attempted || 0;
+        const correct = subject.correct || 0;
+        const incorrect = subject.incorrect || 0;
+        const totalQuestions = subject.totalQuestions || 0;
+
+        // Find configured marks from test.subjects
+        const config =
+          test.subjects?.find(
+            s => String(s.id) === String(subject.subjectId)
+          ) || {};
+
+        const totalMarks = config.marks || totalQuestions * 4;
+
+        // Estimate score
+        const score =
+          correct * 4 -
+          incorrect * 1;
+
+        const accuracy =
+          attempted === 0
+            ? 0
+            : Math.round((correct / attempted) * 100);
+
+        displaySubjects.push({
+          name: subject.subjectName,
+          questions: totalQuestions,
+          attempted,
+          correct,
+          incorrect,
+          score,
+          total: totalMarks,
+          accuracy
+        });
+
+      });
+
+      return;
+    }
+
     // --- STRATEGY TO FIND THE REAL SUBJECT NAME ---
     let sectionName = "";
 

@@ -152,24 +152,38 @@ export default function TestInterface() {
                   )?.id,
                 );
 
+                const correctOption =
+                  (q.options || []).find((o) => o.isCorrect);
+
                 return {
                   id: q.id,
-                  subTestId: sub.id, // Save reference to the parenting sub-test
+                  subTestId: sub.id,
+
                   text: q.questionText,
+
                   marks: q.marks,
                   negativeMarks: q.negativeMarks,
+
                   subjectId: q.subjectId,
+                  subjectName: q.subject?.name || "",
+
                   topicId: q.topicId,
-                  // Preserve correct answer fields so DetailedAnalysis can look them up
+
+                  // ADD THESE
+                  topic: q.topic?.name || "",
+                  topicName: q.topic?.name || "",
+                  topicSlug: q.topic?.slug || "",
+
                   correct: correctOptionId,
                   correctOptionId,
                   correctOption: q.correctOption,
-                  correctOptionText: q.correctOptionText || q.correctAnswerText,
+                  correctOptionText:
+                    correctOption?.optionText || correctOption?.text,
+
                   options: (q.options || []).map((opt) => ({
                     id: opt.id,
                     text: opt.optionText || opt.text,
-                    // Keep isCorrect flag if backend provides it per-option
-                    isCorrect: opt.isCorrect ?? opt.correct ?? false,
+                    isCorrect: Boolean(opt.isCorrect),
                   })),
                 };
               });

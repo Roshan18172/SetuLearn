@@ -441,7 +441,7 @@ function normalizeBackendQuestion(
     item.attempted !== undefined
       ? Boolean(item.attempted)
       : hasActualAnswer(selectedOptionId) ||
-        hasActualAnswer(selectedOptionText);
+      hasActualAnswer(selectedOptionText);
   const canCheckById =
     hasActualAnswer(selectedOptionId) && hasActualAnswer(correctOptionId);
   const canCheckByText =
@@ -450,11 +450,11 @@ function normalizeBackendQuestion(
     item.isCorrect !== undefined
       ? Boolean(item.isCorrect)
       : attempted &&
-        ((canCheckById &&
-          String(selectedOptionId) === String(correctOptionId)) ||
-          (canCheckByText &&
-            String(selectedOptionText).trim() ===
-              String(correctOptionText).trim()));
+      ((canCheckById &&
+        String(selectedOptionId) === String(correctOptionId)) ||
+        (canCheckByText &&
+          String(selectedOptionText).trim() ===
+          String(correctOptionText).trim()));
   const status = !attempted
     ? "unattempted"
     : isCorrect
@@ -554,14 +554,16 @@ function buildQuestionRows(result, questions = [], answers = {}, test = {}) {
       number: index + 1,
       text: question.text || question.questionText || `Question ${index + 1}`,
       topic:
-        question.topic ||
+        question.topic?.name ||
         question.topicName ||
+        question.topic ||
+        question.topicSlug ||
         question.subjectName ||
         "General",
       section:
         question.sectionName ||
         question.subjectName ||
-        question.topic ||
+        question.subject ||
         "General",
       selectedOptionText: attempted
         ? selectedOptionText || userAnswer || "Answered"
@@ -597,13 +599,19 @@ function buildTopicBreakdown(questionRows = []) {
     if (row.status === "incorrect") topicStats[topic].incorrect += 1;
   });
   return Object.values(topicStats).map((topic) => ({
-    ...topic,
+    topic: topic.topic,
+    total: topic.total,
+    attempted: topic.attempted,
+    correct: topic.correct,
+    incorrect: topic.incorrect,
     accuracy:
       topic.attempted > 0
         ? clampPercent((topic.correct / topic.attempted) * 100)
         : 0,
     score:
-      topic.total > 0 ? clampPercent((topic.correct / topic.total) * 100) : 0,
+      topic.total > 0
+        ? clampPercent((topic.correct / topic.total) * 100)
+        : 0,
   }));
 }
 
@@ -654,18 +662,18 @@ function buildTimeAnalysis(metrics, questionRows = []) {
     avgCorrect:
       correctTimedRows.length > 0
         ? formatDuration(
-            sumSeconds(correctTimedRows) / correctTimedRows.length,
-            true,
-          )
+          sumSeconds(correctTimedRows) / correctTimedRows.length,
+          true,
+        )
         : totalSeconds > 0
           ? formatDuration(totalSeconds / correct, true)
           : "0s",
     avgIncorrect:
       incorrectTimedRows.length > 0
         ? formatDuration(
-            sumSeconds(incorrectTimedRows) / incorrectTimedRows.length,
-            true,
-          )
+          sumSeconds(incorrectTimedRows) / incorrectTimedRows.length,
+          true,
+        )
         : totalSeconds > 0
           ? formatDuration(totalSeconds / incorrect, true)
           : "0s",
@@ -870,6 +878,7 @@ export default function DetailedAnalysis() {
     },
     { label: "Percentile", val: r.percentile },
   ];
+  
 
   return (
     <div className="analysis-page">
