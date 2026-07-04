@@ -93,10 +93,33 @@ export function mapResultToFrontend(result) {
     scorePercent: result.percentage,
     timeTaken: result.timeTaken ? `${Math.floor(result.timeTaken / 60)}m ${result.timeTaken % 60}s` : "0m 0s",
     percentile: result.percentile || 0,
-    subjects: result.subjects || [],
+    subjects: (result.subjects || []).map(mapSubjectToFrontend),
     topicBreakdown: result.topicBreakdown || [],
     testTitle: result.testTitle || "",
     testId: result.testId || "",
+  };
+}
+
+/**
+ * Map a backend subject-wise analysis entry to the frontend subject breakdown shape.
+ * @param {object} sub - Backend subject analysis object
+ * @returns {object} Frontend subject breakdown object
+ */
+function mapSubjectToFrontend(sub) {
+  return {
+    id: sub.id,
+    name: sub.name || sub.subjectName || sub.sectionName || "General",
+    questions: sub.totalQuestions || sub.questionCount || 0,
+    attempted: (sub.correct || 0) + (sub.incorrect || 0),
+    correct: sub.correct || 0,
+    incorrect: sub.incorrect || 0,
+    unattempted: sub.unattempted ?? Math.max(0, (sub.totalQuestions || 0) - (sub.correct || 0) - (sub.incorrect || 0)),
+    score: sub.score ?? sub.obtainedMarks ?? 0,
+    total: sub.totalMarks ?? (sub.totalQuestions || 0) * 4,
+    accuracy: sub.accuracy ?? (sub.correct && (sub.correct + sub.incorrect) ? Math.round((sub.correct / (sub.correct + sub.incorrect)) * 100) : 0),
+    timeSpent: sub.timeSpent ?? sub.timeSpentSeconds ?? 0,
+    marksPerQuestion: sub.marksPerQuestion ?? 4,
+    negativePerQuestion: sub.negativePerQuestion ?? 1,
   };
 }
 
