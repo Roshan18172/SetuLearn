@@ -118,13 +118,16 @@ function parseInstructions(raw) {
 
 function getCategoryColor(name) {
   const colorMap = {
-    "JEE Main": "#6C63FF",
-    "JEE Advanced": "#6C63FF",
-    NEET: "#00BFA6",
-    "SSC CGL": "#971eaf",
-    UPSC: "#971eaf",
-    CUET: "#FFA726",
-    BITSAT: "#6C63FF",
+    "Engineering Entrances": "#7c7c7c",
+    "Management Entrances": "#4083ff",
+    "Medical Entrances": "#00BFA6",
+    "Railways Recruitment": "#31adff",
+    "Teaching Eligibility": "#ff9151",
+    "Higher Education & Research": "#2659ff",
+    "Staff Selection": "#328dc2",
+    "Banking & Insurance": "#ffd563",
+    "Civil Services & Bureaucracy": "#ac63ff",
+    "Defense Services": "#ff6363",
   };
-  return colorMap[name] || "#6C63FF";
+  return colorMap[name] || "#5A1EAD";
 }

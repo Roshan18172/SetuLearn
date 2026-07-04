@@ -151,8 +151,8 @@ export default function Home() {
                 <img
                   src={`${cat.icon}`}
                   alt={`${cat.name}-icon`}
-                  width={96}
-                  height={96}
+                  width={80}
+                  height={80}
                 />
               </div>
               <div className="cat-name">{cat.name}</div>
@@ -260,13 +260,13 @@ export default function Home() {
           {featuredTests.map((test) => {
             const category =
               categories.find((cat) => cat.name === test.category) || {};
-            const catColor = category.color || "#6C63FF";
-            const catIcon = category.icon || "/icons/default.png";
+            const catColor = category.color || "#5A1EAD";
+            const catIcon = category.icon || "/icons/exam-icons/graduation-cap.png";
 
             return (
               <div key={test.id} className="test-card-home">
                 <div className="tc-left">
-                  <div className="tr-icon" style={{ background: catColor }}>
+                  <div className="tr-icon" style={{ border: `2px solid ${catColor}`, backgroundColor: catColor + "22" }}>
                     <img src={catIcon} alt={test.exam} width={34} height={34} />
                   </div>
                   <div className="tc-info">
@@ -308,7 +308,7 @@ export default function Home() {
             Join thousands of students who practice with SetuLearn every day.
           </p>
           <button className="btn-white" onClick={() => navigate("/tests")}>
-            Browse All Tests →
+            Browse All Tests ⇨
           </button>
         </div>
       </section>

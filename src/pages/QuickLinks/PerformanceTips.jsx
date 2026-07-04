@@ -1,4 +1,5 @@
- import { useNavigate } from "react-router-dom";
+ import { ArrowRight } from "iconoir-react";
+import { useNavigate } from "react-router-dom";
 
 export default function PerformanceTips() {
     const navigate = useNavigate();
@@ -6,42 +7,42 @@ export default function PerformanceTips() {
 
     const tips = [
         {
-            icon: "⏰",
+            icon: "timer.png",
             title: "Practice with a Timer",
             desc: "Simulate real exam conditions to improve speed and time management."
         },
         {
-            icon: "📊",
+            icon: "analyze.png",
             title: "Analyze Your Results",
             desc: "Review incorrect answers and identify weak areas after every test."
         },
         {
-            icon: "🎯",
+            icon: "focus.png",
             title: "Focus on Accuracy",
             desc: "Avoid random guessing. Accuracy is often more important than attempts."
         },
         {
-            icon: "📚",
+            icon: "books.png",
             title: "Strengthen Fundamentals",
             desc: "A strong understanding of concepts helps solve tricky questions quickly."
         },
         {
-            icon: "🔄",
+            icon: "repeat.png",
             title: "Take Regular Mock Tests",
             desc: "Consistency builds confidence and helps track progress over time."
         },
         {
-            icon: "📝",
+            icon: "note.png",
             title: "Maintain Notes",
             desc: "Write down important formulas, shortcuts, and mistakes for revision."
         },
         {
-            icon: "🚫",
+            icon: "avoid.png",
             title: "Avoid Silly Mistakes",
             desc: "Read questions carefully and double-check calculations."
         },
         {
-            icon: "💡",
+            icon: "smart.png",
             title: "Use Smart Strategies",
             desc: "Attempt easy questions first and return to difficult ones later."
         }
@@ -75,7 +76,9 @@ export default function PerformanceTips() {
                 <div className="tips-grid">
                     {tips.map((tip, index) => (
                         <div className="tip-card" key={index}>
-                            <div className="tip-icon">{tip.icon}</div>
+                            <div className="tip-icon">
+                                <img src={`/icons/tips/${tip.icon}`} alt={tip.title} />
+                            </div>
                             <h3>{tip.title}</h3>
                             <p>{tip.desc}</p>
                         </div>
@@ -89,7 +92,7 @@ export default function PerformanceTips() {
 
                 <div className="strategy-cards">
                     <div className="strategy-card">
-                        <span>1️⃣</span>
+                        <img src="/icons/tips/one.png" alt="Start with Easy Questions" />
                         <h3>Start with Easy Questions</h3>
                         <p>
                             Build momentum and confidence before tackling difficult problems.
@@ -97,7 +100,7 @@ export default function PerformanceTips() {
                     </div>
 
                     <div className="strategy-card">
-                        <span>2️⃣</span>
+                        <img src="/icons/tips/two.png" alt="Manage Time Wisely" />
                         <h3>Manage Time Wisely</h3>
                         <p>
                             Divide time across sections and avoid spending too long on one question.
@@ -105,7 +108,7 @@ export default function PerformanceTips() {
                     </div>
 
                     <div className="strategy-card">
-                        <span>3️⃣</span>
+                        <img src="/icons/tips/three.png" alt="Review Before Submitting" />
                         <h3>Review Before Submitting</h3>
                         <p>
                             Revisit marked questions and verify calculations whenever possible.
@@ -117,21 +120,25 @@ export default function PerformanceTips() {
             {/* Stats */}
             <section className="tips-stats">
                 <div className="tip-stat">
+                    <img src="/icons/stats/exams.png" alt="Mock Tests" />
                     <h3>45+</h3>
                     <p>Mock Tests</p>
                 </div>
 
                 <div className="tip-stat">
+                    <img src="/icons/stats/students.png" alt="Students" />
                     <h3>20K+</h3>
                     <p>Students</p>
                 </div>
 
                 <div className="tip-stat">
+                    <img src="/icons/stats/trophy.png" alt="Success Rate" />
                     <h3>95%</h3>
                     <p>Success Rate</p>
                 </div>
 
                 <div className="tip-stat">
+                    <img src="/icons/stats/ok.png" alt="Free Access" />
                     <h3>100%</h3>
                     <p>Free Access</p>
                 </div>
@@ -145,8 +152,8 @@ export default function PerformanceTips() {
                     Put these strategies into action and start improving today.
                 </p>
 
-                <button className="btn-primary" onClick={() => navigate("/tests")} >
-                    Start Practicing →
+                <button className="btn-white btn-lg" onClick={() => navigate("/tests")} >
+                    Start Practicing <ArrowRight height={18} width={18} />
                 </button>
             </section>
 

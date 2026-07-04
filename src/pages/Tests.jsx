@@ -207,7 +207,7 @@ export default function Tests() {
           return (
             <div key={test.id} className="test-row">
               <div className="tr-left">
-                <div className="tr-icon" style={{ background: catColor }}>
+                <div className="tr-icon" style={{ border: `2px solid ${catColor}`, backgroundColor: catColor + "22" }}>
                   <img src={catIcon} alt={test.exam} width={34} height={34} />
                 </div>
                 <div className="tr-info">

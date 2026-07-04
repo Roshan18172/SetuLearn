@@ -1,4 +1,5 @@
- import { useNavigate } from "react-router-dom";
+ import { Rocket } from "iconoir-react";
+import { useNavigate } from "react-router-dom";
 
 export default function HowItWorks() {
   const navigate = useNavigate();
@@ -6,32 +7,32 @@ export default function HowItWorks() {
 
   const steps = [
     {
-      icon: "🔍",
+      icon: "search.png",
       title: "Browse Tests",
       desc: "Explore hundreds of mock tests across engineering, medical, government, banking, and entrance exam categories."
     },
     {
-      icon: "📋",
+      icon: "instructions.png",
       title: "Read Instructions",
       desc: "Review test rules, marking scheme, duration, and subject-wise distribution before starting."
     },
     {
-      icon: "📝",
+      icon: "give-test.png",
       title: "Attempt Questions",
       desc: "Answer questions, mark difficult ones for review, and navigate freely between sections."
     },
     {
-      icon: "⏱️",
+      icon: "time.png",
       title: "Manage Time",
       desc: "Practice under real exam conditions using the built-in timer and performance tracker."
     },
     {
-      icon: "📊",
+      icon: "answers.png",
       title: "Get Instant Results",
       desc: "Receive detailed scorecards immediately after submission with accuracy and percentile insights."
     },
     {
-      icon: "📖",
+      icon: "analyze.png",
       title: "Analyze & Improve",
       desc: "Review solutions, identify weak topics, and improve your performance with every attempt."
     }
@@ -39,22 +40,22 @@ export default function HowItWorks() {
 
   const features = [
     {
-      icon: "🎯",
+      icon: "computer-test.png",
       title: "Real Exam Experience",
       desc: "Tests designed to match actual exam patterns."
     },
     {
-      icon: "⚡",
+      icon: "quick.png",
       title: "Instant Evaluation",
       desc: "No waiting. Get your results immediately."
     },
     {
-      icon: "📈",
+      icon: "analytics.png",
       title: "Performance Analytics",
       desc: "Track progress and improve weak areas."
     },
     {
-      icon: "🆓",
+      icon: "free.png",
       title: "Completely Free",
       desc: "Practice without subscriptions or hidden charges."
     }
@@ -93,7 +94,7 @@ export default function HowItWorks() {
               </div>
 
               <div className="step-icon">
-                {step.icon}
+                <img src={`/icons/how-works/${step.icon}`} alt={step.title} />
               </div>
 
               <h3>{step.title}</h3>
@@ -134,7 +135,7 @@ export default function HowItWorks() {
           {features.map((feature, index) => (
             <div key={index} className="feature-card">
               <div className="feature-icon">
-                {feature.icon}
+               <img src={`/icons/features/${feature.icon}`} alt={feature.icon} />
               </div>
 
               <h3>{feature.title}</h3>
@@ -148,21 +149,25 @@ export default function HowItWorks() {
       {/* Statistics */}
       <section className="stats-section">
         <div className="stat-box">
+          <img src="/icons/stats/exams.png" alt="Mock Tests" />
           <h2>45+</h2>
           <p>Mock Tests</p>
         </div>
 
         <div className="stat-box">
+          <img src="/icons/stats/students.png" alt="Students" />
           <h2>20K+</h2>
           <p>Students</p>
         </div>
 
         <div className="stat-box">
+          <img src="/icons/stats/trophy.png" alt="Success Rate" />
           <h2>95%</h2>
           <p>Success Rate</p>
         </div>
 
         <div className="stat-box">
+          <img src="/icons/stats/ok.png" alt="Free Access" />
           <h2>100%</h2>
           <p>Free Access</p>
         </div>
@@ -176,8 +181,8 @@ export default function HowItWorks() {
           Take your first mock test and discover your strengths today.
         </p>
 
-        <button className="btn-primary btn-lg" onClick={() => navigate("/tests")} >
-          🚀 Browse Tests
+        <button className="btn-white btn-lg" onClick={() => navigate("/tests")} >
+          <Rocket /> <span>Browse Tests </span>
         </button>
       </section>
     </div>

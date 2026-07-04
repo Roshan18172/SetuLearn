@@ -109,6 +109,10 @@ button {
   font-weight: 700;
   font-size: 1rem;
   transition: transform 0.1s, box-shadow 0.18s;
+  display: flex;
+  align-items: center;
+  margin: auto;
+  gap: 8px;
 }
 
 .btn-white:hover {
@@ -327,7 +331,7 @@ button {
   line-height: 1;
   margin-bottom: 0;
   font-weight: 600;
-  color: var(--accent);
+  color: var(--text);
 }
 
 .hstat span {
@@ -341,12 +345,13 @@ button {
   background: rgba(0, 0, 0, 0.2);
 }
 
-.hero-visual {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  flex-shrink: 0;
-  width: 540px;
+.hero-visual {  
+  /* flex-shrink: 0; */
+  max-width: 500px;
+}
+
+.hero-visual img {
+  width: 100%;
 }
 
 .hero-card {
@@ -493,8 +498,12 @@ button {
 }
 
 .cat-icon {
-  font-size: 2rem;
   margin-bottom: 12px;
+}
+
+.cat-icon img {
+  width: 80px;
+  height: 80px;
 }
 
 .cat-name {
@@ -1126,7 +1135,7 @@ button {
   color: #1a1a1a;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 640px) {
 
   .st-header,
   .st-row {
@@ -2483,7 +2492,7 @@ button {
 
 .footer-tagline {
   font-size: 0.84rem;
-  line-height: 1.65;
+  line-height: 1.6;
   color: rgba(255, 255, 255, 0.55);
   max-width: 260px;
 }
@@ -2571,7 +2580,7 @@ button {
 }
 
 /* ===== RESPONSIVE ===== */
-@media (max-width: 900px) {
+@media (max-width: 992px) {
   .navbar-links {
     display: none;
     position: fixed;
@@ -2730,7 +2739,7 @@ button {
   }
 }
 
-@media (min-width: 641px) and (max-width: 900px) {
+@media (min-width: 641px) and (max-width: 992px) {
   .footer-main {
     grid-template-columns: 1fr 1fr;
   }
@@ -2864,7 +2873,7 @@ button {
 }
 
 .faq-active {
-  border: 2px solid #6C63FF;
+  border: 2px solid var(--primary);
 }
 
 .faq-question {
@@ -2883,7 +2892,7 @@ button {
 
 .faq-icon {
   font-size: 28px;
-  color: #6C63FF;
+  color: vAR(--primary);
   font-weight: bold;
 }
 
@@ -2898,7 +2907,7 @@ button {
   margin-top: 70px;
   text-align: center;
   background: linear-gradient(135deg,
-      #6C63FF,
+      vAR(--primary),
       #5548ff);
   color: white;
   padding: 50px 30px;
@@ -2971,7 +2980,7 @@ button {
   text-align: center;
   background:
     linear-gradient(135deg,
-      #6C63FF,
+      vAR(--primary),
       #584eff);
   color: white;
 }
@@ -3072,7 +3081,7 @@ button {
 .contact-form-card input:focus,
 .contact-form-card textarea:focus {
   outline: none;
-  border-color: #6C63FF;
+  border-color: vAR(--primary);
 }
 
 /* Side */
@@ -3102,7 +3111,7 @@ button {
 
   background:
     linear-gradient(135deg,
-      #6C63FF,
+      vAR(--primary),
       #5548ff);
 
   color: white;
@@ -3123,7 +3132,7 @@ button {
 
 /* Responsive */
 
-@media (max-width: 900px) {
+@media (max-width: 992px) {
 
   .contact-info-grid {
     grid-template-columns: 1fr;
@@ -3158,7 +3167,7 @@ button {
 
 .about-hero {
   background: linear-gradient(135deg,
-      #6C63FF,
+      vAR(--primary),
       #5448ff);
 
   color: white;
@@ -3227,8 +3236,12 @@ button {
 }
 
 .about-card-icon {
-  font-size: 60px;
   margin-bottom: 20px;
+}
+
+.about-card-icon img {
+  width: 80px;
+  height: 80px;
 }
 
 /* Mission */
@@ -3249,8 +3262,12 @@ button {
 }
 
 .mission-icon {
-  font-size: 60px;
   margin-bottom: 20px;
+}
+
+.mission-icon img {
+  width: 80px;
+  height: 80px;
 }
 
 /* Features */
@@ -3280,8 +3297,11 @@ button {
 }
 
 .feature-icon {
-  font-size: 45px;
   margin-bottom: 15px;
+}
+.feature-icon img {
+  width: 80px;
+  height: 80px;
 }
 
 /* Stats */
@@ -3289,7 +3309,7 @@ button {
 .about-stats {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  background: #6C63FF;
+  background: vAR(--primary);
   color: white;
   text-align: center;
   padding: 70px 20px;
@@ -3319,6 +3339,15 @@ button {
   color: #666;
 }
 
+.vision-icon {
+  margin-bottom: 20px;
+}
+
+.vision-icon img {
+  width: 80px;
+  height: 80px;
+}
+
 /* CTA */
 
 .about-cta {
@@ -3329,7 +3358,7 @@ button {
   text-align: center;
 
   background: linear-gradient(135deg,
-      #6C63FF,
+      vAR(--primary),
       #5448ff);
 
   color: white;
@@ -3346,7 +3375,7 @@ button {
 
 /* Mobile */
 
-@media (max-width: 900px) {
+@media (max-width: 992px) {
 
   .about-grid,
   .features-grid {
@@ -3405,7 +3434,7 @@ html::-webkit-scrollbar-thumb:hover {
 .how-hero {
   text-align: center;
   padding: 100px 20px 70px;
-  background: linear-gradient(135deg, #6c63ff, #4b44d4);
+  background: linear-gradient(135deg, var(--primary), #4b44d4);
   color: white;
 }
 
@@ -3482,7 +3511,7 @@ html::-webkit-scrollbar-thumb:hover {
   left: 20px;
   width: 40px;
   height: 40px;
-  background: #6c63ff;
+  background: var(--primary);
   color: white;
   border-radius: 50%;
   display: flex;
@@ -3492,8 +3521,12 @@ html::-webkit-scrollbar-thumb:hover {
 }
 
 .step-icon {
-  font-size: 3rem;
   margin-bottom: 15px;
+}
+
+.step-icon img {
+  width: 80px;
+  height: 80px;
 }
 
 .step-card h3 {
@@ -3503,7 +3536,7 @@ html::-webkit-scrollbar-thumb:hover {
 
 .step-card p {
   color: #666;
-  line-height: 1.6;
+  line-height: 1.4;
 }
 
 /* Workflow */
@@ -3528,7 +3561,7 @@ html::-webkit-scrollbar-thumb:hover {
 
 .flow-item {
   background: #f3f4ff;
-  color: #6c63ff;
+  color: var(--primary);
   padding: 14px 22px;
   border-radius: 10px;
   font-weight: 600;
@@ -3536,7 +3569,7 @@ html::-webkit-scrollbar-thumb:hover {
 
 .flow-arrow {
   font-size: 1.5rem;
-  color: #6c63ff;
+  color: var(--primary);
 }
 
 /* Features */
@@ -3575,7 +3608,7 @@ html::-webkit-scrollbar-thumb:hover {
 .stats-section {
   display: grid;
   gap: 25px;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   padding: 80px 20px;
   max-width: 1200px;
   margin: auto;
@@ -3590,9 +3623,14 @@ html::-webkit-scrollbar-thumb:hover {
 }
 
 .stat-box h2 {
-  color: #6c63ff;
+  color: var(--primary);
   font-size: 2.5rem;
   margin-bottom: 10px;
+}
+
+.stat-box img {
+  width: 60px;
+  height: 60px;
 }
 
 /* CTA */
@@ -3600,7 +3638,7 @@ html::-webkit-scrollbar-thumb:hover {
 .how-cta {
   text-align: center;
   padding: 90px 20px;
-  background: linear-gradient(135deg, #6c63ff, #4b44d4);
+  background: linear-gradient(135deg, var(--primary), #4b44d4);
   color: white;
 }
 
@@ -3639,7 +3677,7 @@ html::-webkit-scrollbar-thumb:hover {
 /* HERO */
 
 .tips-hero {
-  background: linear-gradient(135deg, #6C63FF, #4F46E5);
+  background: linear-gradient(135deg, vAR(--primary), #4F46E5);
   color: white;
   text-align: center;
   padding: 100px 20px;
@@ -3703,8 +3741,12 @@ html::-webkit-scrollbar-thumb:hover {
 }
 
 .tip-icon {
-  font-size: 3rem;
   margin-bottom: 15px;
+}
+
+.tip-icon img {
+  width: 80px;
+  height: 80px;
 }
 
 .tip-card h3 {
@@ -3744,8 +3786,9 @@ html::-webkit-scrollbar-thumb:hover {
   text-align: center;
 }
 
-.strategy-card span {
-  font-size: 3rem;
+.strategy-card img {
+  width: 80px;
+  height: 80px;
 }
 
 .strategy-card h3 {
@@ -3772,16 +3815,20 @@ html::-webkit-scrollbar-thumb:hover {
 }
 
 .tip-stat h3 {
-  color: #6C63FF;
+  color: vAR(--primary);
   font-size: 2rem;
   margin-bottom: 10px;
 }
 
+.tip-stat img {
+  width: 60px;
+  height: 60px;
+}
 /* CTA */
 
 .tips-cta {
   text-align: center;
-  background: linear-gradient(135deg, #6C63FF, #4F46E5);
+  background: linear-gradient(135deg, vAR(--primary), #4F46E5);
   color: white;
   padding: 80px 20px;
 }
@@ -3825,7 +3872,7 @@ html::-webkit-scrollbar-thumb:hover {
   text-align: center;
   padding: 90px 20px;
   background: linear-gradient(135deg,
-      #6c63ff,
+      var(--primary),
       #4f46e5);
   color: white;
 }
@@ -3961,7 +4008,7 @@ html::-webkit-scrollbar-thumb:hover {
 .report-form input:focus,
 .report-form textarea:focus,
 .report-form select:focus {
-  border-color: #6c63ff;
+  border-color: var(--primary);
 }
 
 .submit-btn {
@@ -4016,7 +4063,7 @@ html::-webkit-scrollbar-thumb:hover {
 
 /* RESPONSIVE */
 
-@media(max-width:900px) {
+@media(max-width:992px) {
 
   .report-form-section {
     grid-template-columns: 1fr;
@@ -4050,7 +4097,7 @@ html::-webkit-scrollbar-thumb:hover {
   text-align: center;
   padding: 100px 20px;
   background: linear-gradient(135deg,
-      #6c63ff,
+      var(--primary),
       #4f46e5);
   color: white;
 }
@@ -4156,7 +4203,7 @@ html::-webkit-scrollbar-thumb:hover {
   margin: auto;
 
   background: linear-gradient(135deg,
-      #6c63ff,
+      var(--primary),
       #4f46e5);
 
   color: white;
@@ -4241,7 +4288,7 @@ html::-webkit-scrollbar-thumb:hover {
 /* HERO */
 
 .tos-hero {
-  background: linear-gradient(135deg, #6c63ff, #5b52e8);
+  background: linear-gradient(135deg, var(--primary), #5b52e8);
   color: white;
   text-align: center;
   padding: 90px 20px;
@@ -4365,7 +4412,7 @@ html::-webkit-scrollbar-thumb:hover {
 /* CTA */
 
 .tos-cta {
-  background: linear-gradient(135deg, #6c63ff, #5b52e8);
+  background: linear-gradient(135deg, var(--primary), #5b52e8);
   color: white;
   text-align: center;
   padding: 90px 20px;
@@ -4408,7 +4455,7 @@ html::-webkit-scrollbar-thumb:hover {
 /* HERO */
 
 .accessibility-hero {
-  background: linear-gradient(135deg, #6c63ff, #5b52e8);
+  background: linear-gradient(135deg, var(--primary), #5b52e8);
   color: white;
   text-align: center;
   padding: 90px 20px;
@@ -4562,7 +4609,7 @@ html::-webkit-scrollbar-thumb:hover {
 .feedback-card {
   max-width: 900px;
   margin: auto;
-  background: linear-gradient(135deg, #6c63ff, #5b52e8);
+  background: linear-gradient(135deg, var(--primary), #5b52e8);
   color: white;
   text-align: center;
   padding: 50px;
