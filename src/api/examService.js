@@ -57,6 +57,21 @@ const examService = {
     const response = await api.post(`/tests/${testId}/start`);
     return response.data.data;
   },
+
+  /**
+   * Get the full detailed result for a submission, including per-question
+   * analysis (questionAnalysis) and per-subject analysis (subjectAnalysis).
+   * Note: the `/tests/:id/submit` response only returns summary fields
+   * (score, correct, incorrect, subjectAnalysis, submissionId, timeTaken) —
+   * it does NOT include questionAnalysis. That detail lives only here.
+   * GET /api/v1/submissions/:submissionId/result
+   * @param {string} submissionId
+   */
+  getSubmissionResult: async (submissionId) => {
+    if (!submissionId) throw new Error("submissionId is required");
+    const response = await api.get(`/submissions/${submissionId}/result`);
+    return response.data.data;
+  },
 };
 
 export default examService;

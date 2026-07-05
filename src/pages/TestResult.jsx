@@ -192,6 +192,10 @@ export default function TestResult() {
     questions = [],
     subjectsMap = {},
     timeSpent: passedTimeSpent,
+    // Some pages (e.g. DetailedAnalysis' "Back to Results") may pass the
+    // elapsed time under `timeSpentSeconds` instead of `timeSpent` — accept
+    // either so the displayed time doesn't reset to 0 depending on origin.
+    timeSpentSeconds: passedTimeSpentSeconds,
   } = location.state || {};
 
   document.title = "Test Performance Result - SetuLearn";
@@ -203,7 +207,8 @@ export default function TestResult() {
   // timeSpentSeconds passed directly from TestInterface via location.state.
   const aggregatedTime = metrics.timeSpent;
   const hasAggregatedTime = aggregatedTime && aggregatedTime !== "00m 00s" && aggregatedTime !== "0m 0s";
-  const displayTime = hasAggregatedTime ? aggregatedTime : formatTime(passedTimeSpent || 0);
+  const fallbackTimeSpent = passedTimeSpent ?? passedTimeSpentSeconds ?? 0;
+  const displayTime = hasAggregatedTime ? aggregatedTime : formatTime(fallbackTimeSpent);
 
   // Sync aggregate summaries back into persistent storage for dashboard widgets
   try {
@@ -347,7 +352,7 @@ export default function TestResult() {
           <button className="btn-outline" onClick={() => navigate("/instructions", { state: { test, mode: "timed" } })}>
             🔄 Retake Test
           </button>
-          <button className="btn-primary" onClick={() => navigate("/analysis", { state: { test, result, answers, metrics, questions, subjectsMap, timeSpentSeconds: passedTimeSpent || 0 } })}>
+          <button className="btn-primary" onClick={() => navigate("/analysis", { state: { test, result, answers, metrics, questions, subjectsMap, timeSpentSeconds: fallbackTimeSpent } })}>
             📊 View Detailed Analysis
           </button>
           <button className="btn-primary" onClick={() => navigate("/solutions", { state: { test, answers, questions, result } })}>

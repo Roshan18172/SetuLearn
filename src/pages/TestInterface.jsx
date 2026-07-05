@@ -299,9 +299,47 @@ export default function TestInterface() {
           return;
         }
 
-        // Push individual sub-test results into the container array
+        // Push individual sub-test results into the container array.
+        // IMPORTANT: the `/submit` response above only contains summary
+        // fields (score, correct, incorrect, subjectAnalysis, submissionId,
+        // timeTaken) — it does NOT include questionAnalysis. The per-question
+        // breakdown (with explanations, selected/correct options) only lives
+        // behind a separate endpoint keyed by submissionId, so we fetch it
+        // here and merge it in before pushing.
         if (json.data) {
-          finalMergedResultsArray.push(json.data);
+          let fullResult = json.data;
+          const submissionId = json.data.submissionId;
+
+          if (submissionId) {
+            try {
+              const resultResponse = await fetch(
+                `https://setulearn-backend.onrender.com/api/v1/submissions/${submissionId}/result`,
+                {
+                  headers: getAuthHeaders(),
+                },
+              );
+              const resultJson = await resultResponse.json();
+
+              if (resultJson.success && resultJson.data) {
+                // Merge: keep submissionId/timeTaken from submit response,
+                // but layer in questionAnalysis (and refreshed subjectAnalysis/
+                // score fields) from the detailed result response.
+                fullResult = { ...json.data, ...resultJson.data };
+              } else {
+                console.error(
+                  `Failed to fetch detailed result for submission ${submissionId}:`,
+                  resultJson.message,
+                );
+              }
+            } catch (err) {
+              console.error(
+                `Error fetching questionAnalysis for submission ${submissionId}:`,
+                err,
+              );
+            }
+          }
+
+          finalMergedResultsArray.push(fullResult);
         }
       }
 

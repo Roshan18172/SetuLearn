@@ -4703,6 +4703,16 @@ html::-webkit-scrollbar-thumb:hover {
   font-size: 12px;
 }
 
+/* Was previously unstyled - the "✗ Your Answer" tag on wrong picks
+   rendered as plain text instead of a red pill like .correct-badge */
+.wrong-badge {
+  background: #ef4444;
+  color: white;
+  padding: 4px 10px;
+  border-radius: 30px;
+  font-size: 12px;
+}
+
 @media (max-width: 768px) {
   .solution-header {
     flex-direction: column;

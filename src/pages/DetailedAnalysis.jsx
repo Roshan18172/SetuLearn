@@ -739,6 +739,172 @@ function buildAnalysisData({
   };
 }
 
+// Minimal HTML escaping so question/option/explanation text (which may
+// contain raw LaTeX like \frac{a}{b}) doesn't break the exported markup.
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
+/**
+ * Builds one standalone, downloadable HTML report containing every tab
+ * (Overview, Question Analysis, Subject Analysis, Time Analysis, Compare) —
+ * not just whichever tab happens to be on screen. Includes the MathJax CDN
+ * script so LaTeX in question text renders when the file is opened.
+ */
+function generateFullReportHtml({ test, analysis }) {
+  const r = analysis.metrics;
+  const subjects = analysis.subjects;
+  const { questionRows, timeAnalysis, compareData } = analysis;
+
+  const testTitle = test?.title || test?.examName || r.testTitle || "Test";
+
+  const sectionSummaryRows = subjects
+    .map(
+      (s) => `
+    <tr>
+      <td>${escapeHtml(s.name)}</td>
+      <td>${s.questions}</td>
+      <td>${s.attempted}</td>
+      <td class="green">${s.correct}</td>
+      <td class="red">${s.incorrect}</td>
+      <td>${s.score}/${s.total}</td>
+      <td>${s.accuracy}%</td>
+    </tr>`,
+    )
+    .join("");
+
+  const questionRowsHtml = questionRows
+    .map(
+      (row) => `
+    <tr class="${row.status}">
+      <td>${row.number}</td>
+      <td>${escapeHtml(row.text)}</td>
+      <td>${escapeHtml(row.topic)}</td>
+      <td>${escapeHtml(row.selectedOptionText)}</td>
+      <td>${escapeHtml(row.correctOptionText)}</td>
+      <td>${escapeHtml(statusLabels[row.status] || "Answered")}</td>
+    </tr>`,
+    )
+    .join("");
+
+  const subjectCards = subjects
+    .map(
+      (s) => `
+    <div class="card">
+      <h4>${escapeHtml(s.name)} <span class="acc">${s.accuracy}% Accuracy</span></h4>
+      <div class="stats-row">
+        <div><b>${s.correct}</b><span>Correct</span></div>
+        <div><b>${s.incorrect}</b><span>Incorrect</span></div>
+        <div><b>${s.unattempted}</b><span>Skipped</span></div>
+        <div><b>${s.score}/${s.total}</b><span>Score</span></div>
+      </div>
+    </div>`,
+    )
+    .join("");
+
+  const timeSectionRows = timeAnalysis.sectionRows
+    .map(
+      (row) => `
+    <tr><td>${escapeHtml(row.name)}</td><td>${row.label}</td><td>${row.percent}%</td></tr>`,
+    )
+    .join("");
+
+  const compareRows = compareData
+    .map(
+      (row) => `
+    <tr><td>${escapeHtml(row.metric)}</td><td>${escapeHtml(row.you)}</td><td>${escapeHtml(row.avg)}</td><td>${escapeHtml(row.top)}</td></tr>`,
+    )
+    .join("");
+
+  return `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>${escapeHtml(testTitle)} - Detailed Analysis Report</title>
+<script>
+  window.MathJax = { tex: { inlineMath: [["$", "$"]] } };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+  body { font-family: Arial, sans-serif; max-width: 960px; margin: 30px auto; padding: 0 20px; color: #222; }
+  h1 { font-size: 26px; margin-bottom: 4px; }
+  h2 { font-size: 18px; margin: 34px 0 14px; border-bottom: 2px solid #eee; padding-bottom: 6px; }
+  h3 { font-size: 15px; margin: 18px 0 10px; }
+  .meta { color: #777; font-size: 13px; margin-bottom: 10px; }
+  .summary-grid { display: flex; gap: 14px; flex-wrap: wrap; margin: 16px 0 24px; }
+  .summary-grid .stat { background: #f8f9fb; border-radius: 10px; padding: 12px 18px; min-width: 110px; }
+  .summary-grid .stat b { display: block; font-size: 20px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 10px; }
+  th, td { border: 1px solid #e2e2e2; padding: 8px 10px; text-align: left; }
+  th { background: #f3f4f6; }
+  tr.correct td { background: #f0fdf4; }
+  tr.incorrect td { background: #fef2f2; }
+  tr.unattempted td { color: #888; }
+  .green { color: #15803d; font-weight: 600; }
+  .red { color: #dc2626; font-weight: 600; }
+  .card { background: #fff; border: 1px solid #eee; border-radius: 10px; padding: 16px; margin-bottom: 14px; }
+  .card h4 { display: flex; justify-content: space-between; margin: 0 0 10px; }
+  .acc { font-size: 13px; font-weight: 600; }
+  .stats-row { display: flex; gap: 24px; }
+  .stats-row div { text-align: center; }
+  .stats-row b { display: block; font-size: 16px; }
+  .stats-row span { font-size: 11px; color: #777; }
+  @media print { body { margin: 0; } }
+</style>
+</head>
+<body>
+  <h1>${escapeHtml(testTitle)} - Detailed Analysis Report</h1>
+  <div class="meta">Generated on ${escapeHtml(new Date().toLocaleString())}</div>
+
+  <h2>Overview</h2>
+  <div class="summary-grid">
+    <div class="stat"><b>${r.score}/${r.totalMarks}</b>Score</div>
+    <div class="stat"><b>${r.percentage}%</b>Score %</div>
+    <div class="stat"><b>${r.accuracy}%</b>Accuracy</div>
+    <div class="stat"><b>${r.correct}</b>Correct</div>
+    <div class="stat"><b>${r.incorrect}</b>Incorrect</div>
+    <div class="stat"><b>${r.unattempted}</b>Unattempted</div>
+    <div class="stat"><b>${r.percentile}</b>Percentile</div>
+  </div>
+  <h3>Section Summary</h3>
+  <table>
+    <thead><tr><th>Section</th><th>Questions</th><th>Attempted</th><th>Correct</th><th>Incorrect</th><th>Score</th><th>Accuracy</th></tr></thead>
+    <tbody>${sectionSummaryRows}</tbody>
+  </table>
+
+  <h2>Question Analysis</h2>
+  <table>
+    <thead><tr><th>#</th><th>Question</th><th>Topic</th><th>Your Answer</th><th>Correct Answer</th><th>Status</th></tr></thead>
+    <tbody>${questionRowsHtml}</tbody>
+  </table>
+
+  <h2>Subject Analysis</h2>
+  ${subjectCards}
+
+  <h2>Time Analysis</h2>
+  <div class="summary-grid">
+    <div class="stat"><b>${timeAnalysis.total}</b>Total Time</div>
+    <div class="stat"><b>${timeAnalysis.avgPerQuestion}</b>Avg / Question</div>
+    <div class="stat"><b>${timeAnalysis.avgCorrect}</b>Avg Correct</div>
+    <div class="stat"><b>${timeAnalysis.avgIncorrect}</b>Avg Wrong</div>
+  </div>
+  <table>
+    <thead><tr><th>Section</th><th>Time</th><th>% of Total</th></tr></thead>
+    <tbody>${timeSectionRows}</tbody>
+  </table>
+
+  <h2>Compare</h2>
+  <table>
+    <thead><tr><th>Metric</th><th>You</th><th>Average</th><th>Top 10%</th></tr></thead>
+    <tbody>${compareRows}</tbody>
+  </table>
+</body>
+</html>`;
+}
+
 const ROW_STYLES = {
   correct: {
     row: {
@@ -862,9 +1028,29 @@ export default function DetailedAnalysis() {
         answers,
         metrics: r,
         questions,
-        timeSpentSeconds: r.timeSpentSeconds,
+        // NOTE: TestResult.jsx reads this back out as `timeSpent`, not
+        // `timeSpentSeconds` — sending the wrong key here was resetting
+        // the displayed time to 0 whenever you navigated back to Results.
+        timeSpent: r.timeSpentSeconds,
       },
     });
+
+  const handleDownloadReport = () => {
+    const html = generateFullReportHtml({ test, analysis });
+    const blob = new Blob([html], { type: "text/html" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    const safeTitle = (test?.title || test?.examName || r.testTitle || "Analysis")
+      .toString()
+      .trim()
+      .replace(/\s+/g, "_");
+    link.download = `${safeTitle}-Detailed-Analysis-Report.html`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
 
   const perfMetrics = [
     { label: "Score (%)", val: r.percentage },
@@ -896,7 +1082,7 @@ export default function DetailedAnalysis() {
         </div>
         <button
           className="btn-outline download-btn"
-          onClick={() => window.print()}
+          onClick={handleDownloadReport}
         >
           Download Report
         </button>
