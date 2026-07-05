@@ -85,7 +85,7 @@ export default function Home() {
               </button>
               <button
                 className="btn-outline btn-lg"
-                onClick={() => navigate("/tests")}
+                onClick={() => navigate("/exams")}
               >
                 View Categories
               </button>

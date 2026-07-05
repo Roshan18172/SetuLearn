@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const faqData = [
   {
@@ -79,6 +80,7 @@ const faqData = [
 ];
 
 export default function FAQ() {
+  const navigate = useNavigate();
   const [active, setActive] = useState(null);
     document.title = "FAQ - SetuLearn";
 
@@ -125,7 +127,9 @@ export default function FAQ() {
           Our support team is always ready to help you.
         </p>
 
-        <button className="btn-primary"> Contact Support </button>
+        <button className="btn-primary" onClick={() => navigate("/contact")}>
+          Contact Support
+        </button>
       </div>
     </div>
   );
