@@ -387,6 +387,66 @@ function buildQuestionsMap(questions = []) {
   return map;
 }
 
+// Helper: infer subject from topic when backend doesn't send subject
+function inferSubjectFromTopic(topic = "") {
+  const t = String(topic).trim().toLowerCase();
+
+  const physicsTopics = [
+    "rotational motion",
+    "electromagnetic waves",
+    "thermodynamics",
+    "magnetic effects of current",
+    "laws_of_motion",
+    "gravitation",
+    "electrostatics",
+    "current electricity",
+    "kinematics",
+    "work, energy and  power",
+    "modern physics",
+    "oscillations",
+    "ray optics",
+    "wave optics",
+    "mechanics",
+    "thermal physics",
+
+  ];
+
+  const chemistryTopics = [
+    "atomic structure",
+    "chemical bonding",
+    "chemical thermodynamics",
+    "chemical kinetics",
+    "coordination compounds",
+    "organic chemistry",
+    "solutions",
+    "d and f block elements",
+    "hydrocarbons",
+    "redox reactions",
+  ];
+
+  const mathematicsTopics = [
+    "definite integral in calculus",
+    "complex numbers",
+    "vectors",
+    "hyperbola in coordinate geometry",
+    "limits",
+    "permutation combination",
+    "sets and relations",
+    "three dimensional geometry",
+    "matrices",
+    "inverse trigonometric functions",
+    "probability",
+    "parabola",
+    "circle",
+  ];
+
+  if (physicsTopics.includes(t)) return "Physics";
+  if (chemistryTopics.includes(t)) return "Chemistry";
+  if (mathematicsTopics.includes(t)) return "Mathematics";
+
+  return "General";
+}
+
 function normalizeBackendQuestion(
   item = {},
   rowIndex,
@@ -397,7 +457,6 @@ function normalizeBackendQuestion(
   const question = item.question || item.questionData || {};
   const questionId = pickFirst(item.questionId, item.id, question.id);
 
-  // Look up the full question from the routed questions array for complete options list
   const fullQuestion = questionsMap[String(questionId)] || {};
   const fullOptions =
     fullQuestion.options || question.options || item.options || [];
@@ -408,6 +467,7 @@ function normalizeBackendQuestion(
     item.answerId,
     questionId ? answers[questionId] : undefined,
   );
+
   const correctOptionId = pickFirst(
     item.correctOptionId,
     item.correctAnswerId,
@@ -421,7 +481,6 @@ function normalizeBackendQuestion(
     fullQuestion.correctOptionId,
   );
 
-  // Resolve selected answer text — try backend text first, then look up from full options
   const selectedOptionText = pickFirst(
     item.selectedOptionText,
     item.selectedAnswer,
@@ -429,7 +488,6 @@ function normalizeBackendQuestion(
     getOptionText(fullOptions, selectedOptionId),
   );
 
-  // Resolve correct answer text — use robust resolver that handles all backend shapes
   const correctOptionText = resolveCorrectOptionText(
     item,
     question,
@@ -441,32 +499,61 @@ function normalizeBackendQuestion(
     item.attempted !== undefined
       ? Boolean(item.attempted)
       : hasActualAnswer(selectedOptionId) ||
-      hasActualAnswer(selectedOptionText);
+        hasActualAnswer(selectedOptionText);
+
   const canCheckById =
-    hasActualAnswer(selectedOptionId) && hasActualAnswer(correctOptionId);
+    hasActualAnswer(selectedOptionId) &&
+    hasActualAnswer(correctOptionId);
+
   const canCheckByText =
-    hasActualAnswer(selectedOptionText) && hasActualAnswer(correctOptionText);
+    hasActualAnswer(selectedOptionText) &&
+    hasActualAnswer(correctOptionText);
+
   const isCorrect =
     item.isCorrect !== undefined
       ? Boolean(item.isCorrect)
       : attempted &&
-      ((canCheckById &&
-        String(selectedOptionId) === String(correctOptionId)) ||
-        (canCheckByText &&
-          String(selectedOptionText).trim() ===
-          String(correctOptionText).trim()));
+        ((canCheckById &&
+          String(selectedOptionId) === String(correctOptionId)) ||
+          (canCheckByText &&
+            String(selectedOptionText).trim() ===
+              String(correctOptionText).trim()));
+
   const status = !attempted
     ? "unattempted"
     : isCorrect
-      ? "correct"
-      : "incorrect";
+    ? "correct"
+    : "incorrect";
+
   const timeSpentSeconds = parseDurationSeconds(
     pickFirst(item.timeSpentSeconds, item.timeSpent, item.timeTaken),
+  );
+
+  // IMPORTANT
+  const topic = pickFirst(
+    item.topicName,
+    item.topic,
+    question.topicName,
+    question.topic,
+    fullQuestion.topicName,
+    fullQuestion.topic,
+    "General",
+  );
+
+  const subject = pickFirst(
+    item.subjectName,
+    item.subject,
+    question.subjectName,
+    question.subject,
+    fullQuestion.subjectName,
+    fullQuestion.subject,
+    inferSubjectFromTopic(topic),
   );
 
   return {
     id: questionId || `${sectionName}-${rowIndex + 1}`,
     number: rowIndex + 1,
+
     text: pickFirst(
       item.questionText,
       item.text,
@@ -476,32 +563,38 @@ function normalizeBackendQuestion(
       fullQuestion.questionText,
       `Question ${rowIndex + 1}`,
     ),
-    topic: pickFirst(
-      item.topicName,
-      item.topic,
-      question.topicName,
-      question.topic,
-      item.subjectName,
-      fullQuestion.topic,
-      sectionName,
-    ),
+
+    topic,
+
+    subject,
+
     section: sectionName,
+
     selectedOptionText: attempted
       ? selectedOptionText || selectedOptionId || "Answered"
       : "Not Attempted",
-    // Correct option text resolved via resolveCorrectOptionText (handles all backend shapes)
+
     correctOptionText: correctOptionText || "—",
+
     attempted,
+
     isCorrect,
+
     status,
+
     marks: toNumber(
       pickFirst(item.marksObtained, item.score, item.obtainedMarks),
       isCorrect ? toNumber(item.marks, 0) : 0,
     ),
+
     explanation: item.explanation || "",
+
     timeSpentSeconds,
+
     timeSpent:
-      timeSpentSeconds > 0 ? formatDuration(timeSpentSeconds, true) : "",
+      timeSpentSeconds > 0
+        ? formatDuration(timeSpentSeconds, true)
+        : "",
   };
 }
 
@@ -565,6 +658,11 @@ function buildQuestionRows(result, questions = [], answers = {}, test = {}) {
         question.subjectName ||
         question.subject ||
         "General",
+      subject:
+        question.subjectName ||
+        question.subject ||
+        question.sectionName ||
+        "General",
       selectedOptionText: attempted
         ? selectedOptionText || userAnswer || "Answered"
         : "Not Attempted",
@@ -613,6 +711,64 @@ function buildTopicBreakdown(questionRows = []) {
         ? clampPercent((topic.correct / topic.total) * 100)
         : 0,
   }));
+}
+
+// Groups topic-level stats by subject/section so the Overview tab can show
+// a subject-tab selector with only that subject's topics underneath it.
+function buildTopicBreakdownBySubject(questionRows = []) {
+  const subjectOrder = [];
+  const subjectMap = {};
+
+  questionRows.forEach((row) => {
+    const subjectName = row.subject || row.section || "General";
+    const topicName = row.topic || row.section || "General";
+
+    if (!subjectMap[subjectName]) {
+      subjectMap[subjectName] = {
+        subject: subjectName,
+        topicOrder: [],
+        topicStats: {},
+      };
+      subjectOrder.push(subjectName);
+    }
+    const bucket = subjectMap[subjectName];
+    if (!bucket.topicStats[topicName]) {
+      bucket.topicStats[topicName] = {
+        topic: topicName,
+        total: 0,
+        attempted: 0,
+        correct: 0,
+        incorrect: 0,
+      };
+      bucket.topicOrder.push(topicName);
+    }
+    const stat = bucket.topicStats[topicName];
+    stat.total += 1;
+    if (row.attempted) stat.attempted += 1;
+    if (row.status === "correct") stat.correct += 1;
+    if (row.status === "incorrect") stat.incorrect += 1;
+  });
+
+  return subjectOrder.map((subjectName) => {
+    const bucket = subjectMap[subjectName];
+    const topics = bucket.topicOrder.map((topicName) => {
+      const stat = bucket.topicStats[topicName];
+      return {
+        topic: stat.topic,
+        total: stat.total,
+        attempted: stat.attempted,
+        correct: stat.correct,
+        incorrect: stat.incorrect,
+        accuracy:
+          stat.attempted > 0
+            ? clampPercent((stat.correct / stat.attempted) * 100)
+            : 0,
+        score:
+          stat.total > 0 ? clampPercent((stat.correct / stat.total) * 100) : 0,
+      };
+    });
+    return { subject: subjectName, topics };
+  });
 }
 
 function buildTimeAnalysis(metrics, questionRows = []) {
@@ -734,6 +890,7 @@ function buildAnalysisData({
     subjects: normalizedMetrics.subjects,
     questionRows,
     topicBreakdown: buildTopicBreakdown(questionRows),
+    topicBreakdownBySubject: buildTopicBreakdownBySubject(questionRows),
     timeAnalysis: buildTimeAnalysis(normalizedMetrics, questionRows),
     compareData: buildCompareData(normalizedMetrics, test),
   };
@@ -984,6 +1141,7 @@ export default function DetailedAnalysis() {
 
   const [tab, setTab] = useState("Overview");
   const [isReady, setIsReady] = useState(false);
+  const [topicSubject, setTopicSubject] = useState(null);
   const questions = useMemo(
     () =>
       routedQuestions.length > 0
@@ -1064,7 +1222,10 @@ export default function DetailedAnalysis() {
     },
     { label: "Percentile", val: r.percentile },
   ];
-  
+  //consoles topicBreakdownBySubject
+  console.log(analysis.topicBreakdownBySubject);
+  console.log(analysis.topicBreakdown);
+  console.log(analysis.subjects);
 
   return (
     <div className="analysis-page">
@@ -1216,33 +1377,50 @@ export default function DetailedAnalysis() {
                 ))}
               </div>
             </div>
-            {analysis.topicBreakdown.length > 0 && (
-              <div className="ao-section">
-                <h4>Topic Breakdown</h4>
-                <div className="topic-bars">
-                  {analysis.topicBreakdown.map((topic) => (
-                    <div key={topic.topic} className="topic-bar-row">
-                      <span className="tb-label">{topic.topic}</span>
-                      <div className="tb-track">
-                        <div
-                          className="tb-fill"
-                          style={{
-                            width: `${topic.score}%`,
-                            background:
-                              topic.score >= 70
-                                ? "#00BFA6"
-                                : topic.score >= 45
-                                  ? "#FFA726"
-                                  : "#FF6B6B",
-                          }}
-                        />
+            {analysis.topicBreakdownBySubject.length > 0 && (() => {
+              const bySubject = analysis.topicBreakdownBySubject;
+              const activeSubject =
+                bySubject.find((s) => s.subject === topicSubject) ||
+                bySubject[0];
+              return (
+                <div className="ao-section">
+                  <h4>Topic Breakdown</h4>
+                  <div className="subject-topic-tabs">
+                    {bySubject.map((s) => (
+                      <button
+                        key={s.subject}
+                        className={`subject-topic-tab ${activeSubject.subject === s.subject ? "active" : ""}`}
+                        onClick={() => setTopicSubject(s.subject)}
+                      >
+                        {s.subject}
+                      </button>
+                    ))}
+                  </div>
+                  <div className="topic-bars">
+                    {activeSubject.topics.map((topic) => (
+                      <div key={topic.topic} className="topic-bar-row">
+                        <span className="tb-label">{topic.topic}</span>
+                        <div className="tb-track">
+                          <div
+                            className="tb-fill"
+                            style={{
+                              width: `${topic.score}%`,
+                              background:
+                                topic.score >= 70
+                                  ? "#00BFA6"
+                                  : topic.score >= 45
+                                    ? "#FFA726"
+                                    : "#FF6B6B",
+                            }}
+                          />
+                        </div>
+                        <span className="tb-val">{topic.score}%</span>
                       </div>
-                      <span className="tb-val">{topic.score}%</span>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
+              );
+            })()}
           </div>
         )}
 

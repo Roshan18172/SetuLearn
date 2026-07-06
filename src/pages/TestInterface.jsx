@@ -479,9 +479,9 @@ export default function TestInterface() {
       <div className="ti-topbar">
         <div className="ti-testname">
           <div className="ti-icon">
-            {test.examName?.slice(0, 3).toUpperCase()}
+            {test.title?.slice(0, 4).toUpperCase()}
           </div>
-          <span>{test.examName} Master Test</span>
+          <span>{test.title} Master Test</span>
         </div>
 
         <div className="ti-timer-wrap">
