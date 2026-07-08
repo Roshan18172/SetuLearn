@@ -85,7 +85,8 @@ export function calculateAggregatedResults(resultsData, test = {}) {
           incorrect,
           score,
           total: totalMarks,
-          accuracy
+          accuracy,
+          topics: Array.isArray(subject.topics) ? subject.topics : []
         });
 
       });

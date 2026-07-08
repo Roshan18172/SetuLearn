@@ -387,66 +387,6 @@ function buildQuestionsMap(questions = []) {
   return map;
 }
 
-// Helper: infer subject from topic when backend doesn't send subject
-function inferSubjectFromTopic(topic = "") {
-  const t = String(topic).trim().toLowerCase();
-
-  const physicsTopics = [
-    "rotational motion",
-    "electromagnetic waves",
-    "thermodynamics",
-    "magnetic effects of current",
-    "laws_of_motion",
-    "gravitation",
-    "electrostatics",
-    "current electricity",
-    "kinematics",
-    "work, energy and  power",
-    "modern physics",
-    "oscillations",
-    "ray optics",
-    "wave optics",
-    "mechanics",
-    "thermal physics",
-
-  ];
-
-  const chemistryTopics = [
-    "atomic structure",
-    "chemical bonding",
-    "chemical thermodynamics",
-    "chemical kinetics",
-    "coordination compounds",
-    "organic chemistry",
-    "solutions",
-    "d and f block elements",
-    "hydrocarbons",
-    "redox reactions",
-  ];
-
-  const mathematicsTopics = [
-    "definite integral in calculus",
-    "complex numbers",
-    "vectors",
-    "hyperbola in coordinate geometry",
-    "limits",
-    "permutation combination",
-    "sets and relations",
-    "three dimensional geometry",
-    "matrices",
-    "inverse trigonometric functions",
-    "probability",
-    "parabola",
-    "circle",
-  ];
-
-  if (physicsTopics.includes(t)) return "Physics";
-  if (chemistryTopics.includes(t)) return "Chemistry";
-  if (mathematicsTopics.includes(t)) return "Mathematics";
-
-  return "General";
-}
-
 function normalizeBackendQuestion(
   item = {},
   rowIndex,
@@ -547,7 +487,7 @@ function normalizeBackendQuestion(
     question.subject,
     fullQuestion.subjectName,
     fullQuestion.subject,
-    inferSubjectFromTopic(topic),
+    sectionName,
   );
 
   return {
@@ -678,97 +618,33 @@ function buildQuestionRows(result, questions = [], answers = {}, test = {}) {
   });
 }
 
-function buildTopicBreakdown(questionRows = []) {
-  const topicStats = {};
-  questionRows.forEach((row) => {
-    const topic = row.topic || row.section || "General";
-    if (!topicStats[topic]) {
-      topicStats[topic] = {
-        topic,
-        total: 0,
-        attempted: 0,
-        correct: 0,
-        incorrect: 0,
-      };
-    }
-    topicStats[topic].total += 1;
-    if (row.attempted) topicStats[topic].attempted += 1;
-    if (row.status === "correct") topicStats[topic].correct += 1;
-    if (row.status === "incorrect") topicStats[topic].incorrect += 1;
-  });
-  return Object.values(topicStats).map((topic) => ({
-    topic: topic.topic,
-    total: topic.total,
-    attempted: topic.attempted,
-    correct: topic.correct,
-    incorrect: topic.incorrect,
-    accuracy:
-      topic.attempted > 0
-        ? clampPercent((topic.correct / topic.attempted) * 100)
-        : 0,
-    score:
-      topic.total > 0
-        ? clampPercent((topic.correct / topic.total) * 100)
-        : 0,
-  }));
-}
-
-// Groups topic-level stats by subject/section so the Overview tab can show
-// a subject-tab selector with only that subject's topics underneath it.
-function buildTopicBreakdownBySubject(questionRows = []) {
-  const subjectOrder = [];
-  const subjectMap = {};
-
-  questionRows.forEach((row) => {
-    const subjectName = row.subject || row.section || "General";
-    const topicName = row.topic || row.section || "General";
-
-    if (!subjectMap[subjectName]) {
-      subjectMap[subjectName] = {
-        subject: subjectName,
-        topicOrder: [],
-        topicStats: {},
-      };
-      subjectOrder.push(subjectName);
-    }
-    const bucket = subjectMap[subjectName];
-    if (!bucket.topicStats[topicName]) {
-      bucket.topicStats[topicName] = {
-        topic: topicName,
-        total: 0,
-        attempted: 0,
-        correct: 0,
-        incorrect: 0,
-      };
-      bucket.topicOrder.push(topicName);
-    }
-    const stat = bucket.topicStats[topicName];
-    stat.total += 1;
-    if (row.attempted) stat.attempted += 1;
-    if (row.status === "correct") stat.correct += 1;
-    if (row.status === "incorrect") stat.incorrect += 1;
-  });
-
-  return subjectOrder.map((subjectName) => {
-    const bucket = subjectMap[subjectName];
-    const topics = bucket.topicOrder.map((topicName) => {
-      const stat = bucket.topicStats[topicName];
-      return {
-        topic: stat.topic,
-        total: stat.total,
-        attempted: stat.attempted,
-        correct: stat.correct,
-        incorrect: stat.incorrect,
-        accuracy:
-          stat.attempted > 0
-            ? clampPercent((stat.correct / stat.attempted) * 100)
-            : 0,
-        score:
-          stat.total > 0 ? clampPercent((stat.correct / stat.total) * 100) : 0,
-      };
-    });
-    return { subject: subjectName, topics };
-  });
+// Builds the Overview > Topic Breakdown data straight from the backend's
+// subjectAnalysis[].topics — no client-side guessing or per-question
+// inference. Each normalized subject (see normalizeSubject) already carries
+// through its raw `topics` array from the API response; this just shapes
+// those numbers (accuracy/score) for display.
+function buildTopicBreakdownBySubject(subjects = []) {
+  return subjects
+    .filter((subject) => Array.isArray(subject.topics) && subject.topics.length > 0)
+    .map((subject) => ({
+      subject: subject.name,
+      topics: subject.topics.map((topic) => {
+        const total = toNumber(topic.totalQuestions ?? topic.total, 0);
+        const attempted = toNumber(topic.attempted, 0);
+        const correct = toNumber(topic.correct, 0);
+        const incorrect = toNumber(topic.incorrect, 0);
+        return {
+          topic: topic.topicName || topic.topic || topic.name || "General",
+          total,
+          attempted,
+          correct,
+          incorrect,
+          accuracy:
+            attempted > 0 ? clampPercent((correct / attempted) * 100) : 0,
+          score: total > 0 ? clampPercent((correct / total) * 100) : 0,
+        };
+      }),
+    }));
 }
 
 function buildTimeAnalysis(metrics, questionRows = []) {
@@ -889,8 +765,7 @@ function buildAnalysisData({
     metrics: normalizedMetrics,
     subjects: normalizedMetrics.subjects,
     questionRows,
-    topicBreakdown: buildTopicBreakdown(questionRows),
-    topicBreakdownBySubject: buildTopicBreakdownBySubject(questionRows),
+    topicBreakdownBySubject: buildTopicBreakdownBySubject(normalizedMetrics.subjects),
     timeAnalysis: buildTimeAnalysis(normalizedMetrics, questionRows),
     compareData: buildCompareData(normalizedMetrics, test),
   };
@@ -1222,11 +1097,6 @@ export default function DetailedAnalysis() {
     },
     { label: "Percentile", val: r.percentile },
   ];
-  //consoles topicBreakdownBySubject
-  console.log(analysis.topicBreakdownBySubject);
-  console.log(analysis.topicBreakdown);
-  console.log(analysis.subjects);
-
   return (
     <div className="analysis-page">
       <div className="analysis-header">
@@ -1514,14 +1384,12 @@ export default function DetailedAnalysis() {
                   </div>
                 </div>
                 <div className="sa-bar-track">
-                  <div
-                    className="sa-bar-fill correct-fill"
+                  <div className="sa-bar-fill correct-fill"
                     style={{
                       width: `${s.questions ? (s.correct / s.questions) * 100 : 0}%`,
                     }}
                   />
-                  <div
-                    className="sa-bar-fill incorrect-fill"
+                  <div className="sa-bar-fill incorrect-fill"
                     style={{
                       width: `${s.questions ? (s.incorrect / s.questions) * 100 : 0}%`,
                     }}
