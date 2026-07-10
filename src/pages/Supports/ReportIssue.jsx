@@ -1,17 +1,46 @@
 import { useState } from "react";
+import reportService from "../../api/reportService";
+import { getErrorMessage } from "../../api/apiErrorHandler";
 
 export default function ReportIssue() {
-    const [submitted, setSubmitted] = useState(false);
     document.title = "Report an Issue - SetuLearn";
+    const [submitted, setSubmitted] = useState(false);
 
-    const handleSubmit = (e) => {
+    const [formData, setFormData] = useState({
+        name: "",
+        email: "",
+        issueType: "",
+        page: "",
+        description: "",
+    });
+    const handleChange = (e) => {
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value,
+        });
+    };
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        setSubmitted(true);
 
-        setTimeout(() => {
-            setSubmitted(false);
-            e.target.reset();
-        }, 4000);
+        try {
+            await reportService.submitReport(formData);
+
+            setSubmitted(true);
+
+            setFormData({
+                name: "",
+                email: "",
+                issueType: "",
+                page: "",
+                description: "",
+            });
+
+            setTimeout(() => {
+                setSubmitted(false);
+            }, 4000);
+        } catch (error) {
+            alert(getErrorMessage(error));
+        }
     };
 
     return (
@@ -85,12 +114,12 @@ export default function ReportIssue() {
                 <form className="report-form" onSubmit={handleSubmit}>
 
                     <div className="form-row">
-                        <input type="text" placeholder="Your Name" required />
+                        <input type="text" placeholder="Your Name" value={formData.name} onChange={handleChange} required />
 
-                        <input type="email" placeholder="Your Email" required />
+                        <input type="email" placeholder="Your Email" value={formData.email} onChange={handleChange} required />
                     </div>
 
-                    <select required>
+                    <select name="issueType" value={formData.issueType} onChange={handleChange} required>
                         <option value="">
                             Select Issue Type
                         </option>
@@ -102,9 +131,9 @@ export default function ReportIssue() {
                         <option>Other</option>
                     </select>
 
-                    <input type="text" placeholder="Page / Test Name (Optional)" />
+                    <input type="text" placeholder="Page / Test Name (Optional)" value={formData.page} onChange={handleChange} />
 
-                    <textarea rows="6" placeholder="Describe the issue in detail..." required />
+                    <textarea rows="6" placeholder="Describe the issue in detail..." value={formData.description} onChange={handleChange} required />
 
                     <button type="submit" className="btn-primary submit-btn" >
                         Submit Report →
