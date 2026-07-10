@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import contactService from "../../api/contactService";
+import { getErrorMessage } from "../../api/apiErrorHandler";
 
 export default function ContactUs() {
     const navigate = useNavigate();
@@ -18,8 +20,10 @@ export default function ContactUs() {
         });
     };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
+    const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+        await contactService.sendMessage(formData);
 
         alert("Message sent successfully!");
 
@@ -29,7 +33,11 @@ export default function ContactUs() {
             subject: "",
             message: "",
         });
-    };
+
+    } catch (error) {
+        alert(getErrorMessage(error));
+    }
+};
 
     return (
         <div className="contact-page">
