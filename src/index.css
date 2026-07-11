@@ -516,13 +516,13 @@ button:disabled {
 /* Categories */
 .categories-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 18px;
 }
 
 .all-categories-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 18px;
 }
 
@@ -534,7 +534,7 @@ button:disabled {
   cursor: pointer;
   transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
   border-top: 4px solid var(--cat-color, var(--primary));
-  /* text-align: center; */
+  text-align: center;
   display: flex;
   align-items: center;
   justify-content: start;
@@ -545,6 +545,7 @@ button:disabled {
 @media (max-width: 640px) {
   .category-card {
     flex-direction: row;
+    text-align: left;
   }
 }
 
