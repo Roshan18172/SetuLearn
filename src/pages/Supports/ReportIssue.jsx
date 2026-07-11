@@ -114,10 +114,22 @@ export default function ReportIssue() {
                 <form className="report-form" onSubmit={handleSubmit}>
 
                     <div className="form-row">
-                        <input type="text" placeholder="Your Name" value={formData.name} onChange={handleChange} required />
-
-                        <input type="email" placeholder="Your Email" value={formData.email} onChange={handleChange} required />
-                    </div>
+                        <input
+                            type="text"
+                            name="name"
+                            placeholder="Your Name"
+                            value={formData.name}
+                            onChange={handleChange}
+                            required
+                        />
+                        <input
+                            name="email"
+                            type="email"
+                            placeholder="Your Email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            required
+                        />                    </div>
 
                     <select name="issueType" value={formData.issueType} onChange={handleChange} required>
                         <option value="">
@@ -131,10 +143,21 @@ export default function ReportIssue() {
                         <option>Other</option>
                     </select>
 
-                    <input type="text" placeholder="Page / Test Name (Optional)" value={formData.page} onChange={handleChange} />
-
-                    <textarea rows="6" placeholder="Describe the issue in detail..." value={formData.description} onChange={handleChange} required />
-
+                    <input
+                        type="text"
+                        name="page"
+                        placeholder="Page / Test Name (Optional)"
+                        value={formData.page}
+                        onChange={handleChange}
+                    />
+                    <textarea
+                        rows="6"
+                        name="description"
+                        placeholder="Describe the issue in detail..."
+                        value={formData.description}
+                        onChange={handleChange}
+                        required
+                    />
                     <button type="submit" className="btn-primary submit-btn" >
                         Submit Report →
                     </button>

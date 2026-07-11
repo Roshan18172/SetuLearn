@@ -6,6 +6,7 @@ import { getErrorMessage } from "../../api/apiErrorHandler";
 export default function ContactUs() {
     const navigate = useNavigate();
     document.title = "Contact Us - SetuLearn";
+    const [submitted, setSubmitted] = useState(false);
     const [formData, setFormData] = useState({
         name: "",
         email: "",
@@ -24,15 +25,16 @@ export default function ContactUs() {
     e.preventDefault();
     try {
         await contactService.sendMessage(formData);
-
-        alert("Message sent successfully!");
-
+        setSubmitted(true);
         setFormData({
             name: "",
             email: "",
             subject: "",
             message: "",
         });
+        setTimeout(() => {
+                setSubmitted(false);
+            }, 4000)
 
     } catch (error) {
         alert(getErrorMessage(error));
@@ -129,6 +131,11 @@ export default function ContactUs() {
                         <button type="submit" className="btn-primary btn-lg">
                             Send Message →
                         </button>
+                        {submitted && (
+                        <div className="success-message">
+                            🎉 Your message has been sent successfully!
+                        </div>
+                    )}
                     </form>
                 </div>
 
