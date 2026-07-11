@@ -4,11 +4,47 @@ import { useNavigate } from "react-router-dom";
 import examService from "../api/examService";
 import { mapExamToCategory, mapTestToFrontend } from "../api/dataMapper";
 import { getErrorMessage } from "../api/apiErrorHandler";
+import { ArrowRight, QuestionMarkRound, Time } from "../data/svgs";
 
+/* ── Skeleton helpers ──────────────────────────────────── */
+function SkeletonBox({ width, height, borderRadius = "8px" }) {
+  return (
+    <div className="skeleton-box" style={{ width, height, borderRadius }} />
+  );
+}
+
+function CategorySkeleton() {
+  return (
+    <div className="category-card category-skeleton">
+      <SkeletonBox width={80} height={80} borderRadius="50%" />
+      <SkeletonBox width="70%" height="18px" />
+      <SkeletonBox width="50%" height="14px" />
+      <SkeletonBox width="40%" height="14px" />
+    </div>
+  );
+}
+
+function TestCardSkeleton() {
+  return (
+    <div className="test-card-home test-card-skeleton">
+      <div className="tc-left">
+        <SkeletonBox width={48} height={48} borderRadius="50%" />
+        <div className="tc-info">
+          <SkeletonBox width="240px" height="18px" />
+          <SkeletonBox width="320px" height="14px" />
+        </div>
+      </div>
+      <SkeletonBox width="120px" height="40px" borderRadius="8px" />
+    </div>
+  );
+}
+
+/* ── Main component ────────────────────────────────────── */
 export default function Home() {
   const navigate = useNavigate();
   const [categories, setCategories] = useState([]);
   const [featuredTests, setFeaturedTests] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     document.title = "Home - SetuLearn";
@@ -16,6 +52,7 @@ export default function Home() {
 
   useEffect(() => {
     const fetchData = async () => {
+      setIsLoading(true);
       try {
         const [exams, tests] = await Promise.all([
           examService.getExams(),
@@ -24,19 +61,29 @@ export default function Home() {
 
         const mappedCategories = exams.map((exam) => {
           const cat = mapExamToCategory(exam);
-          cat.tests = tests.filter((t) => t.exam?.id === exam.id || t.examId === exam.id).length;
+          cat.tests = tests.filter(
+            (t) => t.exam?.id === exam.id || t.examId === exam.id,
+          ).length;
           cat.exams = [exam.name];
           return cat;
         });
 
         const mappedTests = tests.map((t) =>
-          mapTestToFrontend(t, t.exam?.name || "")
+          mapTestToFrontend(t, t.exam?.name || ""),
         );
 
         setCategories(mappedCategories.slice(0, 4));
         setFeaturedTests(mappedTests.slice(0, 3));
       } catch (err) {
-        console.error("Failed to fetch home data:", getErrorMessage(err, "Could not load test data. Please make sure the backend is running."));
+        console.error(
+          "Failed to fetch home data:",
+          getErrorMessage(
+            err,
+            "Could not load test data. Please make sure the backend is running.",
+          ),
+        );
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchData();
@@ -87,7 +134,7 @@ export default function Home() {
                 className="btn-outline btn-lg"
                 onClick={() => navigate("/exams")}
               >
-                View Categories
+                View Categories <ArrowRight />
               </button>
             </div>
             <div className="hero-stats">
@@ -130,38 +177,44 @@ export default function Home() {
             <h2 className="section-title">Popular Exam Categories</h2>
           </div>
           <button className="btn-text" onClick={() => navigate("/exams")}>
-            View All →
+            View All <ArrowRight />
           </button>
         </div>
         <div className="categories-grid">
-          {categories.map((cat) => (
-            <div
-              key={cat.id}
-              className="category-card"
-              onClick={() =>
-                navigate("/tests", {
-                  state: {
-                    selectedExam: cat.name,
-                  },
-                })
-              }
-              style={{ "--cat-color": cat.color }}
-            >
-              <div className="cat-icon">
-                <img
-                  src={`${cat.icon}`}
-                  alt={`${cat.name}-icon`}
-                  width={80}
-                  height={80}
-                />
-              </div>
-              <div className="cat-name">{cat.name}</div>
-              <div className="cat-exams">
-                {cat.exams.slice(0, 3).join(", ")}
-              </div>
-              <div className="cat-count">{cat.tests} Tests</div>
-            </div>
-          ))}
+          {isLoading
+            ? Array.from({ length: 4 }).map((_, i) => (
+                <CategorySkeleton key={i} />
+              ))
+            : categories.map((cat) => (
+                <div
+                  key={cat.id}
+                  className="category-card"
+                  onClick={() =>
+                    navigate("/tests", {
+                      state: {
+                        selectedExam: cat.name,
+                      },
+                    })
+                  }
+                  style={{ "--cat-color": cat.color }}
+                >
+                  <div className="cat-icon">
+                    <img
+                      src={`${cat.icon}`}
+                      alt={`${cat.name}-icon`}
+                      width={80}
+                      height={80}
+                    />
+                  </div>
+                  <div>
+                    <div className="cat-name">{cat.name}</div>
+                    <div className="cat-exams">
+                      {cat.exams.slice(0, 3).join(", ")}
+                    </div>
+                    <div className="cat-count">{cat.tests} Tests</div>
+                  </div>
+                </div>
+              ))}
         </div>
       </section>
 
@@ -253,50 +306,67 @@ export default function Home() {
             <h2 className="section-title">Featured Tests</h2>
           </div>
           <button className="btn-text" onClick={() => navigate("/tests")}>
-            View All Tests →
+            <span>View All Tests</span> <ArrowRight />
           </button>
         </div>
         <div className="tests-list">
-          {featuredTests.map((test) => {
-            const category =
-              categories.find((cat) => cat.name === test.category) || {};
-            const catColor = category.color || "#5A1EAD";
-            const catIcon = category.icon || "/icons/exam-icons/graduation-cap.png";
+          {isLoading
+            ? Array.from({ length: 3 }).map((_, i) => (
+                <TestCardSkeleton key={i} />
+              ))
+            : featuredTests.map((test) => {
+                const category =
+                  categories.find((cat) => cat.name === test.category) || {};
+                const catColor = category.color || "#5A1EAD";
+                const catIcon =
+                  category.icon || "/icons/exam-icons/graduation-cap.png";
 
-            return (
-              <div key={test.id} className="test-card-home">
-                <div className="tc-left">
-                  <div className="tr-icon" style={{ border: `2px solid ${catColor}`, backgroundColor: catColor + "22" }}>
-                    <img src={catIcon} alt={test.exam} width={34} height={34} />
-                  </div>
-                  <div className="tc-info">
-                    <div className="tc-title">{test.title}</div>
-                    <div className="tc-meta">
-                      <span>{test.category}</span>
-                      <span>•</span>
-                      <span>{test.questions} Questions</span>
-                      <span>•</span>
-                      <span>{test.duration} Mins</span>
-                      <span>•</span>
-                      <span
-                        className={`diff-badge ${test.difficulty.toLowerCase()}`}
+                return (
+                  <div key={test.id} className="test-card-home">
+                    <div className="tc-left">
+                      <div
+                        className="tr-icon"
+                        style={{
+                          border: `2px solid ${catColor}`,
+                          backgroundColor: catColor + "22",
+                        }}
                       >
-                        {test.difficulty}
-                      </span>
+                        <img
+                          src={catIcon}
+                          alt={test.exam}
+                          width={34}
+                          height={34}
+                        />
+                      </div>
+                      <div className="tc-info">
+                        <div className="tc-title">{test.title}</div>
+                        <span className="tc-cat">{test.category}</span>
+                        <div className="tc-meta">
+                          <QuestionMarkRound />
+                          <span>{test.questions} Questions</span>
+                          <Time />
+                          <span>{test.duration} Mins</span>
+                          <span
+                            className={`diff-badge ${test.difficulty.toLowerCase()}`}
+                          >
+                            {test.difficulty}
+                          </span>
+                        </div>
+                      </div>
                     </div>
+                    <button
+                      className="btn-primary"
+                      onClick={() =>
+                        navigate("/instructions", {
+                          state: { test, mode: "timed" },
+                        })
+                      }
+                    >
+                      Start Test
+                    </button>
                   </div>
-                </div>
-                <button
-                  className="btn-primary"
-                  onClick={() =>
-                    navigate("/instructions", { state: { test, mode: "timed" } })
-                  }
-                >
-                  Start Test
-                </button>
-              </div>
-            );
-          })}
+                );
+              })}
         </div>
       </section>
 
@@ -308,7 +378,7 @@ export default function Home() {
             Join thousands of students who practice with SetuLearn every day.
           </p>
           <button className="btn-white" onClick={() => navigate("/tests")}>
-            Browse All Tests ⇨
+            Browse All Tests <ArrowRight />
           </button>
         </div>
       </section>

@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import examService from "../api/examService";
 import { mapExamToCategory, mapTestToFrontend } from "../api/dataMapper";
 import { getErrorMessage } from "../api/apiErrorHandler";
+import { QuestionMarkRound, Time } from "../data/svgs";
 
 const difficulties = ["All Difficulty", "Easy", "Medium", "Hard"];
 const durations = ["All Duration", "< 60 Mins", "60-120 Mins", "> 120 Mins"];
@@ -205,7 +206,7 @@ export default function Tests() {
           const catColor = category?.color || "#6C63FF";
           const catIcon = category?.icon || "/icons/default.png";
           return (
-            <div key={test.id} className="test-row">
+            <div key={test.id} className="test-card">
               <div className="tr-left">
                 <div className="tr-icon" style={{ border: `2px solid ${catColor}`, backgroundColor: catColor + "22" }}>
                   <img src={catIcon} alt={test.exam} width={34} height={34} />
@@ -213,17 +214,16 @@ export default function Tests() {
                 <div className="tr-info">
                   <div className="tr-title">{test.title}</div>
                   <div className="tr-meta">
-                    <span className="tr-cat">{test.exam}</span>
-                    <span>•</span>
-                    <span>{test.questions} Questions</span>
-                    <span>•</span>
+                    <span className="tr-cat">{test.exam}</span>                    
+                    <QuestionMarkRound />
+                    <span>{test.questions} Questions</span>                    
+                    <Time />
                     <span>{test.duration} Mins</span>
-                    <span>•</span>
                     <span className={`diff-badge ${test.difficulty.toLowerCase()}`}>
                       {test.difficulty}
                     </span>
                   </div>
-                  <div className="tr-sub-info">
+                  {/* <div className="tr-sub-info">
                     <span>Total Marks: {test.marks}</span>
                     {test.negativeMarking && (
                       <>
@@ -231,7 +231,7 @@ export default function Tests() {
                         <span>Negative Marking</span>
                       </>
                     )}
-                  </div>
+                  </div> */}
                 </div>
               </div>
 

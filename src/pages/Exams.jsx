@@ -4,22 +4,21 @@ import examService from "../api/examService";
 import { mapExamToCategory } from "../api/dataMapper";
 import { getErrorMessage } from "../api/apiErrorHandler";
 
-
 export default function Exams() {
   const navigate = useNavigate();
 
-  // State for raw data and aggregated exams  
+  // State for raw data and aggregated exams
   const [categories, setCategories] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [fetchError, setFetchError] = useState(null);
 
-  document.title = "Exams - SetuLearn";
+  document.title = "All Exam Categories - SetuLearn";
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        setIsLoading(false)
-        setFetchError(null)
+        setIsLoading(false);
+        setFetchError(null);
 
         const [exams, tests] = await Promise.all([
           examService.getExams(),
@@ -28,33 +27,39 @@ export default function Exams() {
 
         const mappedCategories = exams.map((exam) => {
           const cat = mapExamToCategory(exam);
-          cat.tests = tests.filter((t) => t.exam?.id === exam.id || t.examId === exam.id);
+          cat.tests = tests.filter(
+            (t) => t.exam?.id === exam.id || t.examId === exam.id,
+          );
           cat.exams = [exam.name];
           return cat;
         });
 
-
         setCategories(mappedCategories);
       } catch (err) {
-        console.error("Failed to fetch home data:", getErrorMessage(err, "Could not load test data. Please make sure the backend is running."));
+        console.error(
+          "Failed to fetch home data:",
+          getErrorMessage(
+            err,
+            "Could not load test data. Please make sure the backend is running.",
+          ),
+        );
         setFetchError("Failed to load exam data. Please try again.");
       }
     };
     fetchData();
   }, []);
 
-
   // Show loading state
   if (isLoading) {
     return (
       <div className="tests-page">
         <div className="tests-header">
-          <h1>All Tests</h1>
+          <h1>All Exam Categories</h1>
         </div>
         <div className="empty-state" style={{ padding: "80px 20px" }}>
           <div className="empty-icon">⏳</div>
-          <h3>Loading tests...</h3>
-          <p>Please wait while we fetch the available tests.</p>
+          <h3>Loading exam categories...</h3>
+          <p>Please wait while we fetch the available exam categories.</p>
         </div>
       </div>
     );
@@ -65,13 +70,16 @@ export default function Exams() {
     return (
       <div className="tests-page">
         <div className="tests-header">
-          <h1>All Tests</h1>
+          <h1>All Exam Categories</h1>
         </div>
         <div className="empty-state" style={{ padding: "80px 20px" }}>
           <div className="empty-icon">⚠️</div>
-          <h3>Could not load tests</h3>
+          <h3>Could not load exam categories</h3>
           <p style={{ maxWidth: 500, margin: "0 auto 20px" }}>{fetchError}</p>
-          <button className="btn-primary" onClick={() => window.location.reload()}>
+          <button
+            className="btn-primary"
+            onClick={() => window.location.reload()}
+          >
             🔄 Retry
           </button>
         </div>
@@ -82,11 +90,9 @@ export default function Exams() {
   return (
     <div className="tests-page">
       <div className="tests-header">
-        <h1>All Exams</h1>
-        <p>{categories.length} exams available</p>
+        <h1>All Exam Categories</h1>
+        <p>{categories.length} exam Categories available</p>
       </div>
-
-
 
       {/* Exams Render List */}
       <div className="all-categories-grid">
@@ -112,11 +118,11 @@ export default function Exams() {
                   height={96}
                 />
               </div>
-              <div className="cat-name">{cat.name}</div>
-              <div className="cat-exams">
-                {cat.exams.join(', ')}
+              <div>
+                <div className="cat-name">{cat.name}</div>
+                <div className="cat-exams">{cat.exams.join(", ")}</div>
+                <div className="cat-count">{cat.tests.length} Tests</div>
               </div>
-              <div className="cat-count">{cat.tests.length} Tests</div>
             </div>
           );
         })}
@@ -129,7 +135,6 @@ export default function Exams() {
           </div>
         )}
       </div>
-
     </div>
   );
 }
