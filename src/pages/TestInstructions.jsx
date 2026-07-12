@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { ArrowLeft, ArrowRight } from "../data/svgs";
 
 export default function TestInstructions() {
   const [mode, setMode] = useState("timed");
@@ -13,7 +14,9 @@ export default function TestInstructions() {
       <div className="empty-state" style={{ padding: "80px 20px" }}>
         <div className="empty-icon">📋</div>
         <h3>No test selected</h3>
-        <button className="btn-primary" onClick={() => navigate("/tests")}>Browse Tests</button>
+        <button className="btn-primary" onClick={() => navigate("/tests")}>
+          Browse Tests
+        </button>
       </div>
     );
   }
@@ -23,7 +26,11 @@ export default function TestInstructions() {
     ? test.instructions
     : typeof test.instructions === "string"
       ? test.instructions.split(/(?<=\.)\s+/) // Splits long text blocks nicely by sentences
-      : ["Attempt all questions carefully.", "Each question carries defined marks.", "Wrong answers carry penalty rules if active."];
+      : [
+          "Attempt all questions carefully.",
+          "Each question carries defined marks.",
+          "Wrong answers carry penalty rules if active.",
+        ];
 
   return (
     <div className="instructions-page">
@@ -55,11 +62,17 @@ export default function TestInstructions() {
         <div className="mode-toggle-section">
           <h3>Select Mode</h3>
           <div className="mode-toggle">
-            <button className={`mode-btn ${mode === "timed" ? "active" : ""}`} onClick={() => setMode("timed")} >
+            <button
+              className={`mode-btn ${mode === "timed" ? "active" : ""}`}
+              onClick={() => setMode("timed")}
+            >
               ⏱️ Timed Mode
               <span>Simulates real exam with countdown</span>
             </button>
-            <button className={`mode-btn ${mode === "untimed" ? "active" : ""}`} onClick={() => setMode("untimed")} >
+            <button
+              className={`mode-btn ${mode === "untimed" ? "active" : ""}`}
+              onClick={() => setMode("untimed")}
+            >
               📖 Practice Mode
               <span>No timer, go at your own pace</span>
             </button>
@@ -86,9 +99,15 @@ export default function TestInstructions() {
               Navigation
             </div>
             <ul className="instr-list">
-              <li>Use the Next and Previous buttons to navigate between questions.</li>
-              <li>You can mark a question for review and come back to it later.</li>
-              <li>The question palette on the right shows status of all questions.</li>
+              <li>
+                Use the Next and Previous buttons to navigate between questions.
+              </li>
+              <li>
+                You can mark a question for review and come back to it later.
+              </li>
+              <li>
+                The question palette on the right shows status of all questions.
+              </li>
             </ul>
           </div>
 
@@ -98,8 +117,16 @@ export default function TestInstructions() {
               Submission
             </div>
             <ul className="instr-list">
-              <li>You can submit the test only after the time is over or by clicking the Submit Test button.</li>
-              {mode === "timed" && <li>If you do not submit before time runs out, the test will be auto-submitted.</li>}
+              <li>
+                You can submit the test only after the time is over or by
+                clicking the Submit Test button.
+              </li>
+              {mode === "timed" && (
+                <li>
+                  If you do not submit before time runs out, the test will be
+                  auto-submitted.
+                </li>
+              )}
             </ul>
           </div>
 
@@ -113,8 +140,8 @@ export default function TestInstructions() {
 
               <div className="st-header">
                 <div className="subject-col">Subject</div>
-                <div>Questions</div>
-                <div>Marks</div>
+                <div className="col">Questions</div>
+                <div className="col">Marks</div>
               </div>
 
               {test.subjects.map((subject) => (
@@ -134,9 +161,16 @@ export default function TestInstructions() {
         </div>
 
         <div className="instr-actions">
-          <button className="btn-outline" onClick={() => navigate("/tests")}>← Back</button>
-          <button className="btn-primary btn-lg" onClick={() => navigate("/test", { state: { test, mode } })} >
-            Start Test →
+          <button className="btn-outline" onClick={() => navigate("/tests")}>
+            <ArrowLeft />
+            <span>Back</span>
+          </button>
+          <button
+            className="btn-primary btn-lg"
+            onClick={() => navigate("/test", { state: { test, mode } })}
+          >
+            <span>Start Test</span>
+            <ArrowRight />
           </button>
         </div>
       </div>

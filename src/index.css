@@ -71,6 +71,10 @@ button:disabled {
   font-size: 0.9rem;
   transition: background 0.18s, transform 0.1s;
   white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
 }
 
 .btn-primary:hover {
@@ -98,7 +102,6 @@ button:disabled {
   align-items: center;
   justify-content: center;
   gap: 6px;
-  margin: auto;
 }
 
 .btn-outline:hover {
@@ -1179,6 +1182,10 @@ button:disabled {
   background: #fff;
 }
 
+.st-header {
+  border-bottom: 1px solid var(--primary);
+}
+
 .st-header,
 .st-row {
   display: grid;
@@ -1188,7 +1195,7 @@ button:disabled {
 
 .st-header div,
 .st-row div {
-  padding: 16px;
+  padding: 12px;
   text-align: center;
 }
 
@@ -1201,12 +1208,15 @@ button:disabled {
 
 /* Header subject */
 .st-header .subject-col {
-  font-weight: 700;
+  font-weight: 600;
 }
 
+.st-header .col {
+  font-weight: 600;
+}
 /* Subject names */
 .st-row .subject-col {
-  font-weight: 600;
+  font-weight: 500;
   color: #1a1a1a;
 }
 
@@ -1850,9 +1860,9 @@ button:disabled {
 }
 
 .sc-extra {
-  display: flex;
-  gap: 20px;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 14px;
 }
 
 .sce-item {
@@ -2039,11 +2049,15 @@ button:disabled {
 
 .analysis-header {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
   margin-bottom: 24px;
   flex-wrap: wrap;
   gap: 12px;
+}
+
+.analysis-header .download-btn {
+  margin-left: auto;
 }
 
 .ah-left {
@@ -2063,7 +2077,7 @@ button:disabled {
   font-weight: 600;
   font-size: 0.88rem;
   padding: 6px 12px;
-  border: 1px solid var(--primary);
+  border: 2px solid var(--primary);
   border-radius: var(--radius-sm);
   transition: background 0.15s;
 }
@@ -3173,7 +3187,7 @@ button:disabled {
   grid-template-columns: 1fr 1fr;
   gap: 15px;
 }
-.contact-form-card.form-field  { 
+.contact-form-card .form-field  { 
   margin-bottom: 15px;
 }
 

@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { BookOpenCheck, ChartPie, Repeat } from "../data/svgs";
 
 /**
  * Aggregates and calculates metrics across multiple backend submissions
@@ -256,7 +257,9 @@ export default function TestResult() {
           <div className="sc-details">
             <div className="sc-detail-row">
               <div className="scd-item correct">
-                <span className="scd-icon">✅</span>
+                <span className="scd-icon">
+                  <img src="/icons/correct.png"  alt="Correct Icon"/>
+                </span>
                 <div>
                   <div className="scd-label">Correct Answers</div>
                   <div className="scd-val">{metrics.correct} / {metrics.totalQuestions}</div>
@@ -264,7 +267,9 @@ export default function TestResult() {
               </div>
 
               <div className="scd-item incorrect">
-                <span className="scd-icon">❌</span>
+                <span className="scd-icon">
+                  <img src="/icons/incorrect.png"  alt="Incorrect Icon"/>
+                </span>
                 <div>
                   <div className="scd-label">Incorrect Answers</div>
                   <div className="scd-val">{metrics.incorrect} / {metrics.totalQuestions}</div>
@@ -272,7 +277,9 @@ export default function TestResult() {
               </div>
 
               <div className="scd-item unattempted">
-                <span className="scd-icon">⬜</span>
+                <span className="scd-icon">
+                  <img src="/icons/circle.png"  alt="Unchecked Icon"/>
+                </span>
                 <div>
                   <div className="scd-label">Unattempted</div>
                   <div className="scd-val">{metrics.unattempted}</div>
@@ -280,9 +287,11 @@ export default function TestResult() {
               </div>
 
               <div className="scd-item total">
-                <span className="scd-icon">📋</span>
+                <span className="scd-icon">
+                  <img src="/icons/question-icon.png"  alt="Checkbox Icon"/>
+                </span>
                 <div>
-                  <div className="scd-label">Total Items</div>
+                  <div className="scd-label">Total Questions</div>
                   <div className="scd-val">{metrics.totalQuestions}</div>
                 </div>
               </div>
@@ -295,11 +304,11 @@ export default function TestResult() {
               </div>
               <div className="sce-item">
                 <div className="sce-label">Time Spent</div>
-                <div className="sce-val">⏱️ {displayTime}</div>
+                <div className="sce-val"><img src="/icons/clock.png" width={24} height={24}  alt="Clock Icon"/> {displayTime}</div>
               </div>
               <div className="sce-item">
                 <div className="sce-label">Overall Accuracy</div>
-                <div className="sce-val">📈 {metrics.correct + metrics.incorrect > 0 ? Math.round((metrics.correct / (metrics.correct + metrics.incorrect)) * 100) : 0}%</div>
+                <div className="sce-val"><img src="/icons/accuracy.png" width={24} height={24}  alt="Target Icon"/> {metrics.correct + metrics.incorrect > 0 ? Math.round((metrics.correct / (metrics.correct + metrics.incorrect)) * 100) : 0}%</div>
               </div>
             </div>
           </div>
@@ -351,13 +360,13 @@ export default function TestResult() {
         {/* Form Interactive Operational Buttons */}
         <div className="result-actions">
           <button className="btn-outline" onClick={() => navigate("/instructions", { state: { test, mode: "timed" } })}>
-            🔄 Retake Test
+            <Repeat /> <span>Retake Test</span>
           </button>
           <button className="btn-primary" onClick={() => navigate("/analysis", { state: { test, result, answers, metrics, questions, subjectsMap, timeSpentSeconds: fallbackTimeSpent } })}>
-            📊 View Detailed Analysis
+            <ChartPie /> <span>View Detailed Analysis</span>
           </button>
           <button className="btn-primary" onClick={() => navigate("/solutions", { state: { test, answers, questions, result } })}>
-            📖 View Solutions
+            <BookOpenCheck /> <span>View Solutions</span>
           </button>
           <button className="btn-outline" onClick={() => navigate("/tests")}>
             Browse More Tests

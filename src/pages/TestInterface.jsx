@@ -537,7 +537,7 @@ export default function TestInterface() {
 
           <div className="ti-q-topic">
             {" "}
-            Section: {subjectsMap[q.subjectId] || "General Section"}{" "}
+            Section: {subjectsMap[q.subjectId] || "General Section"}{" "} {subjectsMap[q.topicId]}
           </div>
 
           <div

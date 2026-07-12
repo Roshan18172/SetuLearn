@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import contactService from "../../api/contactService";
 import { getErrorMessage } from "../../api/apiErrorHandler";
+import { ArrowRight, Send } from "../../data/svgs";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -284,7 +285,7 @@ export default function ContactUs() {
               className="btn-primary btn-lg"
               disabled={isSubmitting}
             >
-              {isSubmitting ? "Sending..." : "Send Message →"}
+              <Send />  {isSubmitting ? "Sending..." : "Send Message"}
             </button>
 
             {errorMessage && (
@@ -338,7 +339,7 @@ export default function ContactUs() {
         </p>
 
         <button className="btn-white" onClick={() => navigate("/tests")}>
-          Browse Tests →
+          Browse Tests <ArrowRight />
         </button>
       </section>
     </div>

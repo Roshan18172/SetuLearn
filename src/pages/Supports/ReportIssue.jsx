@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import reportService from "../../api/reportService";
 import { getErrorMessage } from "../../api/apiErrorHandler";
+import { ArrowRight } from "../../data/svgs";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -348,7 +349,7 @@ export default function ReportIssue() {
             className="btn-primary submit-btn"
             disabled={isSubmitting}
           >
-            {isSubmitting ? "Submitting..." : "Submit Report →"}
+           {isSubmitting ? "Submitting..." : "Submit Report"} <ArrowRight />
           </button>
 
           {errorMessage && (
