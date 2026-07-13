@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { Menu, X } from "../data/svgs";
 // import SetuLogo from "../SetuLearn Logo.png"
 
 export default function Navbar() {
@@ -7,6 +8,13 @@ export default function Navbar() {
 
   const navigate = useNavigate();
   const location = useLocation();
+
+  const navItems = [
+    { path: "/", label: "Home" },
+    { path: "/tests", label: "Tests" },
+    { path: "/about", label: "About" },
+    { path: "/contact", label: "Contat" },
+  ];
 
   return (
     <nav className="navbar">
@@ -18,20 +26,15 @@ export default function Navbar() {
 
         <div className={`navbar-links ${menuOpen ? "open" : ""}`}>
 
-          <button className={`nav-link ${location.pathname === "/" ? "active" : "" }`}
-            onClick={() => navigate("/")} >
-            Home
-          </button>
-
-          <button className={`nav-link ${location.pathname === "/tests" ? "active" : "" }`}
-            onClick={() => navigate("/tests")} >
-            Tests
-          </button>
-
-          <button className={`nav-link ${location.pathname === "/about" ? "active" : "" }`}
-            onClick={() => navigate("/about")} >
-            About
-          </button>
+          {navItems.map((item) => (
+            <button
+              key={item.path}
+              className={`nav-link ${location.pathname === item.path ? "active" : ""}`}
+              onClick={() => navigate(item.path)}
+            >
+              {item.label}
+            </button>
+          ))}
 
           <button className="btn-primary nav-cta" onClick={() => navigate("/tests")} >
             Start Practicing
@@ -40,9 +43,7 @@ export default function Navbar() {
         </div>
 
         <button className="hamburger" onClick={() => setMenuOpen(!menuOpen)} >
-          <span></span>
-          <span></span>
-          <span></span>
+          {menuOpen ? <X /> : <Menu />}
         </button>
 
       </div>

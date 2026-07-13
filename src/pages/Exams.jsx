@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import examService from "../api/examService";
 import { mapExamToCategory } from "../api/dataMapper";
 import { getErrorMessage } from "../api/apiErrorHandler";
+import { ClockLoader } from "../data/svgs";
 
 export default function Exams() {
   const navigate = useNavigate();
@@ -57,7 +58,9 @@ export default function Exams() {
           <h1>All Exam Categories</h1>
         </div>
         <div className="empty-state" style={{ padding: "80px 20px" }}>
-          <div className="empty-icon">⏳</div>
+          <div className="empty-icon">
+                    <ClockLoader />
+                  </div>
           <h3>Loading exam categories...</h3>
           <p>Please wait while we fetch the available exam categories.</p>
         </div>

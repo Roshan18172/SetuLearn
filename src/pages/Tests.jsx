@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import examService from "../api/examService";
 import { mapExamToCategory, mapTestToFrontend } from "../api/dataMapper";
 import { getErrorMessage } from "../api/apiErrorHandler";
-import { QuestionMarkRound, Time } from "../data/svgs";
+import { ClockLoader, QuestionMarkRound, Time } from "../data/svgs";
 
 const difficulties = ["All Difficulty", "Easy", "Medium", "Hard"];
 const durations = ["All Duration", "< 60 Mins", "60-120 Mins", "> 120 Mins"];
@@ -126,7 +126,9 @@ export default function Tests() {
           <h1>All Tests</h1>
         </div>
         <div className="empty-state" style={{ padding: "80px 20px" }}>
-          <div className="empty-icon">⏳</div>
+          <div className="empty-icon">
+            <ClockLoader />
+          </div>
           <h3>Loading tests...</h3>
           <p>Please wait while we fetch the available tests.</p>
         </div>

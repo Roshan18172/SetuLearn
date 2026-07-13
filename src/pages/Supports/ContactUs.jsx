@@ -168,13 +168,13 @@ export default function ContactUs() {
         <div className="contact-card">
           <div className="contact-icon">📧</div>
           <h3>Email Us</h3>
-          <p>support@SetuLearn.com</p>
+          <p>support@setulearn.in</p>
         </div>
 
         <div className="contact-card">
           <div className="contact-icon">📱</div>
           <h3>Call Us</h3>
-          <p>+91 98765 43210</p>
+          <p>+91 89082 21784</p>
         </div>
 
         <div className="contact-card">

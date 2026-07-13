@@ -127,7 +127,7 @@ export default function FAQ() {
           Our support team is always ready to help you.
         </p>
 
-        <button className="btn-primary" onClick={() => navigate("/contact")}>
+        <button className="btn-white" onClick={() => navigate("/contact")}>
           Contact Support
         </button>
       </div>

@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { MathJax } from "better-react-mathjax";
+import { ClockLoader } from "../data/svgs";
 
 function padTwo(n) {
   return String(n).padStart(2, "0");
@@ -436,7 +437,9 @@ export default function TestInterface() {
         className="empty-state"
         style={{ padding: "100px 20px", textAlign: "center" }}
       >
-        <div className="empty-icon">⏳</div>
+        <div className="empty-icon">
+          <ClockLoader />
+        </div>
         <h2>Assembling Exam Questions...</h2>
         <p>Please wait while we prepare your master question sheet.</p>
       </div>

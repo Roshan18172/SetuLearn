@@ -31,7 +31,7 @@
 }
 
 body {
-  font-family: "Figtree", -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: "Google Sans Flex", -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   background: var(--bg);
   color: var(--text);
   line-height: 1.6;
@@ -797,7 +797,7 @@ button:disabled {
 
 /* ===== TESTS PAGE ===== */
 .tests-page {
-  max-width: 1100px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 40px 24px 60px;
 }
@@ -988,7 +988,10 @@ button:disabled {
 }
 
 .empty-icon {
-  font-size: 2.5rem;
+  /* font-size: 2.5rem; */
+  width: 80px;
+  height: 80px;
+  margin-inline: auto;
   margin-bottom: 12px;
 }
 
@@ -2042,7 +2045,7 @@ button:disabled {
 
 /* ===== ANALYSIS PAGE ===== */
 .analysis-page {
-  max-width: 1100px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 32px 24px 60px;
 }
@@ -2585,7 +2588,7 @@ button:disabled {
 }
 
 .footer-main {
-  max-width: 1400px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 56px 24px 40px;
   display: grid;
@@ -2952,7 +2955,7 @@ button:disabled {
 ====================== */
 
 .faq-page {
-  max-width: 1100px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 60px 20px;
 }
@@ -2975,6 +2978,8 @@ button:disabled {
 }
 
 .faq-wrapper {
+  margin-inline: auto;
+  max-width: 1000px;
   display: flex;
   flex-direction: column;
   gap: 18px;
@@ -3012,7 +3017,7 @@ button:disabled {
 
 .faq-icon {
   font-size: 28px;
-  color: vAR(--primary);
+  color: var(--primary);
   font-weight: bold;
 }
 
@@ -3027,7 +3032,7 @@ button:disabled {
   margin-top: 70px;
   text-align: center;
   background: linear-gradient(135deg,
-      vAR(--primary),
+      var(--primary),
       #5548ff);
   color: white;
   padding: 50px 30px;
@@ -3043,6 +3048,8 @@ button:disabled {
   opacity: 0.9;
   margin-bottom: 25px;
 }
+
+.faq-contact button { margin-inline: auto;}
 
 @keyframes faqFade {
   from {
@@ -3100,7 +3107,7 @@ button:disabled {
   text-align: center;
   background:
     linear-gradient(135deg,
-      vAR(--primary),
+      var(--primary),
       #584eff);
   color: white;
 }
@@ -3241,7 +3248,7 @@ button:disabled {
 
   background:
     linear-gradient(135deg,
-      vAR(--primary),
+      var(--primary),
       #5548ff);
 
   color: white;
@@ -3264,16 +3271,13 @@ button:disabled {
 
 @media (max-width: 992px) {
 
-  .contact-info-grid {
-    grid-template-columns: 1fr;
-  }
-
   .contact-main {
     grid-template-columns: 1fr;
   }
 
   .form-row {
     grid-template-columns: 1fr;
+    gap: 0;
   }
 
   .contact-hero h1 {
@@ -3285,6 +3289,11 @@ button:disabled {
   }
 }
 
+@media (max-width: 768px) {
+  .contact-info-grid {
+    grid-template-columns: 1fr;
+  }
+}
 /* ======================
    ABOUT PAGE
 ====================== */
@@ -3297,7 +3306,7 @@ button:disabled {
 
 .about-hero {
   background: linear-gradient(135deg,
-      vAR(--primary),
+      var(--primary),
       #5448ff);
 
   color: white;
@@ -3439,7 +3448,7 @@ button:disabled {
 .about-stats {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  background: vAR(--primary);
+  background: var(--primary);
   color: white;
   text-align: center;
   padding: 70px 20px;
@@ -3488,7 +3497,7 @@ button:disabled {
   text-align: center;
 
   background: linear-gradient(135deg,
-      vAR(--primary),
+      var(--primary),
       #5448ff);
 
   color: white;
@@ -3807,7 +3816,7 @@ html::-webkit-scrollbar-thumb:hover {
 /* HERO */
 
 .tips-hero {
-  background: linear-gradient(135deg, vAR(--primary), #4F46E5);
+  background: linear-gradient(135deg, var(--primary), #4F46E5);
   color: white;
   text-align: center;
   padding: 100px 20px;
@@ -3902,7 +3911,7 @@ html::-webkit-scrollbar-thumb:hover {
 }
 
 .strategy-cards {
-  max-width: 1100px;
+  max-width: 1200px;
   margin: auto;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -3931,7 +3940,7 @@ html::-webkit-scrollbar-thumb:hover {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 20px;
-  max-width: 1100px;
+  max-width: 1200px;
   margin: auto;
   padding: 80px 20px;
 }
@@ -3945,7 +3954,7 @@ html::-webkit-scrollbar-thumb:hover {
 }
 
 .tip-stat h3 {
-  color: vAR(--primary);
+  color: var(--primary);
   font-size: 2rem;
   margin-bottom: 10px;
 }
@@ -3958,7 +3967,7 @@ html::-webkit-scrollbar-thumb:hover {
 
 .tips-cta {
   text-align: center;
-  background: linear-gradient(135deg, vAR(--primary), #4F46E5);
+  background: linear-gradient(135deg, var(--primary), #4F46E5);
   color: white;
   padding: 80px 20px;
 }
@@ -4348,7 +4357,7 @@ html::-webkit-scrollbar-thumb:hover {
 }
 
 .highlight-content {
-  max-width: 1100px;
+  max-width: 1200px;
   margin: auto;
 
   background: linear-gradient(135deg,
