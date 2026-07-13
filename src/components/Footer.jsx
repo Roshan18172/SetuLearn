@@ -53,7 +53,7 @@ export default function Footer() {
         <div className="footer-brand">
           <div className="footer-logo">
             <div className="brand-icon">
-              <img src="/SetuLearn-Logo-footer.png" height={48} width={"auto"} alt="SetuLearn Logo" />
+              <img src="/footer-logo-accent.webp" height={48} width={"auto"} alt="SetuLearn Logo" />
             </div>
           </div>
           <p className="footer-tagline">

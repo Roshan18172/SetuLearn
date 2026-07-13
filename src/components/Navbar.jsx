@@ -13,7 +13,7 @@ export default function Navbar() {
       <div className="navbar-inner">
 
         <div className="navbar-brand" onClick={() => navigate("/")} style={{ cursor: "pointer" }} >
-          <img src="/SetuLearn-Logo-new.jpg" alt="SetuLearn" />
+          <img src="/logo.webp" alt="SetuLearn" />
         </div>
 
         <div className={`navbar-links ${menuOpen ? "open" : ""}`}>
