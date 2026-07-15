@@ -151,7 +151,8 @@ export default function Footer() {
       </div>
 
       <div className="footer-bottom">
-        <p>© 2026 SetuLearn Platform. All rights reserved. Built for students, by educators.</p>
+        <p>{`© ${new Date().getFullYear()} SetuLearn Platform. All rights reserved. Built for students, by educators.`}</p>
+        <p>Desinged and Developed by <a href="https://www.sapiora.in" target="blank"><strong>Sapiora Tech</strong></a></p>
       </div>
     </footer>
   );

@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { MathJax } from "better-react-mathjax";
 import { ClockLoader } from "../data/svgs";
+import Modal from "../components/Modal";
 
 function padTwo(n) {
   return String(n).padStart(2, "0");
@@ -31,6 +32,9 @@ export default function TestInterface() {
   const [subjectsMap, setSubjectsMap] = useState({});
   const [loadingQuestions, setLoadingQuestions] = useState(true);
   const [isReady, setIsReady] = useState(false);
+  const dataLoadedRef = useRef(false);
+  const mathJaxReadyCount = useRef(0);
+  const totalMathJaxElements = useRef(0);
 
   // Key fix: Maintain a dictionary mapping questionId to its corresponding backend sub-test submission UUID
   const [submissionMap, setSubmissionMap] = useState({});
@@ -53,6 +57,28 @@ export default function TestInterface() {
   const [showConfirm, setShowConfirm] = useState(false);
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [showExitModal, setShowExitModal] = useState(false);
+
+  // Count MathJax typeset completions so we only show content when ALL
+  // MathJax elements (question text + options) have rendered.
+  const handleMathJaxTypeset = useCallback(() => {
+    mathJaxReadyCount.current += 1;
+    if (mathJaxReadyCount.current >= totalMathJaxElements.current) {
+      setIsReady(true);
+    }
+  }, []);
+
+  // Reset MathJax ready state when navigating to a new question
+  useEffect(() => {
+    setIsReady(false);
+    mathJaxReadyCount.current = 0;
+    const currentQ = questions[current];
+    if (currentQ) {
+      // question text + options count
+      totalMathJaxElements.current = 1 + ((currentQ.options || []).length || 0);
+    } else {
+      totalMathJaxElements.current = 0;
+    }
+  }, [current, questions]);
 
   // Helper function to dynamically retrieve standard auth tokens securely
   const getAuthHeaders = useCallback(() => {
@@ -81,6 +107,12 @@ export default function TestInterface() {
     } else if (test.id) {
       subTestsToFetch = [{ id: test.id }];
     } else {
+      setLoadingQuestions(false);
+      return;
+    }
+
+    // Prevent re-fetching data on subsequent renders (e.g. back-button popstate)
+    if (dataLoadedRef.current) {
       setLoadingQuestions(false);
       return;
     }
@@ -153,8 +185,9 @@ export default function TestInterface() {
                   )?.id,
                 );
 
-                const correctOption =
-                  (q.options || []).find((o) => o.isCorrect);
+                const correctOption = (q.options || []).find(
+                  (o) => o.isCorrect,
+                );
 
                 return {
                   id: q.id,
@@ -205,6 +238,7 @@ export default function TestInterface() {
       } catch (error) {
         console.error("Error aggregating master exam structure:", error);
       } finally {
+        dataLoadedRef.current = true;
         setLoadingQuestions(false);
       }
     };
@@ -280,7 +314,7 @@ export default function TestInterface() {
           ...submissionsGrouped[subTestId],
           timeSpent: timeSpentRef.current,
         };
-        console.log("Submitting payload structure:", payload);
+        // console.log("Submitting payload structure:", payload);
 
         const response = await fetch(
           `https://setulearn-backend.onrender.com/api/v1/tests/${subTestId}/submit`,
@@ -481,9 +515,7 @@ export default function TestInterface() {
       {/* TOP BAR */}
       <div className="ti-topbar">
         <div className="ti-testname">
-          <div className="ti-icon">
-            {test.title?.slice(0, 4).toUpperCase()}
-          </div>
+          <div className="ti-icon">{test.title?.slice(0, 4).toUpperCase()}</div>
           <span>{test.title} Master Test</span>
         </div>
 
@@ -540,7 +572,8 @@ export default function TestInterface() {
 
           <div className="ti-q-topic">
             {" "}
-            Section: {subjectsMap[q.subjectId] || "General Section"}{" "} {subjectsMap[q.topicId]}
+            Section: {subjectsMap[q.subjectId] || "General Section"}{" "}
+            {subjectsMap[q.topicId]}
           </div>
 
           <div
@@ -550,9 +583,13 @@ export default function TestInterface() {
               transition: "opacity 0.2s ease-in-out",
             }}
           >
-            <MathJax dynamic onTypeset={() => setIsReady(true)}>
-              {q.text}
-            </MathJax>
+            {q.text ? (
+              <MathJax dynamic onTypeset={handleMathJaxTypeset}>
+                {q.text}
+              </MathJax>
+            ) : (
+              <p>Question text not available</p>
+            )}
           </div>
 
           <div className="ti-options">
@@ -581,9 +618,13 @@ export default function TestInterface() {
                     opacity: isReady ? 1 : 0,
                   }}
                 >
-                  <MathJax dynamic onTypeset={() => setIsReady(true)}>
-                    {opt.text}
-                  </MathJax>
+                  {opt.text ? (
+                    <MathJax dynamic onTypeset={handleMathJaxTypeset}>
+                      {opt.text}
+                    </MathJax>
+                  ) : (
+                    "Option text not available"
+                  )}
                 </span>
               </label>
             ))}
@@ -634,68 +675,74 @@ export default function TestInterface() {
 
         {/* SIDEBAR */}
         <div className={`ti-sidebar ${paletteOpen ? "open" : ""}`}>
-          <div className="palette-header">
-            <span>Questions</span>
+          <div className="ti-sidebar-header">
+            <div className="palette-header">
+              <span>Questions</span>
+              <button
+                className="palette-close"
+                onClick={() => setPaletteOpen(false)}
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="palette-legend">
+              <span className="pal-dot answered" /> Answered ({answered})
+              <span
+                className="pal-dot unanswered"
+                style={{ marginLeft: 12 }}
+              />{" "}
+              Unanswered ({questions.length - answered})
+              <span
+                className="pal-dot marked"
+                style={{ marginLeft: 12 }}
+              />{" "}
+              Marked ({markedCount})
+            </div>
+          </div>
+          <div className="ti-sidebar-body">
+            <div className="palette-grid">
+              {questions.map((_, index) => (
+                <button
+                  key={index}
+                  className={`pal-btn ${getQStatus(index)} ${current === index ? "current" : ""}`}
+                  onClick={() => {
+                    setCurrent(index);
+                    setPaletteOpen(false);
+                  }}
+                >
+                  {index + 1}
+                </button>
+              ))}
+            </div>
+
+            <div className="palette-summary">
+              <div className="ps-row">
+                <span>Total Questions</span>
+                <b>{questions.length}</b>
+              </div>
+              <div className="ps-row">
+                <span>Answered</span>
+                <b className="green"> {answered} </b>
+              </div>
+              <div className="ps-row">
+                <span>Not Answered</span>
+                <b className="red"> {questions.length - answered} </b>
+              </div>
+              <div className="ps-row">
+                <span>Marked</span>
+                <b className="orange"> {markedCount} </b>
+              </div>
+            </div>
+
             <button
-              className="palette-close"
-              onClick={() => setPaletteOpen(false)}
+              className="btn-primary w-full"
+              onClick={() => setShowConfirm(true)}
             >
-              ✕
+              {" "}
+              Submit Test{" "}
             </button>
           </div>
-
-          <div className="palette-legend">
-            <span className="pal-dot answered" /> Answered ({answered})
-            <span
-              className="pal-dot unanswered"
-              style={{ marginLeft: 12 }}
-            />{" "}
-            Unanswered ({questions.length - answered})
-            <span className="pal-dot marked" style={{ marginLeft: 12 }} />{" "}
-            Marked ({markedCount})
-          </div>
-
-          <div className="palette-grid">
-            {questions.map((_, index) => (
-              <button
-                key={index}
-                className={`pal-btn ${getQStatus(index)} ${current === index ? "current" : ""}`}
-                onClick={() => {
-                  setCurrent(index);
-                  setPaletteOpen(false);
-                }}
-              >
-                {index + 1}
-              </button>
-            ))}
-          </div>
-
-          <div className="palette-summary">
-            <div className="ps-row">
-              <span>Total Questions</span>
-              <b>{questions.length}</b>
-            </div>
-            <div className="ps-row">
-              <span>Answered</span>
-              <b className="green"> {answered} </b>
-            </div>
-            <div className="ps-row">
-              <span>Not Answered</span>
-              <b className="red"> {questions.length - answered} </b>
-            </div>
-            <div className="ps-row">
-              <span>Marked</span>
-              <b className="orange"> {markedCount} </b>
-            </div>
-          </div>
-
-          <button
-            className="btn-primary w-full"
-            onClick={() => setShowConfirm(true)}
-          >
-            {" "}
-            Submit Test{" "}
-          </button>
         </div>
       </div>
 
@@ -705,57 +752,38 @@ export default function TestInterface() {
       </button>
 
       {/* CONFIRM MODAL */}
-      {showConfirm && (
-        <div className="modal-overlay" onClick={() => setShowConfirm(false)}>
-          <div className="modal-box" onClick={(e) => e.stopPropagation()}>
-            <h3>Submit Test?</h3>
-            <p>
-              You have answered <b>{answered}</b> out of{" "}
-              <b>{questions.length}</b> questions.
-            </p>
-            {questions.length - answered > 0 && (
-              <p className="modal-warn">
-                ⚠️ {questions.length - answered} questions are unanswered.
-              </p>
-            )}
-            <div className="modal-actions">
-              <button
-                className="btn-outline"
-                onClick={() => setShowConfirm(false)}
-              >
-                {" "}
-                Continue Test{" "}
-              </button>
-              <button className="btn-primary" onClick={handleSubmit}>
-                {" "}
-                Submit Now{" "}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <Modal
+        isOpen={showConfirm}
+        onClose={() => setShowConfirm(false)}
+        title="Submit Test?"
+        primaryLabel="Submit Now"
+        secondaryLabel="Continue Test"
+        onPrimary={handleSubmit}
+        onSecondary={() => setShowConfirm(false)}
+      >
+        <p>
+          You have answered <b>{answered}</b> out of <b>{questions.length}</b>{" "}
+          questions.
+        </p>
+        {questions.length - answered > 0 && (
+          <p className="modal-warn">
+            ⚠️ {questions.length - answered} questions are unanswered.
+          </p>
+        )}
+      </Modal>
 
-      {showExitModal && (
-        <div className="modal-overlay" onClick={() => setShowExitModal(false)}>
-          <div className="modal-box" onClick={(e) => e.stopPropagation()}>
-            <h3>Exit Exam?</h3>
-            <p>Your current progress may be lost if you leave this exam.</p>
-            <div className="modal-actions">
-              <button
-                className="btn-primary"
-                onClick={() => setShowExitModal(false)}
-              >
-                {" "}
-                Continue Exam{" "}
-              </button>
-              <button className="btn-outline" onClick={handleExitExam}>
-                {" "}
-                Exit Exam{" "}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* EXIT MODAL */}
+      <Modal
+        isOpen={showExitModal}
+        onClose={() => setShowExitModal(false)}
+        title="Exit Exam?"
+        primaryLabel="Continue Exam"
+        secondaryLabel="Exit Exam"
+        onPrimary={() => setShowExitModal(false)}
+        onSecondary={handleExitExam}
+      >
+        <p>Your current progress may be lost if you leave this exam.</p>
+      </Modal>
     </div>
   );
 }

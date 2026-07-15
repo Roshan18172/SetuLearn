@@ -10,7 +10,7 @@ import { BookOpenCheck, ChartPie, Repeat } from "../data/svgs";
  */
 export function calculateAggregatedResults(resultsData, test = {}) {
   // Normalize input into an array of submission data items
-  console.log("Calculating aggregated results for:", resultsData, test);
+  // console.log("Calculating aggregated results for:", resultsData, test);
   const submissionsList = Array.isArray(resultsData)
     ? resultsData
     : (resultsData?.data ? [resultsData.data] : [resultsData]);

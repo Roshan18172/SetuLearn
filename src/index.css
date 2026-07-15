@@ -1511,18 +1511,33 @@ button:disabled {
   background: var(--surface);
   display: flex;
   flex-direction: column;
-  padding: 16px;
-  gap: 14px;
+  gap: 16px;
   overflow-y: auto;
   flex-shrink: 0;
+  position: relative;
 }
 
+.ti-sidebar-header {
+  position: sticky;
+  inset: 0;
+  background-color: var(--surface);
+  padding: 16px;
+  z-index: 1100;
+}
+
+.ti-sidebar-body {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
 .palette-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   font-weight: 700;
-  font-size: 0.95rem;
+  font-size: 1rem;
+
 }
 
 .palette-close {
@@ -2702,6 +2717,15 @@ button:disabled {
   color: rgba(255, 255, 255, 0.35);
 }
 
+.footer-bottom a {
+  text-decoration: none;
+  color: var(--accent);
+}
+
+.footer-bottom a:hover {
+  text-decoration: underline;
+}
+
 /* ===== RESPONSIVE ===== */
 @media (max-width: 992px) {
   .navbar-links {
@@ -2767,6 +2791,11 @@ button:disabled {
     z-index: 100;
     width: 100%;
     border: none;
+    padding: 0;
+  }
+
+  .ti-sidebar-body {
+    padding: 16px 16px 72px 16px;
   }
 
   .ti-sidebar.open {
