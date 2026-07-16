@@ -26,13 +26,27 @@ import PrivacyPolicy from "./pages/Supports/PrivacyPolicy";
 import TermsOfService from "./pages/Supports/TermsOfService";
 import Accessibility from "./pages/Supports/Accessibility";
 
-
+// Admin imports
+import { AdminAuthProvider } from "./context/AdminAuthContext";
+import AdminLogin from "./pages/Admin/AdminLogin";
+import AdminLayout from "./pages/Admin/AdminLayout";
+import AdminDashboard from "./pages/Admin/AdminDashboard";
+import ProtectedRoute from "./pages/Admin/ProtectedRoute";
+import ExamsList from "./pages/Admin/ExamsList";
+import TestsList from "./pages/Admin/TestsList";
+import TestQuestionsList from "./pages/Admin/TestQuestionsList";
+import QuestionsList from "./pages/Admin/QuestionsList";
+import SubjectsList from "./pages/Admin/SubjectsList";
+import TopicsList from "./pages/Admin/TopicsList";
+import ContactsList from "./pages/Admin/ContactsList";
+import ReportsList from "./pages/Admin/ReportsList";
+import SubmissionsList from "./pages/Admin/SubmissionsList";
 
 function App() {
   const location = useLocation();
 
   const hideLayout =
-    location.pathname === "/test";
+    location.pathname === "/test" || location.pathname.startsWith("/admin");
 
 const config = {
   // 1. Tell MathJax to load the TeX input processor
@@ -79,6 +93,36 @@ const config = {
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms-of-service" element={<TermsOfService />} /> 
           <Route path="/accessibility" element={<Accessibility />} />
+
+          {/* Admin Routes */}
+          <Route path="/admin/login" element={
+            <AdminAuthProvider>
+              <AdminLogin />
+            </AdminAuthProvider>
+          } />
+          <Route
+            path="/admin"
+            element={
+              <AdminAuthProvider>
+                <ProtectedRoute>
+                  <AdminLayout />
+                </ProtectedRoute>
+              </AdminAuthProvider>
+            }
+          >
+            <Route index element={<AdminDashboard />} />
+            <Route path="dashboard" element={<AdminDashboard />} />
+            <Route path="exams" element={<ExamsList />} />
+            <Route path="tests" element={<TestsList />} />
+            <Route path="tests/:testId/questions" element={<TestQuestionsList />} />
+            <Route path="questions" element={<QuestionsList />} />
+            <Route path="subjects" element={<SubjectsList />} />
+            <Route path="topics" element={<TopicsList />} />
+            <Route path="contacts" element={<ContactsList />} />
+            <Route path="reports" element={<ReportsList />} />
+            <Route path="submissions" element={<SubmissionsList />} />
+          </Route>
+
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
