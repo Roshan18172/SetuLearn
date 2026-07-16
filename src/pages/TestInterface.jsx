@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, useNavigationType } from "react-router-dom";
 import { MathJax } from "better-react-mathjax";
 import { ClockLoader } from "../data/svgs";
 import Modal from "../components/Modal";
@@ -21,11 +21,64 @@ function pickFirstAnswerValue(...values) {
   );
 }
 
+// Small helper screen used whenever TestInterface has nothing valid to show
+// (no test in state, already-submitted test, or no questions). Auto-
+// redirects to Tests after a brief moment, with a manual fallback button.
+function RedirectToTests({ message }) {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      navigate("/tests", { replace: true });
+    }, 1200);
+    return () => clearTimeout(timer);
+  }, [navigate]);
+
+  return (
+    <div
+      className="empty-state"
+      style={{ padding: "80px 20px", textAlign: "center" }}
+    >
+      <div className="empty-icon">📋</div>
+      <h3>{message}</h3>
+      <p>Taking you back to Tests...</p>
+      <button className="btn-primary" style={{ display: "block", margin: "0 auto" }}
+       onClick={() => navigate("/tests", { replace: true })}>
+        Browse Tests
+      </button>
+    </div>
+  );
+}
+
 export default function TestInterface() {
   const navigate = useNavigate();
   const location = useLocation();
+  const navigationType = useNavigationType(); // 'POP' | 'PUSH' | 'REPLACE'
 
   const { test, mode = "timed" } = location.state || {};
+
+  // Guards against setState firing after the component has unmounted
+  // (e.g. a fast navigation mid-fetch).
+  const mountedRef = useRef(true);
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
+
+  // If this test was already submitted (e.g. the user got here via Back
+  // from the Result page, or a stray Forward-button press), don't re-run
+  // the exam session — bounce straight to Tests instead.
+  const alreadySubmitted =
+    !!test?.id &&
+    typeof window !== "undefined" &&
+    sessionStorage.getItem(`test_submitted_${test.id}`) === "true";
+
+  // Tracks whether the exit modal is currently open, read/written
+  // synchronously by the back-button trap below (kept as a ref, not
+  // state, so a fast double back-press can't race ahead of a render).
+  const modalOpenRef = useRef(false);
 
   // State variables for parsed data
   const [questions, setQuestions] = useState([]);
@@ -95,7 +148,7 @@ export default function TestInterface() {
 
   // Combined effect to handle sub-test session initialization and question mapping seamlessly
   useEffect(() => {
-    if (!test) {
+    if (!test || alreadySubmitted) {
       setLoadingQuestions(false);
       return;
     }
@@ -233,18 +286,19 @@ export default function TestInterface() {
         });
 
         const results = await Promise.all(questionPromises);
+        if (!mountedRef.current) return;
         setQuestions(results.flat());
         setSubmissionMap(internalSubmissionMapping);
       } catch (error) {
         console.error("Error aggregating master exam structure:", error);
       } finally {
         dataLoadedRef.current = true;
-        setLoadingQuestions(false);
+        if (mountedRef.current) setLoadingQuestions(false);
       }
     };
 
     loadExamDataStructure();
-  }, [test, getAuthHeaders]);
+  }, [test, alreadySubmitted, getAuthHeaders]);
 
   useEffect(() => {
     const disableRightClick = (e) => {
@@ -378,8 +432,19 @@ export default function TestInterface() {
         }
       }
 
-      // Navigate to the results display page with the consolidated responses array
+      // Mark this test as submitted so that if the user later hits Back
+      // from the Result page (or otherwise lands back on this route), we
+      // recognize it and redirect instead of re-fetching/re-running a
+      // finished exam session.
+      if (test?.id) {
+        sessionStorage.setItem(`test_submitted_${test.id}`, "true");
+      }
+
+      // replace: true so the Result page takes TestInterface's place in
+      // history — pressing Back from Result then goes straight to
+      // wherever was before this exam (Tests), not into a dead session.
       navigate("/result", {
+        replace: true,
         state: {
           test,
           result: finalMergedResultsArray,
@@ -397,9 +462,10 @@ export default function TestInterface() {
   }, [navigate, questions, answers, test, submissionMap, getAuthHeaders]);
 
   const handleExitExam = () => {
-    navigate("/instructions", {
-      state: { test },
-    });
+    // Exiting mid-test goes straight to Tests (not back to Instructions) —
+    // replace so it also clears this dead TestInterface entry from history.
+    modalOpenRef.current = false;
+    navigate("/tests", { replace: true });
   };
   //eslint-disable-next-line
   const [tabSwitchCount, setTabSwitchCount] = useState(0);
@@ -439,22 +505,58 @@ export default function TestInterface() {
     return () => clearInterval(timer);
   }, [timeLeft, mode, handleSubmit]);
 
+  // Show the "Exit Exam?" modal on Back — implemented entirely through
+  // React Router's own `Maps()`/`useNavigationType()`, NOT the raw
+  // `window.history` API. Calling `window.history.pushState` ourselves
+  // fights React Router's own internal history bookkeeping (it tracks
+  // each entry's key/index itself), which was corrupting `location.state`
+  // — the exam would lose `test` the instant a real Back press fired,
+  // unmounting mid-render before the modal could even show.
+  //
+  // How it works: once the exam is loaded, we push one extra duplicate
+  // history entry (same route, same state) via `Maps()`. A Back
+  // press then just pops back onto this same duplicate entry — the page
+  // doesn't unmount at all, `useNavigationType()` flips to "POP", and we
+  // catch that to show the modal and push another duplicate to stay
+  // armed. A second Back press while the modal is already open is
+  // treated as the confirmed exit.
+  const examActive = !!test && !alreadySubmitted && !loadingQuestions && questions.length > 0;
+  const trapArmedRef = useRef(false);
+
+  // Arm the trap once, right when the exam becomes active.
   useEffect(() => {
-    window.history.pushState(null, "", window.location.pathname);
+    if (!examActive || trapArmedRef.current) return;
+    trapArmedRef.current = true;
+    navigate(location.pathname, { state: location.state });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [examActive]);
 
-    const handlePopState = () => {
-      setShowExitModal(true);
-      window.history.pushState(null, "", window.location.pathname);
-    };
+  // React to Back/Forward presses (only meaningful once armed).
+  useEffect(() => {
+    if (!examActive || !trapArmedRef.current) return;
+    if (navigationType !== "POP") return;
 
-    window.addEventListener("popstate", handlePopState);
-    return () => {
-      window.removeEventListener("popstate", handlePopState);
-    };
-  }, []);
+    if (modalOpenRef.current) {
+      // Second back-press while the modal is already up = confirmed exit.
+      modalOpenRef.current = false;
+      setShowExitModal(false);
+      navigate("/tests", { replace: true });
+      return;
+    }
+
+    modalOpenRef.current = true;
+    setShowExitModal(true);
+    // Re-arm: push another duplicate so the next Back press pops onto
+    // this page again instead of actually leaving.
+    navigate(location.pathname, { state: location.state });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [navigationType, location.key]);
 
   useEffect(() => {
     const handleBeforeUnload = (e) => {
+      // Only warn on an actual tab close/refresh mid-exam (not SPA
+      // navigation, which doesn't fire beforeunload).
+      if (alreadySubmitted) return;
       e.preventDefault();
       e.returnValue = "";
     };
@@ -463,9 +565,17 @@ export default function TestInterface() {
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
-  }, []);
+  }, [alreadySubmitted]);
 
-  if (!test || loadingQuestions) {
+  if (!test) {
+    return <RedirectToTests message="No test data found." />;
+  }
+
+  if (alreadySubmitted) {
+    return <RedirectToTests message="You have already submitted this test." />;
+  }
+
+  if (loadingQuestions) {
     return (
       <div
         className="empty-state"
@@ -482,18 +592,7 @@ export default function TestInterface() {
 
   if (questions.length === 0) {
     return (
-      <div
-        className="empty-state"
-        style={{ padding: "80px 20px", textAlign: "center" }}
-      >
-        <div className="empty-icon">📝</div>
-        <h2>No Questions Found</h2>
-        <p>This exam currently has no configured questions available.</p>
-        <button className="btn-primary" onClick={() => navigate("/tests")}>
-          {" "}
-          Browse Tests{" "}
-        </button>
-      </div>
+      <RedirectToTests message="This exam currently has no configured questions available." />
     );
   }
 
@@ -536,7 +635,10 @@ export default function TestInterface() {
         <div style={{ display: "flex", gap: "10px" }}>
           <button
             className="btn-outline"
-            onClick={() => setShowExitModal(true)}
+            onClick={() => {
+              modalOpenRef.current = true;
+              setShowExitModal(true);
+            }}
           >
             {" "}
             Exit{" "}
@@ -775,11 +877,17 @@ export default function TestInterface() {
       {/* EXIT MODAL */}
       <Modal
         isOpen={showExitModal}
-        onClose={() => setShowExitModal(false)}
+        onClose={() => {
+          modalOpenRef.current = false;
+          setShowExitModal(false);
+        }}
         title="Exit Exam?"
         primaryLabel="Continue Exam"
         secondaryLabel="Exit Exam"
-        onPrimary={() => setShowExitModal(false)}
+        onPrimary={() => {
+          modalOpenRef.current = false;
+          setShowExitModal(false);
+        }}
         onSecondary={handleExitExam}
       >
         <p>Your current progress may be lost if you leave this exam.</p>

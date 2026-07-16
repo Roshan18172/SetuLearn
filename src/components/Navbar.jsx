@@ -13,7 +13,7 @@ export default function Navbar() {
     { path: "/", label: "Home" },
     { path: "/tests", label: "Tests" },
     { path: "/about", label: "About" },
-    { path: "/contact", label: "Contat" },
+    { path: "/contact", label: "Contact" },
   ];
 
   return (

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { BookOpenCheck, ChartPie, Repeat } from "../data/svgs";
 
@@ -201,6 +201,31 @@ export default function TestResult() {
   } = location.state || {};
 
   document.title = "Test Performance Result - SetuLearn";
+
+  const hasValidResult = !!(test && result);
+  // If someone lands here without a valid result (e.g. a stray refresh or
+  // a direct link), there's nothing to show — bounce straight to Tests
+  // instead of rendering a confusing all-zero scorecard.
+  useEffect(() => {
+    if (hasValidResult) return;
+    const timer = setTimeout(() => {
+      navigate("/tests", { replace: true });
+    }, 1200);
+    return () => clearTimeout(timer);
+  }, [hasValidResult, navigate]);
+
+  if (!hasValidResult) {
+    return (
+      <div className="empty-state" style={{ padding: "80px 20px", textAlign: "center" }}>
+        <div className="empty-icon">📋</div>
+        <h3>No result to show</h3>
+        <p>Taking you back to Tests...</p>
+        <button className="btn-primary" onClick={() => navigate("/tests", { replace: true })}>
+          Browse Tests
+        </button>
+      </div>
+    );
+  }
 
   // Parse and aggregate cross-sectional metrics seamlessly passing the test context
   const metrics = calculateAggregatedResults(result, test);

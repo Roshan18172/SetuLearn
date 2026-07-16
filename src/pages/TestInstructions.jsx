@@ -167,7 +167,17 @@ export default function TestInstructions() {
           </button>
           <button
             className="btn-primary btn-lg"
-            onClick={() => navigate("/test", { state: { test, mode } })}
+            onClick={() => {
+              // Clear any "already submitted" flag from a previous attempt
+              // so a fresh attempt isn't immediately bounced back out.
+              if (test?.id) {
+                sessionStorage.removeItem(`test_submitted_${test.id}`);
+              }
+              // replace: true — TestInterface takes Instructions' place in
+              // history, so pressing Back mid-test goes straight to Tests
+              // instead of back through here.
+              navigate("/test", { replace: true, state: { test, mode } });
+            }}
           >
             <span>Start Test</span>
             <ArrowRight />
