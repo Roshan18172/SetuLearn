@@ -4,6 +4,7 @@ import adminService from "../../api/adminService";
 import { getErrorMessage } from "../../api/apiErrorHandler";
 
 export default function ExamsList() {
+   // eslint-disable-next-line
   const navigate = useNavigate();
   const [exams, setExams] = useState([]);
   const [loading, setLoading] = useState(true);

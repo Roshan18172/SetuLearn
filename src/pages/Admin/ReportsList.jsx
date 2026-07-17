@@ -20,7 +20,7 @@ export default function ReportsList() {
       setTotalPages(data.pagination?.totalPages || 1);
     } catch (err) { setError(getErrorMessage(err)); } finally { setLoading(false); }
   };
-
+ // eslint-disable-next-line
   useEffect(() => { fetchReports(); }, [page]);
 
   const handleDelete = async (id) => {

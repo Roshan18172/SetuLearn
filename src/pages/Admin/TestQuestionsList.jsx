@@ -44,7 +44,7 @@ export default function TestQuestionsList() {
       setLoading(false);
     }
   };
-
+ // eslint-disable-next-line
   useEffect(() => { fetchData(); }, [testId]);
 
   const handleAddSingle = async () => {

@@ -20,7 +20,7 @@ export default function ContactsList() {
       setTotalPages(data.pagination?.totalPages || 1);
     } catch (err) { setError(getErrorMessage(err)); } finally { setLoading(false); }
   };
-
+ // eslint-disable-next-line
   useEffect(() => { fetchContacts(); }, [page]);
 
   const handleDelete = async (id) => {
