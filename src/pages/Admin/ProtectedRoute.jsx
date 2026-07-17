@@ -1,5 +1,6 @@
 import { Navigate } from "react-router-dom";
 import { useAdminAuth } from "../../context/AdminAuthContext";
+import "./AdminUI.css";
 
 export default function ProtectedRoute({ children }) {
   const { isAuthenticated, loading } = useAdminAuth();

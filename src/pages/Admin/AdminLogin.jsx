@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAdminAuth } from "../../context/AdminAuthContext";
 import { getErrorMessage } from "../../api/apiErrorHandler";
+import "./AdminUI.css";
 
 export default function AdminLogin() {
   const [email, setEmail] = useState("");
