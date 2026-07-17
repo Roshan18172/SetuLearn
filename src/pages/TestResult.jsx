@@ -6,9 +6,11 @@ import { BookOpenCheck, ChartPie, Repeat } from "../data/svgs";
  * Aggregates and calculates metrics across multiple backend submissions
  * @param {Array|Object} resultsData - A single result object or an array of result objects from the backend
  * @param {Object} test - The parent test configuration metadata containing section/subtest details
+ * @param {Array} questions - Full question array with marks/negativeMarks from TestInterface
+ * @param {Object} answers - User answers map keyed by question id
  * @returns {Object} Combined metrics summary
  */
-export function calculateAggregatedResults(resultsData, test = {}) {
+export function calculateAggregatedResults(resultsData, test = {}, questions = [], answers = {}) {
   // Normalize input into an array of submission data items
   // console.log("Calculating aggregated results for:", resultsData, test);
   const submissionsList = Array.isArray(resultsData)
@@ -66,12 +68,77 @@ export function calculateAggregatedResults(resultsData, test = {}) {
             s => String(s.id) === String(subject.subjectId)
           ) || {};
 
-        const totalMarks = config.marks || totalQuestions * 4;
+        // Calculate total marks and score from questionAnalysis if available
+        // This gives accurate marks per question instead of hardcoded values
+        let totalMarks, subjectScore;
 
-        // Estimate score
-        const score =
-          correct * 4 -
-          incorrect * 1;
+        if (Array.isArray(subject.questionAnalysis) && subject.questionAnalysis.length > 0) {
+          // Sum up marks from all questions in this subject (each question has its own marks)
+          // Handle fractional marks by keeping decimal precision
+          const marksSum = subject.questionAnalysis.reduce((sum, q) => {
+            const marks = parseFloat(q.marks) || 0;
+            return sum + marks;
+          }, 0);
+
+          // Calculate score from questionAnalysis using each question's actual marks and negative marks
+          const scoreFromQuestions = subject.questionAnalysis.reduce((sum, q) => {
+            const marks = parseFloat(q.marks) || 0;
+            const negativeMarks = parseFloat(q.negativeMarks) || 0;
+            // If question was answered correctly: add full marks
+            // If question was answered incorrectly (has selectedOptionId but not correct): subtract negative marks
+            // Note: selectedOptionId exists when user attempted but answer was wrong
+            if (q.isCorrect || q.correct) {
+              return sum + marks;
+            } else if (q.selectedOptionId !== undefined && q.selectedOptionId !== null && !q.isCorrect) {
+              return sum - negativeMarks;
+            }
+            return sum;
+          }, 0);
+
+          totalMarks = marksSum || subject.totalMarks || subject.maxMarks || config.marks || totalQuestions * 4;
+          subjectScore = subject.score !== undefined ? subject.score : scoreFromQuestions;
+        } else if (questions && questions.length > 0) {
+          // Use questions array for accurate marks calculation - group by subject
+          const subjectQuestions = questions.filter(q => String(q.subjectId) === String(subject.subjectId));
+          
+          // Sum up individual question marks (supports fractional values)
+          const marksSum = subjectQuestions.reduce((sum, q) => {
+            const marks = parseFloat(q.marks) || 0;
+            return sum + marks;
+          }, 0);
+
+          // Calculate score based on answers vs correct answers
+          const scoreFromQuestions = subjectQuestions.reduce((sum, q) => {
+            const marks = parseFloat(q.marks) || 0;
+            const negativeMarks = parseFloat(q.negativeMarks) || 0;
+            const questionId = String(q.id);
+            const answer = answers[questionId];
+            const correctOptionId = String(q.correct || q.correctOptionId);
+            
+            if (answer && String(answer) === correctOptionId) {
+              // Correct answer
+              return sum + marks;
+            } else if (answer && String(answer) !== correctOptionId) {
+              // Wrong answer - apply negative marking
+              return sum - negativeMarks;
+            }
+            return sum;
+          }, 0);
+
+          totalMarks = marksSum || subject.totalMarks || subject.maxMarks || config.marks || totalQuestions * 4;
+          subjectScore = subject.score !== undefined ? subject.score : scoreFromQuestions;
+        } else {
+          // Fallback to original calculation if no questionAnalysis in subject
+          // Use marksPerQuestion and negativePerQuestion from backend if available
+          const marksPerQuestion = parseFloat(subject.marksPerQuestion) || parseFloat(config.marks) || 0;
+          const negativePerQuestion = parseFloat(subject.negativePerQuestion) || 0;
+          
+          totalMarks = subject.totalMarks || subject.maxMarks || (marksPerQuestion ? totalQuestions * marksPerQuestion : totalQuestions * 4);
+          subjectScore = subject.score !== undefined
+            ? subject.score
+            : (marksPerQuestion ? correct * marksPerQuestion : correct * 4) - 
+              (negativePerQuestion ? incorrect * negativePerQuestion : incorrect * 1);
+        }
 
         const accuracy =
           attempted === 0
@@ -84,7 +151,7 @@ export function calculateAggregatedResults(resultsData, test = {}) {
           attempted,
           correct,
           incorrect,
-          score,
+          score: subjectScore,
           total: totalMarks,
           accuracy,
           topics: Array.isArray(subject.topics) ? subject.topics : []
@@ -228,7 +295,8 @@ export default function TestResult() {
   }
 
   // Parse and aggregate cross-sectional metrics seamlessly passing the test context
-  const metrics = calculateAggregatedResults(result, test);
+  // Pass questions array and answers for accurate per-question marks calculation
+  const metrics = calculateAggregatedResults(result, test, questions, answers);
   // calculateAggregatedResults sums sub.timeSpent from the backend per section.
   // If the backend doesn't return per-section time, we fall back to the total
   // timeSpentSeconds passed directly from TestInterface via location.state.

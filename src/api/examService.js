@@ -48,13 +48,24 @@ const examService = {
   },
 
   /**
+   * Get test questions by test ID (fetches full test data including questions).
+   * GET /api/v1/tests/:id
+   * @param {string} testId
+   */
+  getTestQuestions: async (testId) => {
+    if (!testId) throw new Error("testId is required");
+    const response = await api.get(`/tests/${testId}`);
+    return response.data.data;
+  },
+
+  /**
    * Start a test (creates a submission and returns questions).
    * POST /api/v1/tests/:id/start
    * @param {string} testId
    */
   startTest: async (testId) => {
     if (!testId) throw new Error("testId is required");
-    const response = await api.post(`/tests/${testId}/start`);
+    const response = await api.post(`/tests/${testId}/start`, {});
     return response.data.data;
   },
 

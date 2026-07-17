@@ -3,6 +3,7 @@ import { useNavigate, useLocation, useNavigationType } from "react-router-dom";
 import { MathJax } from "better-react-mathjax";
 import { ClockLoader } from "../data/svgs";
 import Modal from "../components/Modal";
+import testService from "../api/testService";
 
 function padTwo(n) {
   return String(n).padStart(2, "0");
@@ -133,19 +134,6 @@ export default function TestInterface() {
     }
   }, [current, questions]);
 
-  // Helper function to dynamically retrieve standard auth tokens securely
-  const getAuthHeaders = useCallback(() => {
-    const token =
-      localStorage.getItem("token") || sessionStorage.getItem("token");
-    const headers = {
-      "Content-Type": "application/json",
-    };
-    if (token) {
-      headers["Authorization"] = `Bearer ${token}`;
-    }
-    return headers;
-  }, []);
-
   // Combined effect to handle sub-test session initialization and question mapping seamlessly
   useEffect(() => {
     if (!test || alreadySubmitted) {
@@ -179,39 +167,25 @@ export default function TestInterface() {
         const questionPromises = subTestsToFetch.map(async (sub) => {
           try {
             // 1. Initialize session at sub-test scope level
-            const startResponse = await fetch(
-              `https://setulearn-backend.onrender.com/api/v1/tests/${sub.id}/start`,
-              {
-                method: "POST",
-                headers: getAuthHeaders(),
-                body: JSON.stringify({}),
-              },
-            );
-            const startJson = await startResponse.json();
+            const startData = await testService.startTest(sub.id);
 
             let currentSubTestSubmissionId = null;
-            if (startJson.success && startJson.data) {
+            if (startData) {
               currentSubTestSubmissionId =
-                startJson.data.submissionId ||
-                startJson.data.id ||
-                (startJson.data.data && startJson.data.data.submissionId);
+                startData.submissionId ||
+                startData.id ||
+                (startData.data && startData.data.submissionId);
             }
 
             // 2. Fetch the corresponding questions data structure
-            const dataResponse = await fetch(
-              `https://setulearn-backend.onrender.com/api/v1/tests/${sub.id}`,
-              {
-                headers: getAuthHeaders(),
-              },
-            );
-            const dataJson = await dataResponse.json();
+            const testData = await testService.getTestQuestions(sub.id);
 
-            if (dataJson.success && dataJson.data) {
-              const fetchedQuestions = dataJson.data.questions || [];
+            if (testData) {
+              const fetchedQuestions = testData.questions || [];
 
               // Map backend subject array to quickly look up real subject names via ID later
               const subMap = {};
-              (dataJson.data.subjects || []).forEach((s) => {
+              (testData.subjects || []).forEach((s) => {
                 subMap[s.id] = s.name;
               });
               setSubjectsMap((prev) => ({ ...prev, ...subMap }));
@@ -298,7 +272,7 @@ export default function TestInterface() {
     };
 
     loadExamDataStructure();
-  }, [test, alreadySubmitted, getAuthHeaders]);
+  }, [test, alreadySubmitted]);
 
   useEffect(() => {
     const disableRightClick = (e) => {
@@ -368,23 +342,10 @@ export default function TestInterface() {
           ...submissionsGrouped[subTestId],
           timeSpent: timeSpentRef.current,
         };
-        // console.log("Submitting payload structure:", payload);
 
-        const response = await fetch(
-          `https://setulearn-backend.onrender.com/api/v1/tests/${subTestId}/submit`,
-          {
-            method: "POST",
-            headers: getAuthHeaders(),
-            body: JSON.stringify(payload),
-          },
-        );
-
-        const json = await response.json();
-        if (!json.success) {
-          console.error("Validation details:", json.errors || json.message);
-          alert(
-            `Submission processing failed: ${json.message || "Validation Error"}`,
-          );
+        const jsonData = await testService.submitTest(subTestId, payload);
+        if (!jsonData) {
+          alert("Submission processing failed.");
           return;
         }
 
@@ -395,29 +356,21 @@ export default function TestInterface() {
         // breakdown (with explanations, selected/correct options) only lives
         // behind a separate endpoint keyed by submissionId, so we fetch it
         // here and merge it in before pushing.
-        if (json.data) {
-          let fullResult = json.data;
-          const submissionId = json.data.submissionId;
+        if (jsonData) {
+          let fullResult = jsonData;
+          const submissionId = jsonData.submissionId;
 
           if (submissionId) {
             try {
-              const resultResponse = await fetch(
-                `https://setulearn-backend.onrender.com/api/v1/submissions/${submissionId}/result`,
-                {
-                  headers: getAuthHeaders(),
-                },
-              );
-              const resultJson = await resultResponse.json();
-
-              if (resultJson.success && resultJson.data) {
+              const resultData = await testService.getSubmissionResult(submissionId);
+              if (resultData) {
                 // Merge: keep submissionId/timeTaken from submit response,
                 // but layer in questionAnalysis (and refreshed subjectAnalysis/
                 // score fields) from the detailed result response.
-                fullResult = { ...json.data, ...resultJson.data };
+                fullResult = { ...jsonData, ...resultData };
               } else {
                 console.error(
-                  `Failed to fetch detailed result for submission ${submissionId}:`,
-                  resultJson.message,
+                  `Failed to fetch detailed result for submission ${submissionId}`,
                 );
               }
             } catch (err) {
@@ -459,7 +412,7 @@ export default function TestInterface() {
       alert("An error occurred while submitting your test.");
     }
     //eslint-disable-next-line
-  }, [navigate, questions, answers, test, submissionMap, getAuthHeaders]);
+  }, [navigate, questions, answers, test, submissionMap]);
 
   const handleExitExam = () => {
     // Exiting mid-test goes straight to Tests (not back to Instructions) —

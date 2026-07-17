@@ -147,8 +147,7 @@ export default function Solutions() {
 
   const questionInfoMap = buildQuestionInfoMap(result);
 
-  console.log("Solutions Page State:", { test, answers, questions, result });
-  document.title = `${test.title || "Exam"} Solutions - SetuLearn`;
+  document.title = `${test?.title || "Exam"} Solutions - SetuLearn`;
 
   const handleDownload = () => {
     const html = generateSolutionsHtml(test, questions, answers, questionInfoMap);

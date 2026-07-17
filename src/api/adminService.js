@@ -96,6 +96,25 @@ const adminService = {
     return response.data.data;
   },
 
+  previewQuestionsExcel: async (file) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    const response = await api.post("/admin/questions/preview-excel", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    return response.data.data;
+  },
+
+  seedQuestionsExcel: async (file, clearExisting = false) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("clearExisting", clearExisting);
+    const response = await api.post("/admin/questions/seed-excel", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    return response.data.data;
+  },
+
   createQuestion: async (data) => {
     const response = await api.post("/admin/questions", data);
     return response.data.data;
@@ -202,6 +221,24 @@ const adminService = {
 
   clearTestQuestions: async (testId) => {
     const response = await api.delete(`/admin/tests/${testId}/questions`);
+    return response.data.data;
+  },
+
+  // Test Generation
+  generateTestByRange: async (testName, importIdFrom, importIdTo) => {
+    const response = await api.post("/admin/tests/generate/by-range", {
+      testName,
+      importIdFrom,
+      importIdTo,
+    });
+    return response.data.data;
+  },
+
+  generateTestBySubject: async (testName, subjectConfigs) => {
+    const response = await api.post("/admin/tests/generate/by-subject", {
+      testName,
+      subjectConfigs,
+    });
     return response.data.data;
   },
 

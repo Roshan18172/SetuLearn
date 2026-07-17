@@ -42,12 +42,12 @@ export function mapTestToFrontend(test, examName = "") {
     tags: [],
     description: test.description || "",
 
-    subjects: (test.subjects || []).map((subject) => ({
-      id: subject.id,
-      name: subject.name,
-      questions: subject.count,
-      marks: subject.count * 4,
-    })),
+     subjects: (test.subjects || []).map((subject) => ({
+       id: subject.id,
+       name: subject.name,
+       questions: subject.count,
+       marks: subject.totalMarks || subject.count * 4,
+     })),
 
     instructions: parseInstructions(test.instructions),
     attemptedBy: 0,

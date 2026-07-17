@@ -34,6 +34,8 @@ import AdminDashboard from "./pages/Admin/AdminDashboard";
 import ProtectedRoute from "./pages/Admin/ProtectedRoute";
 import ExamsList from "./pages/Admin/ExamsList";
 import TestsList from "./pages/Admin/TestsList";
+import TestGenerator from "./pages/Admin/TestGenerator";
+import QuestionSeed from "./pages/Admin/QuestionSeed";
 import TestQuestionsList from "./pages/Admin/TestQuestionsList";
 import QuestionsList from "./pages/Admin/QuestionsList";
 import SubjectsList from "./pages/Admin/SubjectsList";
@@ -48,86 +50,88 @@ function App() {
   const hideLayout =
     location.pathname === "/test" || location.pathname.startsWith("/admin");
 
-const config = {
-  // 1. Tell MathJax to load the TeX input processor
-  loader: { load: ["input/tex", "output/chtml"] },
-  
-  // 2. Define the exact delimiters your API uses
-  tex: {
-    inlineMath: [
-      ["$", "$"],         // Matches $x^2$
-      ["\\(", "\\)"]      // Matches \(x^2\)
-    ],
-    displayMath: [
-      ["$$", "$$"],       // Matches $$x^2$$ (block/centered)
-      ["\\[", "\\]"]      // Matches \[x^2\]
-    ],
-    processEscapes: true, // Allows using regular \$ in text without triggering math
-  }
-};
+  const config = {
+    // 1. Tell MathJax to load the TeX input processor
+    loader: { load: ["input/tex", "output/chtml"] },
+
+    // 2. Define the exact delimiters your API uses
+    tex: {
+      inlineMath: [
+        ["$", "$"],         // Matches $x^2$
+        ["\\(", "\\)"]      // Matches \(x^2\)
+      ],
+      displayMath: [
+        ["$$", "$$"],       // Matches $$x^2$$ (block/centered)
+        ["\\[", "\\]"]      // Matches \[x^2\]
+      ],
+      processEscapes: true, // Allows using regular \$ in text without triggering math
+    }
+  };
 
   return (
     <MathJaxContext config={config}>
       <div className="app-root">
 
-      {!hideLayout && <Navbar />}
+        {!hideLayout && <Navbar />}
 
-      <main className={!hideLayout ? "main-content" : ""}>
-        <ScrollToTop />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/exams" element={<Exams />} />
-          <Route path="/tests" element={<Tests />} />
-          <Route path="/instructions" element={<TestInstructions />} />
-          <Route path="/test" element={<TestInterface />} />
-          <Route path="/result" element={<TestResult />} />
-          <Route path="/analysis" element={<DetailedAnalysis />} />
-          <Route path="/solutions" element={<Solutions />} />
+        <main className={!hideLayout ? "main-content" : ""}>
+          <ScrollToTop />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/exams" element={<Exams />} />
+            <Route path="/tests" element={<Tests />} />
+            <Route path="/instructions" element={<TestInstructions />} />
+            <Route path="/test" element={<TestInterface />} />
+            <Route path="/result" element={<TestResult />} />
+            <Route path="/analysis" element={<DetailedAnalysis />} />
+            <Route path="/solutions" element={<Solutions />} />
 
-          <Route path="/faq" element={<FAQ />} />
-          <Route path="/contact" element={<ContactUs />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/how-it-works" element={<HowItWorks />} />
-          <Route path="/performance-tips" element={<PerformanceTips />} />
-          <Route path="/report-issue" element={<ReportIssue />} />
-          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-          <Route path="/terms-of-service" element={<TermsOfService />} /> 
-          <Route path="/accessibility" element={<Accessibility />} />
+            <Route path="/faq" element={<FAQ />} />
+            <Route path="/contact" element={<ContactUs />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/how-it-works" element={<HowItWorks />} />
+            <Route path="/performance-tips" element={<PerformanceTips />} />
+            <Route path="/report-issue" element={<ReportIssue />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/terms-of-service" element={<TermsOfService />} />
+            <Route path="/accessibility" element={<Accessibility />} />
 
-          {/* Admin Routes */}
-          <Route path="/admin/login" element={
-            <AdminAuthProvider>
-              <AdminLogin />
-            </AdminAuthProvider>
-          } />
-          <Route
-            path="/admin"
-            element={
+            {/* Admin Routes */}
+            <Route path="/admin/login" element={
               <AdminAuthProvider>
-                <ProtectedRoute>
-                  <AdminLayout />
-                </ProtectedRoute>
+                <AdminLogin />
               </AdminAuthProvider>
-            }
-          >
-            <Route index element={<AdminDashboard />} />
-            <Route path="dashboard" element={<AdminDashboard />} />
-            <Route path="exams" element={<ExamsList />} />
-            <Route path="tests" element={<TestsList />} />
-            <Route path="tests/:testId/questions" element={<TestQuestionsList />} />
-            <Route path="questions" element={<QuestionsList />} />
-            <Route path="subjects" element={<SubjectsList />} />
-            <Route path="topics" element={<TopicsList />} />
-            <Route path="contacts" element={<ContactsList />} />
-            <Route path="reports" element={<ReportsList />} />
-            <Route path="submissions" element={<SubmissionsList />} />
-          </Route>
+            } />
+            <Route
+              path="/admin"
+              element={
+                <AdminAuthProvider>
+                  <ProtectedRoute>
+                    <AdminLayout />
+                  </ProtectedRoute>
+                </AdminAuthProvider>
+              }
+            >
+              <Route index element={<AdminDashboard />} />
+              <Route path="dashboard" element={<AdminDashboard />} />
+              <Route path="exams" element={<ExamsList />} />
+              <Route path="tests" element={<TestsList />} />
+              <Route path="tests/generate" element={<TestGenerator />} />
+              <Route path="tests/:testId/questions" element={<TestQuestionsList />} />
+              <Route path="subjects" element={<SubjectsList />} />
+              <Route path="topics" element={<TopicsList />} />
+              <Route path="questions" element={<QuestionsList />} />
+              <Route path="questions/seed" element={<QuestionSeed />} />
+              <Route path="contacts" element={<ContactsList />} />
+              <Route path="reports" element={<ReportsList />} />
+              <Route path="submissions" element={<SubmissionsList />} />
+            </Route>
 
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </main>
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </main>
 
-      {!hideLayout && <Footer />}
+        {!hideLayout && <Footer />}
       </div>
     </MathJaxContext>
   );

@@ -6,13 +6,15 @@ export default function AdminLayout() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const navItems = [
+const navItems = [
     { path: "/admin/dashboard", label: "Dashboard", icon: "📊" },
     { path: "/admin/exams", label: "Exams", icon: "📚" },
     { path: "/admin/tests", label: "Tests", icon: "📝" },
+    { path: "/admin/tests/generate", label: "Generate Test", icon: "⚙️" },
+    { path: "/admin/questions", label: "Questions", icon: "❓" },
+    { path: "/admin/questions/seed", label: "Seed Questions", icon: "📤" },
     { path: "/admin/subjects", label: "Subjects", icon: "📖" },
     { path: "/admin/topics", label: "Topics", icon: "🏷️" },
-    { path: "/admin/questions", label: "Questions", icon: "❓" },
     { path: "/admin/contacts", label: "Contacts", icon: "📧" },
     { path: "/admin/reports", label: "Reports", icon: "🚩" },
     { path: "/admin/submissions", label: "Submissions", icon: "📋" },
