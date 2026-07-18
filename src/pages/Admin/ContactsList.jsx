@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import adminService from "../../api/adminService";
 import { getErrorMessage } from "../../api/apiErrorHandler";
 import { Eye, Trash2, CheckCircle2, XCircle } from "../../data/svgs";
+import DeleteConfirmModal from "./DeleteConfirmModal";
+import AdminPagination from "./AdminPagination";
 
 export default function ContactsList() {
   const [contacts, setContacts] = useState([]);
@@ -10,8 +12,11 @@ export default function ContactsList() {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [selected, setSelected] = useState(null);
+  const [deleteTarget, setDeleteTarget] = useState(null);
 
   document.title = "Manage Contacts - Admin";
+
+  const [totalItems, setTotalItems] = useState(0);
 
   const fetchContacts = async () => {
     try {
@@ -19,14 +24,14 @@ export default function ContactsList() {
       const data = await adminService.getContacts({ page, limit: 20 });
       setContacts(data.contacts);
       setTotalPages(data.pagination?.totalPages || 1);
+      setTotalItems(data.pagination?.total || 0);
     } catch (err) { setError(getErrorMessage(err)); } finally { setLoading(false); }
   };
  // eslint-disable-next-line
   useEffect(() => { fetchContacts(); }, [page]);
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Delete this contact message?")) return;
-    try { await adminService.deleteContact(id); fetchContacts(); } catch (err) { setError(getErrorMessage(err)); }
+    try { await adminService.deleteContact(id); fetchContacts(); setDeleteTarget(null); } catch (err) { setError(getErrorMessage(err)); setDeleteTarget(null); }
   };
 
   const toggleEmailSent = async (contact, field) => {
@@ -99,7 +104,7 @@ export default function ContactsList() {
                     </td>
                     <td className="admin-actions">
                       <button className="admin-btn-sm" onClick={() => setSelected(c)}><Eye /></button>
-                      <button className="admin-btn-sm admin-btn-danger" onClick={() => handleDelete(c.id)}><Trash2 /></button>
+                      <button className="admin-btn-sm admin-btn-danger" onClick={() => setDeleteTarget(c.id)}><Trash2 /></button>
                     </td>
                   </tr>
                 ))}
@@ -108,15 +113,17 @@ export default function ContactsList() {
             </table>
           </div>
 
-          {totalPages > 1 && (
-            <div className="admin-pagination">
-              <button disabled={page <= 1} onClick={() => setPage(page - 1)}>Previous</button>
-              <span>Page {page} of {totalPages}</span>
-              <button disabled={page >= totalPages} onClick={() => setPage(page + 1)}>Next</button>
-            </div>
-          )}
+          <AdminPagination page={page} totalPages={totalPages} onPageChange={setPage} totalItems={totalItems} />
         </>
       )}
+
+      <DeleteConfirmModal
+        isOpen={!!deleteTarget}
+        title="Delete Contact"
+        message="Delete this contact message?"
+        onConfirm={() => handleDelete(deleteTarget)}
+        onCancel={() => setDeleteTarget(null)}
+      />
     </div>
   );
 }

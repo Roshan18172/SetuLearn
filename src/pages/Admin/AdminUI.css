@@ -52,7 +52,9 @@
   --sidebar-w: 248px;
   --topbar-h: 56px;
 
-  --font-sans: "Google Sans Flex", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-sans:
+    "Google Sans Flex", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
@@ -94,6 +96,10 @@
 .admin-login-page button {
   font-family: inherit;
   cursor: pointer;
+  display: flex;
+  /* align-items: center; */
+  /* justify-content: center; */
+  gap: 0.5rem;
 }
 
 .admin-layout input,
@@ -147,7 +153,12 @@
   width: var(--sidebar-w);
   display: flex;
   flex-direction: column;
-  background: linear-gradient(190deg, var(--primary-darker) 0%, var(--primary-dark) 55%, var(--primary) 100%);
+  background: linear-gradient(
+    to top,
+    var(--primary-darker) 0%,
+    var(--primary-dark) 55%,
+    var(--primary) 100%
+  );
   color: #fff;
   z-index: 40;
   transition: transform 0.28s ease;
@@ -163,12 +174,6 @@
   font-size: 1.05rem;
   color: #fff;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.admin-sidebar-brand img {
-  border-radius: 6px;
-  background: #fff;
-  padding: 3px;
 }
 
 .admin-sidebar-nav {
@@ -194,7 +199,9 @@
   font-weight: 500;
   text-align: left;
   border-left: 3px solid transparent;
-  transition: background 0.15s ease, color 0.15s ease;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
 }
 
 .admin-sidebar-link:hover {
@@ -203,9 +210,10 @@
 }
 
 .admin-sidebar-link.active {
-  background: rgba(253, 134, 13, 0.16);
+  /* background: rgba(253, 134, 13, 0.16); */
+  background: var(--accent-dark);
   color: #fff;
-  border-left-color: var(--accent);
+  /* border-left-color: var(--primary-darker); */
 }
 
 .admin-sidebar-icon {
@@ -221,6 +229,10 @@
 .admin-sidebar-footer {
   padding: 16px;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.admin-sidebar-footer button {
+  justify-content: center;
 }
 
 .admin-sidebar-user {
@@ -341,7 +353,10 @@
   font-size: 0.9rem;
   font-weight: 600;
   min-height: 40px;
-  transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.1s ease;
 }
 
 .admin-btn:hover {
@@ -482,13 +497,13 @@
 
 .admin-table th {
   text-align: left;
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.04em;
   color: var(--text-muted);
   font-weight: 700;
-  padding: 13px 16px;
-  background: var(--bg);
+  padding: 10px 16px;
+  background: var(--border);
   border-bottom: 1px solid var(--border);
   white-space: nowrap;
   position: sticky;
@@ -496,7 +511,7 @@
 }
 
 .admin-table td {
-  padding: 13px 16px;
+  padding: 8px 16px;
   border-bottom: 1px solid var(--border);
   font-size: 0.88rem;
   vertical-align: middle;
@@ -547,32 +562,95 @@
 .admin-pagination {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   gap: 16px;
-  margin-top: 20px;
+  margin-top: 24px;
   font-size: 0.86rem;
   color: var(--text-muted);
+  flex-wrap: wrap;
 }
 
-.admin-pagination button {
-  padding: 8px 16px;
+.admin-pg-info {
+  font-size: 0.84rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+.admin-pg-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.admin-pg-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 14px;
   border-radius: var(--radius-sm);
   border: 1px solid var(--border-strong);
   background: var(--surface);
   font-weight: 600;
   font-size: 0.85rem;
   min-height: 38px;
+  color: var(--text);
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
 }
 
-.admin-pagination button:hover:not(:disabled) {
+.admin-pg-btn:hover:not(:disabled) {
   background: var(--primary-light);
   border-color: var(--primary);
   color: var(--primary-dark);
 }
 
-.admin-pagination button:disabled {
+.admin-pg-btn:disabled {
   opacity: 0.4;
   cursor: not-allowed;
+}
+
+.admin-pg-pages {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.admin-pg-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  background: transparent;
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--text);
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.admin-pg-num:hover {
+  background: var(--primary-light);
+  color: var(--primary-dark);
+}
+
+.admin-pg-num.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+}
+
+.admin-pg-ellipsis {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  color: var(--text-faint);
+  font-weight: 600;
+  user-select: none;
 }
 
 /* --------------------------------------------------------------------------
@@ -664,7 +742,7 @@
 .admin-modal {
   background: var(--surface);
   border-radius: var(--radius-lg);
-  padding: 28px;
+  padding-top: 28px;
   width: 100%;
   max-width: 520px;
   max-height: calc(100vh - 48px);
@@ -676,6 +754,31 @@
 .admin-modal h2 {
   font-size: 1.15rem;
   margin-bottom: 18px;
+}
+
+.admin-modal-sm {
+  max-width: 400px;
+  text-align: center;
+  padding: 32px 0 0 0;
+}
+
+.admin-modal-sm h2 {
+  margin-bottom: 8px;
+}
+
+.admin-delete-icon-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 16px;
+  color: var(--danger);
+}
+
+.admin-delete-message {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin:  0 auto 8px auto;
+  max-width: 336px;
 }
 
 .admin-modal-lg {
@@ -690,9 +793,33 @@
   display: flex;
   justify-content: flex-end;
   gap: 10px;
-  margin-top: 20px;
+  margin-top: 28px;
   padding-top: 16px;
   border-top: 1px solid var(--border);
+}
+
+.admin-delete-modal-actions {
+  display: flex;
+  margin-top: 28px;
+  border-top: 1px solid var(--border);
+}
+
+.admin-delete-modal-actions .admin-modal-btn,
+.admin-delete-modal-actions .admin-modal-btn-danger {
+  width: 100%;
+  padding: 18px;
+  align-items: center;
+  justify-content: center;
+}
+
+.admin-delete-modal-actions .admin-modal-btn-danger {
+  color: var(--danger-text);
+  background: var(--danger-bg);
+}
+
+.admin-modal-actions .admin-modal-btn-danger:hover {
+  color: var(--danger-bg);
+  background: var(--danger);
 }
 
 .admin-detail-view {
@@ -823,7 +950,7 @@
    Dashboard
    -------------------------------------------------------------------------- */
 .admin-dashboard {
-  max-width: 1320px;
+  max-width: 1440px;
   margin: 0 auto;
 }
 
@@ -861,7 +988,9 @@
   padding: 18px;
   cursor: pointer;
   box-shadow: var(--shadow-sm);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .admin-stat-card:hover {
@@ -1193,7 +1322,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: radial-gradient(circle at 20% 20%, var(--primary-soft), transparent 55%),
+  background:
+    radial-gradient(circle at 20% 20%, var(--primary-soft), transparent 55%),
     radial-gradient(circle at 80% 80%, #ffe4c2, transparent 50%), var(--bg);
   padding: 24px;
   font-family: var(--font-sans);
@@ -1289,7 +1419,11 @@
     right: 0;
     height: var(--topbar-h);
     padding: 0 14px;
-    background: linear-gradient(120deg, var(--primary-darker), var(--primary-dark));
+    background: linear-gradient(
+      120deg,
+      var(--primary-darker),
+      var(--primary-dark)
+    );
     z-index: 50;
     box-shadow: var(--shadow-md);
   }
@@ -1620,9 +1754,16 @@
 }
 
 @keyframes seedBlink {
-  0%, 20% { opacity: 0; }
-  50% { opacity: 1; }
-  100% { opacity: 0; }
+  0%,
+  20% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 }
 
 /* --------------------------------------------------------------------------
@@ -1636,8 +1777,8 @@
 .admin-login-page button:focus-visible,
 .admin-login-page input:focus-visible,
 .admin-login-page a:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
+  outline: 2px solid color-mix(in srgb, var(--primary) 50%, transparent 100%);
+  /* outline-offset: 2px; */
 }
 
 @media (prefers-reduced-motion: reduce) {

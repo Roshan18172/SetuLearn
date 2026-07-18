@@ -156,20 +156,18 @@ export default function TestGenerator() {
               <div className="admin-form-group">
                 <label>Import ID From *</label>
                 <input
-                  type="number"
                   value={rangeForm.importIdFrom}
-                  onChange={(e) => setRangeForm({ ...rangeForm, importIdFrom: +e.target.value })}
-                  placeholder="1"
+                  onChange={(e) => setRangeForm({ ...rangeForm, importIdFrom: e.target.value })}
+                  placeholder="SSC-CHSL-MOCK1-001"
                   required
                 />
               </div>
               <div className="admin-form-group">
                 <label>Import ID To *</label>
                 <input
-                  type="number"
                   value={rangeForm.importIdTo}
-                  onChange={(e) => setRangeForm({ ...rangeForm, importIdTo: +e.target.value })}
-                  placeholder="100"
+                  onChange={(e) => setRangeForm({ ...rangeForm, importIdTo: e.target.value })}
+                  placeholder="SSC-CHSL-MOCK1-100"
                   required
                 />
               </div>
@@ -292,7 +290,7 @@ export default function TestGenerator() {
               type="submit"
               className="admin-btn admin-btn-primary"
               disabled={loading}
-              style={{ marginLeft: "10px" }}
+              style={{ marginLeft: "auto" }}
             >
               {loading ? "Generating..." : "Generate Test"}
             </button>

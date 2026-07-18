@@ -1,4 +1,4 @@
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { MathJaxContext } from "better-react-mathjax";
 
 import Navbar from "./components/Navbar";
@@ -112,7 +112,7 @@ function App() {
                 </AdminAuthProvider>
               }
             >
-              <Route index element={<AdminDashboard />} />
+              <Route index element={<Navigate to="/admin/dashboard" replace />} />
               <Route path="dashboard" element={<AdminDashboard />} />
               <Route path="exams" element={<ExamsList />} />
               <Route path="tests" element={<TestsList />} />

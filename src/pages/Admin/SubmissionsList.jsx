@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import adminService from "../../api/adminService";
 import { getErrorMessage } from "../../api/apiErrorHandler";
 import { Eye, Trash2, CheckCircle2, XCircle } from "../../data/svgs";
+import DeleteConfirmModal from "./DeleteConfirmModal";
+import AdminPagination from "./AdminPagination";
 
 export default function SubmissionsList() {
   const [submissions, setSubmissions] = useState([]);
@@ -10,6 +12,8 @@ export default function SubmissionsList() {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [selected, setSelected] = useState(null);
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [totalItems, setTotalItems] = useState(0);
 
   document.title = "Manage Submissions - Admin";
 
@@ -19,6 +23,7 @@ export default function SubmissionsList() {
       const data = await adminService.getSubmissions({ page, limit: 20 });
       setSubmissions(data.submissions);
       setTotalPages(data.pagination?.totalPages || 1);
+      setTotalItems(data.pagination?.total || 0);
     } catch (err) { setError(getErrorMessage(err)); } finally { setLoading(false); }
   };
  // eslint-disable-next-line
@@ -32,8 +37,7 @@ export default function SubmissionsList() {
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Delete this submission?")) return;
-    try { await adminService.deleteSubmission(id); fetchSubmissions(); setSelected(null); } catch (err) { setError(getErrorMessage(err)); }
+    try { await adminService.deleteSubmission(id); fetchSubmissions(); setSelected(null); setDeleteTarget(null); } catch (err) { setError(getErrorMessage(err)); setDeleteTarget(null); }
   };
 
   return (
@@ -80,7 +84,7 @@ export default function SubmissionsList() {
             )}
 
             <div className="admin-modal-actions">
-              <button className="admin-btn admin-btn-danger" onClick={() => handleDelete(selected.id)}>Delete</button>
+              <button className="admin-btn admin-btn-danger" onClick={() => setDeleteTarget(selected.id)}>Delete</button>
               <button className="admin-btn" onClick={() => setSelected(null)}>Close</button>
             </div>
           </div>
@@ -113,7 +117,7 @@ export default function SubmissionsList() {
                     <td>{new Date(s.startedAt).toLocaleDateString()}</td>
                     <td className="admin-actions">
                       <button className="admin-btn-sm" onClick={() => viewDetail(s.id)}><Eye /></button>
-                      <button className="admin-btn-sm admin-btn-danger" onClick={() => handleDelete(s.id)}><Trash2 /></button>
+                      <button className="admin-btn-sm admin-btn-danger" onClick={() => setDeleteTarget(s.id)}><Trash2 /></button>
                     </td>
                   </tr>
                 ))}
@@ -122,15 +126,17 @@ export default function SubmissionsList() {
             </table>
           </div>
 
-          {totalPages > 1 && (
-            <div className="admin-pagination">
-              <button disabled={page <= 1} onClick={() => setPage(page - 1)}>Previous</button>
-              <span>Page {page} of {totalPages}</span>
-              <button disabled={page >= totalPages} onClick={() => setPage(page + 1)}>Next</button>
-            </div>
-          )}
+          <AdminPagination page={page} totalPages={totalPages} onPageChange={setPage} totalItems={totalItems} />
         </>
       )}
+
+      <DeleteConfirmModal
+        isOpen={!!deleteTarget}
+        title="Delete Submission"
+        message="Delete this submission?"
+        onConfirm={() => handleDelete(deleteTarget)}
+        onCancel={() => setDeleteTarget(null)}
+      />
     </div>
   );
 }

@@ -3,9 +3,10 @@ import { useNavigate } from "react-router-dom";
 import adminService from "../../api/adminService";
 import { getErrorMessage } from "../../api/apiErrorHandler";
 import { Pencil, Trash2 } from "../../data/svgs";
+import DeleteConfirmModal from "./DeleteConfirmModal";
 
 export default function ExamsList() {
-   // eslint-disable-next-line
+    // eslint-disable-next-line
   const navigate = useNavigate();
   const [exams, setExams] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -13,6 +14,7 @@ export default function ExamsList() {
   const [showForm, setShowForm] = useState(false);
   const [editExam, setEditExam] = useState(null);
   const [form, setForm] = useState({ name: "", slug: "", description: "", icon: "", isActive: true });
+  const [deleteTarget, setDeleteTarget] = useState(null);
 
   document.title = "Manage Exams - Admin";
 
@@ -58,12 +60,13 @@ export default function ExamsList() {
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this exam?")) return;
     try {
       await adminService.deleteExam(id);
       fetchExams();
+      setDeleteTarget(null);
     } catch (err) {
       setError(getErrorMessage(err));
+      setDeleteTarget(null);
     }
   };
 
@@ -157,7 +160,7 @@ export default function ExamsList() {
                   </td>
                   <td className="admin-actions">
                     <button className="admin-btn-sm" onClick={() => openEdit(exam)}><Pencil /></button>
-                    <button className="admin-btn-sm admin-btn-danger" onClick={() => handleDelete(exam.id)}><Trash2 /></button>
+                    <button className="admin-btn-sm admin-btn-danger" onClick={() => setDeleteTarget(exam.id)}><Trash2 /></button>
                   </td>
                 </tr>
               ))}
@@ -168,6 +171,14 @@ export default function ExamsList() {
           </table>
         </div>
       )}
+
+      <DeleteConfirmModal
+        isOpen={!!deleteTarget}
+        title="Delete Exam"
+        message="Are you sure you want to delete this exam? This action cannot be undone."
+        onConfirm={() => handleDelete(deleteTarget)}
+        onCancel={() => setDeleteTarget(null)}
+      />
     </div>
   );
 }

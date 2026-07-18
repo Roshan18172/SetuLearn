@@ -5560,7 +5560,8 @@ html::-webkit-scrollbar-thumb:hover {
 
 /* Admin Page Common */
 .admin-page {
-  max-width: 1200px;
+  max-width: 1440px;
+  margin-inline: auto;
 }
 
 .admin-page-header {

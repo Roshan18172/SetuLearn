@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import adminService from "../../api/adminService";
 import { getErrorMessage } from "../../api/apiErrorHandler";
 import { Eye, Trash2 } from "../../data/svgs";
+import DeleteConfirmModal from "./DeleteConfirmModal";
+import AdminPagination from "./AdminPagination";
 
 export default function ReportsList() {
   const [reports, setReports] = useState([]);
@@ -10,6 +12,8 @@ export default function ReportsList() {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [selected, setSelected] = useState(null);
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [totalItems, setTotalItems] = useState(0);
 
   document.title = "Manage Reports - Admin";
 
@@ -19,14 +23,14 @@ export default function ReportsList() {
       const data = await adminService.getReports({ page, limit: 20 });
       setReports(data.reports);
       setTotalPages(data.pagination?.totalPages || 1);
+      setTotalItems(data.pagination?.total || 0);
     } catch (err) { setError(getErrorMessage(err)); } finally { setLoading(false); }
   };
  // eslint-disable-next-line
   useEffect(() => { fetchReports(); }, [page]);
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Delete this report?")) return;
-    try { await adminService.deleteReport(id); fetchReports(); } catch (err) { setError(getErrorMessage(err)); }
+    try { await adminService.deleteReport(id); fetchReports(); setDeleteTarget(null); } catch (err) { setError(getErrorMessage(err)); setDeleteTarget(null); }
   };
 
   return (
@@ -86,7 +90,7 @@ export default function ReportsList() {
                     <td>{new Date(r.createdAt).toLocaleDateString()}</td>
                     <td className="admin-actions">
                       <button className="admin-btn-sm" onClick={() => setSelected(r)}><Eye /></button>
-                      <button className="admin-btn-sm admin-btn-danger" onClick={() => handleDelete(r.id)}><Trash2 /></button>
+                      <button className="admin-btn-sm admin-btn-danger" onClick={() => setDeleteTarget(r.id)}><Trash2 /></button>
                     </td>
                   </tr>
                 ))}
@@ -95,15 +99,17 @@ export default function ReportsList() {
             </table>
           </div>
 
-          {totalPages > 1 && (
-            <div className="admin-pagination">
-              <button disabled={page <= 1} onClick={() => setPage(page - 1)}>Previous</button>
-              <span>Page {page} of {totalPages}</span>
-              <button disabled={page >= totalPages} onClick={() => setPage(page + 1)}>Next</button>
-            </div>
-          )}
+          <AdminPagination page={page} totalPages={totalPages} onPageChange={setPage} totalItems={totalItems} />
         </>
       )}
+
+      <DeleteConfirmModal
+        isOpen={!!deleteTarget}
+        title="Delete Report"
+        message="Delete this report?"
+        onConfirm={() => handleDelete(deleteTarget)}
+        onCancel={() => setDeleteTarget(null)}
+      />
     </div>
   );
 }

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import adminService from "../../api/adminService";
 import { getErrorMessage } from "../../api/apiErrorHandler";
 import { Pencil, ClipboardList, Trash2 } from "../../data/svgs";
+import DeleteConfirmModal from "./DeleteConfirmModal";
 
 export default function TestsList() {
   const navigate = useNavigate();
@@ -17,6 +18,7 @@ export default function TestsList() {
     totalMarks: 100, totalQuestions: 25, negativeMarking: true,
     difficulty: "MEDIUM", isPublished: true, instructions: "",
   });
+  const [deleteTarget, setDeleteTarget] = useState(null);
 
   document.title = "Manage Tests - Admin";
 
@@ -57,8 +59,7 @@ export default function TestsList() {
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Delete this test?")) return;
-    try { await adminService.deleteTest(id); fetchTests(); } catch (err) { setError(getErrorMessage(err)); }
+    try { await adminService.deleteTest(id); fetchTests(); setDeleteTarget(null); } catch (err) { setError(getErrorMessage(err)); setDeleteTarget(null); }
   };
 
   const getDiffBadge = (d) => {
@@ -179,7 +180,7 @@ export default function TestsList() {
                   <td className="admin-actions">
                     <button className="admin-btn-sm" onClick={() => openEdit(test)}><Pencil /></button>
                     <button className="admin-btn-sm" onClick={() => navigate(`/admin/tests/${test.id}/questions`)}><ClipboardList /></button>
-                    <button className="admin-btn-sm admin-btn-danger" onClick={() => handleDelete(test.id)}><Trash2 /></button>
+                    <button className="admin-btn-sm admin-btn-danger" onClick={() => setDeleteTarget(test.id)}><Trash2 /></button>
                   </td>
                 </tr>
               ))}
@@ -188,6 +189,14 @@ export default function TestsList() {
           </table>
         </div>
       )}
+
+      <DeleteConfirmModal
+        isOpen={!!deleteTarget}
+        title="Delete Test"
+        message="Delete this test?"
+        onConfirm={() => handleDelete(deleteTarget)}
+        onCancel={() => setDeleteTarget(null)}
+      />
     </div>
   );
 }

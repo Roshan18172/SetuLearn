@@ -4,6 +4,7 @@ import { useAdminAuth } from "../../context/AdminAuthContext";
 import {
   LayoutDashboard, Library, FileText, Settings, BookOpen,
   Tag, HelpCircle, Upload, Mail, Flag, ClipboardList,
+  Logout,
 } from "../../data/svgs";
 import "./AdminUI.css";
 
@@ -80,8 +81,8 @@ export default function AdminLayout() {
 
       <aside className={`admin-sidebar ${navOpen ? "is-open" : ""}`}>
         <div className="admin-sidebar-brand" onClick={() => navigate("/admin/dashboard")}>
-          <img src="/logo.webp" alt="SetuLearn" height="36" />
-          <span>Admin</span>
+          <img src="/footer-logo.webp" alt="SetuLearn" height="40" />
+          {/* <span>Admin</span> */}
         </div>
 
         <nav className="admin-sidebar-nav">
@@ -108,7 +109,7 @@ export default function AdminLayout() {
             </div>
           </div>
           <button className="admin-sidebar-logout" onClick={logout}>
-            Logout
+           <Logout /> Logout
           </button>
         </div>
       </aside>

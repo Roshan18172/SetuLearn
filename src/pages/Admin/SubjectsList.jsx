@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import adminService from "../../api/adminService";
 import { getErrorMessage } from "../../api/apiErrorHandler";
 import { Pencil, Trash2 } from "../../data/svgs";
+import DeleteConfirmModal from "./DeleteConfirmModal";
 
 export default function SubjectsList() {
   const [subjects, setSubjects] = useState([]);
@@ -10,6 +11,7 @@ export default function SubjectsList() {
   const [showForm, setShowForm] = useState(false);
   const [editSubject, setEditSubject] = useState(null);
   const [form, setForm] = useState({ name: "", slug: "", description: "", sortOrder: 0, isActive: true });
+  const [deleteTarget, setDeleteTarget] = useState(null);
 
   document.title = "Manage Subjects - Admin";
 
@@ -58,12 +60,13 @@ export default function SubjectsList() {
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Delete this subject? This will also delete all associated topics and questions.")) return;
     try {
       await adminService.deleteSubject(id);
       fetchSubjects();
+      setDeleteTarget(null);
     } catch (err) {
       setError(getErrorMessage(err));
+      setDeleteTarget(null);
     }
   };
 
@@ -149,7 +152,7 @@ export default function SubjectsList() {
                   </td>
                   <td className="admin-actions">
                     <button className="admin-btn-sm" onClick={() => openEdit(s)}><Pencil /></button>
-                    <button className="admin-btn-sm admin-btn-danger" onClick={() => handleDelete(s.id)}><Trash2 /></button>
+                    <button className="admin-btn-sm admin-btn-danger" onClick={() => setDeleteTarget(s.id)}><Trash2 /></button>
                   </td>
                 </tr>
               ))}
@@ -158,6 +161,14 @@ export default function SubjectsList() {
           </table>
         </div>
       )}
+
+      <DeleteConfirmModal
+        isOpen={!!deleteTarget}
+        title="Delete Subject"
+        message="Delete this subject? This will also delete all associated topics and questions."
+        onConfirm={() => handleDelete(deleteTarget)}
+        onCancel={() => setDeleteTarget(null)}
+      />
     </div>
   );
 }

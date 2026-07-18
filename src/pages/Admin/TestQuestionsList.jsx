@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import adminService from "../../api/adminService";
 import { getErrorMessage } from "../../api/apiErrorHandler";
 import { ArrowLeft, Shuffle, Trash2 } from "../../data/svgs";
+import DeleteConfirmModal from "./DeleteConfirmModal";
 
 export default function TestQuestionsList() {
   const { testId } = useParams();
@@ -22,6 +23,7 @@ export default function TestQuestionsList() {
   const [selectedSubjectIds, setSelectedSubjectIds] = useState([]);
   const [questionsPerSubject, setQuestionsPerSubject] = useState(10);
   const [busy, setBusy] = useState(false);
+  const [confirmAction, setConfirmAction] = useState(null);
 
   document.title = "Manage Test Questions - Admin";
 
@@ -72,30 +74,30 @@ export default function TestQuestionsList() {
 
   const handleRandomize = async () => {
     if (selectedSubjectIds.length === 0) { setError("Select at least one subject"); return; }
-    if (!window.confirm("This will REPLACE all existing questions in the test. Continue?")) return;
     setBusy(true);
     try {
       await adminService.randomizeTestQuestions(testId, { subjectIds: selectedSubjectIds, questionsPerSubject: Number(questionsPerSubject) });
       setShowBulk(false);
       setSelectedSubjectIds([]);
       fetchData();
-    } catch (err) { setError(getErrorMessage(err)); } finally { setBusy(false); }
+      setConfirmAction(null);
+    } catch (err) { setError(getErrorMessage(err)); } finally { setBusy(false); setConfirmAction(null); }
   };
 
   const handleRemove = async (questionId) => {
-    if (!window.confirm("Remove this question from the test?")) return;
     try {
       await adminService.removeTestQuestion(testId, questionId);
       fetchData();
-    } catch (err) { setError(getErrorMessage(err)); }
+      setConfirmAction(null);
+    } catch (err) { setError(getErrorMessage(err)); setConfirmAction(null); }
   };
 
   const handleClearAll = async () => {
-    if (!window.confirm("Remove ALL questions from this test?")) return;
     try {
       await adminService.clearTestQuestions(testId);
       fetchData();
-    } catch (err) { setError(getErrorMessage(err)); }
+      setConfirmAction(null);
+    } catch (err) { setError(getErrorMessage(err)); setConfirmAction(null); }
   };
 
   const totalMarks = testQuestions.reduce((sum, tq) => sum + (tq.question?.marks || 0), 0);
@@ -114,7 +116,7 @@ export default function TestQuestionsList() {
           <button className="admin-btn" onClick={() => setShowBulk(true)} style={{ display: "inline-flex", alignItems: "center", gap: 6 }}><Shuffle size={15} /> Bulk Add / Randomize</button>
           <button className="admin-btn admin-btn-primary" onClick={() => setShowAdd(true)}>+ Add Question</button>
           {testQuestions.length > 0 && (
-            <button className="admin-btn admin-btn-danger" onClick={handleClearAll}>Clear All</button>
+            <button className="admin-btn admin-btn-danger" onClick={() => setConfirmAction("clearAll")}>Clear All</button>
           )}
         </div>
       </div>
@@ -198,7 +200,7 @@ export default function TestQuestionsList() {
               <label>Questions per Subject</label>
               <input type="number" min="1" value={questionsPerSubject} onChange={(e) => setQuestionsPerSubject(e.target.value)} style={{ width: 120 }} />
             </div>
-            <button className="admin-btn admin-btn-danger" disabled={busy} onClick={handleRandomize} style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+            <button className="admin-btn admin-btn-danger" disabled={busy} onClick={() => setConfirmAction("randomize")} style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
               <Shuffle size={15} /> Randomize Test (Replace All)
             </button>
 
@@ -208,6 +210,31 @@ export default function TestQuestionsList() {
           </div>
         </div>
       )}
+
+      <DeleteConfirmModal
+        isOpen={!!confirmAction}
+        title={
+          confirmAction === "clearAll" ? "Clear All Questions" :
+          confirmAction?.type === "remove" ? "Remove Question" :
+          "Randomize Questions"
+        }
+        message={
+          confirmAction === "clearAll" ? "Remove ALL questions from this test?" :
+          confirmAction?.type === "remove" ? "Remove this question from the test?" :
+          "This will REPLACE all existing questions in the test. Continue?"
+        }
+        confirmText={
+          confirmAction === "clearAll" ? "Clear All" :
+          confirmAction?.type === "remove" ? "Remove" :
+          "Randomize"
+        }
+        onConfirm={() => {
+          if (confirmAction === "clearAll") handleClearAll();
+          else if (confirmAction?.type === "remove") handleRemove(confirmAction.questionId);
+          else handleRandomize();
+        }}
+        onCancel={() => setConfirmAction(null)}
+      />
 
       {loading ? (
         <div className="admin-loading">Loading...</div>
@@ -235,7 +262,7 @@ export default function TestQuestionsList() {
                   <td>{tq.question?.topic?.name || "—"}</td>
                   <td>{tq.question?.marks || 0}</td>
                   <td className="admin-actions">
-                    <button className="admin-btn-sm admin-btn-danger" onClick={() => handleRemove(tq.questionId)}><Trash2 /></button>
+                    <button className="admin-btn-sm admin-btn-danger" onClick={() => setConfirmAction({ type: "remove", questionId: tq.questionId })}><Trash2 /></button>
                   </td>
                 </tr>
               ))}

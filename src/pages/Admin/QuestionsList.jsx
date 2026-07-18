@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import adminService from "../../api/adminService";
 import { getErrorMessage } from "../../api/apiErrorHandler";
 import { Pencil, Trash2 } from "../../data/svgs";
+import DeleteConfirmModal from "./DeleteConfirmModal";
+import AdminPagination from "./AdminPagination";
 
 const OPTION_LABELS = ["A", "B", "C", "D"];
 
@@ -37,6 +39,8 @@ export default function QuestionsList() {
   const [subjects, setSubjects] = useState([]);
   const [topics, setTopics] = useState([]);
   const [submitting, setSubmitting] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [totalItems, setTotalItems] = useState(0);
 
   document.title = "Manage Questions - Admin";
 
@@ -48,6 +52,7 @@ export default function QuestionsList() {
       const data = await adminService.getQuestions(params);
       setQuestions(data.questions);
       setTotalPages(data.pagination?.totalPages || 1);
+      setTotalItems(data.pagination?.total || 0);
     } catch (err) {
       setError(getErrorMessage(err));
     } finally {
@@ -189,12 +194,13 @@ export default function QuestionsList() {
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Delete this question?")) return;
     try {
       await adminService.deleteQuestion(id);
       fetchQuestions();
+      setDeleteTarget(null);
     } catch (err) {
       setError(getErrorMessage(err));
+      setDeleteTarget(null);
     }
   };
 
@@ -470,7 +476,7 @@ export default function QuestionsList() {
                       </button>
                       <button
                         className="admin-btn-sm admin-btn-danger"
-                        onClick={() => handleDelete(q.id)}
+                        onClick={() => setDeleteTarget(q.id)}
                       >
                         <Trash2 />
                       </button>
@@ -488,27 +494,17 @@ export default function QuestionsList() {
             </table>
           </div>
 
-          {totalPages > 1 && (
-            <div className="admin-pagination">
-              <button
-                disabled={page <= 1}
-                onClick={() => setPage(page - 1)}
-              >
-                Previous
-              </button>
-              <span>
-                Page {page} of {totalPages}
-              </span>
-              <button
-                disabled={page >= totalPages}
-                onClick={() => setPage(page + 1)}
-              >
-                Next
-              </button>
-            </div>
-          )}
+          <AdminPagination page={page} totalPages={totalPages} onPageChange={setPage} totalItems={totalItems} />
         </>
       )}
+
+      <DeleteConfirmModal
+        isOpen={!!deleteTarget}
+        title="Delete Question"
+        message="Delete this question?"
+        onConfirm={() => handleDelete(deleteTarget)}
+        onCancel={() => setDeleteTarget(null)}
+      />
     </div>
   );
 }
