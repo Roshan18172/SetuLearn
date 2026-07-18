@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAdminAuth } from "../../context/AdminAuthContext";
 import { getErrorMessage } from "../../api/apiErrorHandler";
+import { ArrowLeft } from "../../data/svgs";
 import "./AdminUI.css";
 
 export default function AdminLogin() {
@@ -73,7 +74,7 @@ export default function AdminLogin() {
         </form>
 
         <div className="admin-login-footer">
-          <a href="/">← Back to SetuLearn</a>
+          <a href="/" style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}><ArrowLeft /> Back to SetuLearn</a>
         </div>
       </div>
     </div>

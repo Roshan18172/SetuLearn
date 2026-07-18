@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import adminService from "../../api/adminService";
 import { getErrorMessage } from "../../api/apiErrorHandler";
+import { Pencil, Trash2 } from "../../data/svgs";
 
 const OPTION_LABELS = ["A", "B", "C", "D"];
 
@@ -465,13 +466,13 @@ export default function QuestionsList() {
                         className="admin-btn-sm"
                         onClick={() => openEdit(q)}
                       >
-                        ✏️
+                        <Pencil />
                       </button>
                       <button
                         className="admin-btn-sm admin-btn-danger"
                         onClick={() => handleDelete(q.id)}
                       >
-                        🗑️
+                        <Trash2 />
                       </button>
                     </td>
                   </tr>

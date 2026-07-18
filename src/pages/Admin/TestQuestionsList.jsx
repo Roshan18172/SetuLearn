@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import adminService from "../../api/adminService";
 import { getErrorMessage } from "../../api/apiErrorHandler";
+import { ArrowLeft, Shuffle, Trash2 } from "../../data/svgs";
 
 export default function TestQuestionsList() {
   const { testId } = useParams();
@@ -103,14 +104,14 @@ export default function TestQuestionsList() {
     <div className="admin-page">
       <div className="admin-page-header">
         <div>
-          <button className="admin-link-btn" onClick={() => navigate("/admin/tests")}>← Back to Tests</button>
+          <button className="admin-link-btn" onClick={() => navigate("/admin/tests")} style={{ display: "inline-flex", alignItems: "center", gap: 6 }}><ArrowLeft /> Back to Tests</button>
           <h1 style={{ marginTop: 8 }}>{test?.title || "Test Questions"}</h1>
           <p className="admin-page-sub">
             {testQuestions.length} questions · {totalMarks} marks
           </p>
         </div>
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-          <button className="admin-btn" onClick={() => setShowBulk(true)}>🎲 Bulk Add / Randomize</button>
+          <button className="admin-btn" onClick={() => setShowBulk(true)} style={{ display: "inline-flex", alignItems: "center", gap: 6 }}><Shuffle size={15} /> Bulk Add / Randomize</button>
           <button className="admin-btn admin-btn-primary" onClick={() => setShowAdd(true)}>+ Add Question</button>
           {testQuestions.length > 0 && (
             <button className="admin-btn admin-btn-danger" onClick={handleClearAll}>Clear All</button>
@@ -197,8 +198,8 @@ export default function TestQuestionsList() {
               <label>Questions per Subject</label>
               <input type="number" min="1" value={questionsPerSubject} onChange={(e) => setQuestionsPerSubject(e.target.value)} style={{ width: 120 }} />
             </div>
-            <button className="admin-btn admin-btn-danger" disabled={busy} onClick={handleRandomize}>
-              🎲 Randomize Test (Replace All)
+            <button className="admin-btn admin-btn-danger" disabled={busy} onClick={handleRandomize} style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+              <Shuffle size={15} /> Randomize Test (Replace All)
             </button>
 
             <div className="admin-modal-actions">
@@ -234,7 +235,7 @@ export default function TestQuestionsList() {
                   <td>{tq.question?.topic?.name || "—"}</td>
                   <td>{tq.question?.marks || 0}</td>
                   <td className="admin-actions">
-                    <button className="admin-btn-sm admin-btn-danger" onClick={() => handleRemove(tq.questionId)}>🗑️</button>
+                    <button className="admin-btn-sm admin-btn-danger" onClick={() => handleRemove(tq.questionId)}><Trash2 /></button>
                   </td>
                 </tr>
               ))}

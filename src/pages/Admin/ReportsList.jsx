@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import adminService from "../../api/adminService";
 import { getErrorMessage } from "../../api/apiErrorHandler";
+import { Eye, Trash2 } from "../../data/svgs";
 
 export default function ReportsList() {
   const [reports, setReports] = useState([]);
@@ -84,8 +85,8 @@ export default function ReportsList() {
                     <td>{r.page || "—"}</td>
                     <td>{new Date(r.createdAt).toLocaleDateString()}</td>
                     <td className="admin-actions">
-                      <button className="admin-btn-sm" onClick={() => setSelected(r)}>👁️</button>
-                      <button className="admin-btn-sm admin-btn-danger" onClick={() => handleDelete(r.id)}>🗑️</button>
+                      <button className="admin-btn-sm" onClick={() => setSelected(r)}><Eye /></button>
+                      <button className="admin-btn-sm admin-btn-danger" onClick={() => handleDelete(r.id)}><Trash2 /></button>
                     </td>
                   </tr>
                 ))}

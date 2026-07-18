@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import { useAdminAuth } from "../../context/AdminAuthContext";
+import {
+  LayoutDashboard, Library, FileText, Settings, BookOpen,
+  Tag, HelpCircle, Upload, Mail, Flag, ClipboardList,
+} from "../../data/svgs";
 import "./AdminUI.css";
 
 export default function AdminLayout() {
@@ -10,20 +14,29 @@ export default function AdminLayout() {
   const [navOpen, setNavOpen] = useState(false);
 
   const navItems = [
-    { path: "/admin/dashboard", label: "Dashboard", icon: "📊" },
-    { path: "/admin/exams", label: "Exams", icon: "📚" },
-    { path: "/admin/tests", label: "Tests", icon: "📝" },
-    { path: "/admin/tests/generate", label: "Generate Test", icon: "⚙️" },
-    { path: "/admin/subjects", label: "Subjects", icon: "📖" },
-    { path: "/admin/topics", label: "Topics", icon: "🏷️" },
-    { path: "/admin/questions", label: "Questions", icon: "❓" },
-    { path: "/admin/questions/seed", label: "Seed Questions", icon: "📤" },
-    { path: "/admin/contacts", label: "Contacts", icon: "📧" },
-    { path: "/admin/reports", label: "Reports", icon: "🚩" },
-    { path: "/admin/submissions", label: "Submissions", icon: "📋" },
+    { path: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
+    { path: "/admin/exams", label: "Exams", icon: Library },
+    { path: "/admin/tests", label: "Tests", icon: FileText },
+    { path: "/admin/tests/generate", label: "Generate Test", icon: Settings },
+    { path: "/admin/subjects", label: "Subjects", icon: BookOpen },
+    { path: "/admin/topics", label: "Topics", icon: Tag },
+    { path: "/admin/questions", label: "Questions", icon: HelpCircle },
+    { path: "/admin/questions/seed", label: "Seed Questions", icon: Upload },
+    { path: "/admin/contacts", label: "Contacts", icon: Mail },
+    { path: "/admin/reports", label: "Reports", icon: Flag },
+    { path: "/admin/submissions", label: "Submissions", icon: ClipboardList },
   ];
 
-  const isActive = (path) => location.pathname === path || location.pathname.startsWith(path + "/");
+  // Fixed matching logic: Only allows sub-path matching if the current URL 
+  // doesn't explicitly belong to another item in the sidebar array.
+  const isActive = (path) => {
+    if (location.pathname === path) return true;
+
+    const isExactMatchForOtherItem = navItems.some((item) => location.pathname === item.path);
+    if (isExactMatchForOtherItem) return false;
+
+    return location.pathname.startsWith(path + "/");
+  };
 
   // Close the mobile drawer whenever the route changes.
   useEffect(() => {
@@ -78,7 +91,9 @@ export default function AdminLayout() {
               className={`admin-sidebar-link ${isActive(item.path) ? "active" : ""}`}
               onClick={() => navigate(item.path)}
             >
-              <span className="admin-sidebar-icon">{item.icon}</span>
+              <span className="admin-sidebar-icon">
+                <item.icon size={18} />
+              </span>
               {item.label}
             </button>
           ))}

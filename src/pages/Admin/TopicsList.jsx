@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import adminService from "../../api/adminService";
 import { getErrorMessage } from "../../api/apiErrorHandler";
+import { Pencil, Trash2 } from "../../data/svgs";
 
 export default function TopicsList() {
   const [topics, setTopics] = useState([]);
@@ -166,8 +167,8 @@ export default function TopicsList() {
                     </span>
                   </td>
                   <td className="admin-actions">
-                    <button className="admin-btn-sm" onClick={() => openEdit(t)}>✏️</button>
-                    <button className="admin-btn-sm admin-btn-danger" onClick={() => handleDelete(t.id)}>🗑️</button>
+                    <button className="admin-btn-sm" onClick={() => openEdit(t)}><Pencil /></button>
+                    <button className="admin-btn-sm admin-btn-danger" onClick={() => handleDelete(t.id)}><Trash2 /></button>
                   </td>
                 </tr>
               ))}

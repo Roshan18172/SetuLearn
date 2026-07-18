@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import adminService from "../../api/adminService";
 import { getErrorMessage } from "../../api/apiErrorHandler";
+import { Eye, Trash2, CheckCircle2, XCircle } from "../../data/svgs";
 
 export default function ContactsList() {
   const [contacts, setContacts] = useState([]);
@@ -55,8 +56,8 @@ export default function ContactsList() {
               <div className="admin-detail-row"><strong>Email:</strong> {selected.email}</div>
               <div className="admin-detail-row"><strong>Subject:</strong> {selected.subject}</div>
               <div className="admin-detail-row"><strong>Date:</strong> {new Date(selected.createdAt).toLocaleString()}</div>
-              <div className="admin-detail-row"><strong>Admin Email:</strong> {selected.adminEmailSent ? "✅ Sent" : "❌ Not sent"}</div>
-              <div className="admin-detail-row"><strong>User Email:</strong> {selected.userEmailSent ? "✅ Sent" : "❌ Not sent"}</div>
+              <div className="admin-detail-row"><strong>Admin Email:</strong> {selected.adminEmailSent ? <span style={{ color: "var(--success, #2e7d32)", display: "inline-flex", alignItems: "center", gap: 4 }}><CheckCircle2 size={14} /> Sent</span> : <span style={{ color: "var(--danger, #c62828)", display: "inline-flex", alignItems: "center", gap: 4 }}><XCircle size={14} /> Not sent</span>}</div>
+              <div className="admin-detail-row"><strong>User Email:</strong> {selected.userEmailSent ? <span style={{ color: "var(--success, #2e7d32)", display: "inline-flex", alignItems: "center", gap: 4 }}><CheckCircle2 size={14} /> Sent</span> : <span style={{ color: "var(--danger, #c62828)", display: "inline-flex", alignItems: "center", gap: 4 }}><XCircle size={14} /> Not sent</span>}</div>
               <div className="admin-detail-row" style={{ gridColumn: "1/-1" }}>
                 <strong>Message:</strong>
                 <p style={{ whiteSpace: "pre-wrap", marginTop: 8 }}>{selected.message}</p>
@@ -97,8 +98,8 @@ export default function ContactsList() {
                       </span>
                     </td>
                     <td className="admin-actions">
-                      <button className="admin-btn-sm" onClick={() => setSelected(c)}>👁️</button>
-                      <button className="admin-btn-sm admin-btn-danger" onClick={() => handleDelete(c.id)}>🗑️</button>
+                      <button className="admin-btn-sm" onClick={() => setSelected(c)}><Eye /></button>
+                      <button className="admin-btn-sm admin-btn-danger" onClick={() => handleDelete(c.id)}><Trash2 /></button>
                     </td>
                   </tr>
                 ))}

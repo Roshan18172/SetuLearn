@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import adminService from "../../api/adminService";
 import { getErrorMessage } from "../../api/apiErrorHandler";
+import { Pencil, ClipboardList, Trash2 } from "../../data/svgs";
 
 export default function TestsList() {
   const navigate = useNavigate();
@@ -176,9 +177,9 @@ export default function TestsList() {
                     </span>
                   </td>
                   <td className="admin-actions">
-                    <button className="admin-btn-sm" onClick={() => openEdit(test)}>✏️</button>
-                    <button className="admin-btn-sm" onClick={() => navigate(`/admin/tests/${test.id}/questions`)}>📋</button>
-                    <button className="admin-btn-sm admin-btn-danger" onClick={() => handleDelete(test.id)}>🗑️</button>
+                    <button className="admin-btn-sm" onClick={() => openEdit(test)}><Pencil /></button>
+                    <button className="admin-btn-sm" onClick={() => navigate(`/admin/tests/${test.id}/questions`)}><ClipboardList /></button>
+                    <button className="admin-btn-sm admin-btn-danger" onClick={() => handleDelete(test.id)}><Trash2 /></button>
                   </td>
                 </tr>
               ))}

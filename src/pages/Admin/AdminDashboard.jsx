@@ -2,6 +2,10 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAdminAuth } from "../../context/AdminAuthContext";
 import adminService from "../../api/adminService";
+import {
+  Library, FileText, BookOpen, Tag, HelpCircle, Mail, Flag,
+  ClipboardList, Sparkles, ArrowRight, Plus,
+} from "../../data/svgs";
 
 export default function AdminDashboard() {
   const { admin, logout } = useAdminAuth();
@@ -54,14 +58,14 @@ export default function AdminDashboard() {
   }, []);
 
   const statCards = [
-    { label: "Exams", value: stats.exams, color: "#5A1EAD", icon: "📚", path: "/admin/exams" },
-    { label: "Tests", value: stats.tests, color: "#FD860D", icon: "📝", path: "/admin/tests" },
-    { label: "Subjects", value: stats.subjects, color: "#2196F3", icon: "📖", path: "/admin/subjects" },
-    { label: "Topics", value: stats.topics, color: "#00BCD4", icon: "🏷️", path: "/admin/topics" },
-    { label: "Questions", value: stats.questions, color: "#4CAF50", icon: "❓", path: "/admin/questions" },
-    { label: "Contacts", value: stats.contacts, color: "#FF9800", icon: "📧", path: "/admin/contacts" },
-    { label: "Reports", value: stats.reports, color: "#FF6B6B", icon: "🚩", path: "/admin/reports" },
-    { label: "Submissions", value: stats.submissions, color: "#9C27B0", icon: "📋", path: "/admin/submissions" },
+    { label: "Exams", value: stats.exams, color: "#5A1EAD", icon: Library, path: "/admin/exams" },
+    { label: "Tests", value: stats.tests, color: "#FD860D", icon: FileText, path: "/admin/tests" },
+    { label: "Subjects", value: stats.subjects, color: "#2196F3", icon: BookOpen, path: "/admin/subjects" },
+    { label: "Topics", value: stats.topics, color: "#00BCD4", icon: Tag, path: "/admin/topics" },
+    { label: "Questions", value: stats.questions, color: "#4CAF50", icon: HelpCircle, path: "/admin/questions" },
+    { label: "Contacts", value: stats.contacts, color: "#FF9800", icon: Mail, path: "/admin/contacts" },
+    { label: "Reports", value: stats.reports, color: "#FF6B6B", icon: Flag, path: "/admin/reports" },
+    { label: "Submissions", value: stats.submissions, color: "#9C27B0", icon: ClipboardList, path: "/admin/submissions" },
   ];
 
   return (
@@ -69,7 +73,7 @@ export default function AdminDashboard() {
       {/* Header */}
       <div className="admin-dash-header">
         <div>
-          <h1>Welcome back, {admin?.name} 👋</h1>
+          <h1>Welcome back, {admin?.name} <Sparkles size={20} style={{ verticalAlign: "middle", color: "var(--accent)" }} /></h1>
           <p className="admin-dash-sub">
             Here's what's happening on SetuLearn today.
           </p>
@@ -89,7 +93,7 @@ export default function AdminDashboard() {
             onClick={() => navigate(card.path)}
           >
             <div className="admin-stat-icon" style={{ background: card.color }}>
-              {card.icon}
+              <card.icon size={18} color="#fff" />
             </div>
             <div className="admin-stat-value" style={{ color: card.color }}>
               {loading ? "..." : card.value.toLocaleString()}
@@ -106,7 +110,7 @@ export default function AdminDashboard() {
           <div className="admin-dash-panel-head">
             <h2>Recent Submissions</h2>
             <button className="admin-link-btn" onClick={() => navigate("/admin/submissions")}>
-              View all →
+              View all <ArrowRight />
             </button>
           </div>
           {loading ? (
@@ -137,7 +141,7 @@ export default function AdminDashboard() {
           <div className="admin-dash-panel-head">
             <h2>Recent Reports</h2>
             <button className="admin-link-btn" onClick={() => navigate("/admin/reports")}>
-              View all →
+              View all <ArrowRight />
             </button>
           </div>
           {loading ? (
@@ -166,14 +170,14 @@ export default function AdminDashboard() {
       <div className="admin-quick-links">
         <h2>Quick Actions</h2>
         <div className="admin-quick-grid">
-          <button className="admin-quick-btn" onClick={() => navigate("/admin/exams")}>➕ Manage Exams</button>
-          <button className="admin-quick-btn" onClick={() => navigate("/admin/tests")}>➕ Manage Tests</button>
-          <button className="admin-quick-btn" onClick={() => navigate("/admin/subjects")}>➕ Manage Subjects</button>
-          <button className="admin-quick-btn" onClick={() => navigate("/admin/topics")}>➕ Manage Topics</button>
-          <button className="admin-quick-btn" onClick={() => navigate("/admin/questions")}>➕ Manage Questions</button>
-          <button className="admin-quick-btn" onClick={() => navigate("/admin/contacts")}>📧 View Contacts</button>
-          <button className="admin-quick-btn" onClick={() => navigate("/admin/reports")}>🚩 View Reports</button>
-          <button className="admin-quick-btn" onClick={() => navigate("/admin/submissions")}>📋 View Submissions</button>
+          <button className="admin-quick-btn" onClick={() => navigate("/admin/exams")}><Plus size={15} /> Manage Exams</button>
+          <button className="admin-quick-btn" onClick={() => navigate("/admin/tests")}><Plus size={15} /> Manage Tests</button>
+          <button className="admin-quick-btn" onClick={() => navigate("/admin/subjects")}><Plus size={15} /> Manage Subjects</button>
+          <button className="admin-quick-btn" onClick={() => navigate("/admin/topics")}><Plus size={15} /> Manage Topics</button>
+          <button className="admin-quick-btn" onClick={() => navigate("/admin/questions")}><Plus size={15} /> Manage Questions</button>
+          <button className="admin-quick-btn" onClick={() => navigate("/admin/contacts")}><Mail size={15} /> View Contacts</button>
+          <button className="admin-quick-btn" onClick={() => navigate("/admin/reports")}><Flag size={15} /> View Reports</button>
+          <button className="admin-quick-btn" onClick={() => navigate("/admin/submissions")}><ClipboardList size={15} /> View Submissions</button>
         </div>
       </div>
     </div>

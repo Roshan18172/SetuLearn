@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import adminService from "../../api/adminService";
 import { getErrorMessage } from "../../api/apiErrorHandler";
+import { Eye, Trash2, CheckCircle2, XCircle } from "../../data/svgs";
 
 export default function SubmissionsList() {
   const [submissions, setSubmissions] = useState([]);
@@ -69,8 +70,8 @@ export default function SubmissionsList() {
                   {selected.answers.map((a, i) => (
                     <div key={a.id} className={`admin-answer-card ${a.isCorrect ? "correct" : "incorrect"}`}>
                       <div className="admin-answer-q">Q{i + 1}: {a.question?.questionText?.substring(0, 100)}</div>
-                      <div className="admin-answer-status">
-                        {a.isCorrect ? "✅ Correct" : `❌ Incorrect ${a.selectedOption ? `(Selected: ${a.selectedOption.optionText?.substring(0, 50)})` : "(Unattempted)"}`}
+                      <div className="admin-answer-status" style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
+                        {a.isCorrect ? <><CheckCircle2 size={14} /> Correct</> : <><XCircle size={14} /> Incorrect {a.selectedOption ? `(Selected: ${a.selectedOption.optionText?.substring(0, 50)})` : "(Unattempted)"}</>}
                       </div>
                     </div>
                   ))}
@@ -111,8 +112,8 @@ export default function SubmissionsList() {
                     <td><span className="admin-badge admin-badge-danger">{s.totalIncorrect}</span></td>
                     <td>{new Date(s.startedAt).toLocaleDateString()}</td>
                     <td className="admin-actions">
-                      <button className="admin-btn-sm" onClick={() => viewDetail(s.id)}>👁️</button>
-                      <button className="admin-btn-sm admin-btn-danger" onClick={() => handleDelete(s.id)}>🗑️</button>
+                      <button className="admin-btn-sm" onClick={() => viewDetail(s.id)}><Eye /></button>
+                      <button className="admin-btn-sm admin-btn-danger" onClick={() => handleDelete(s.id)}><Trash2 /></button>
                     </td>
                   </tr>
                 ))}

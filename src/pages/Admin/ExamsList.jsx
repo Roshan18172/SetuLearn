@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import adminService from "../../api/adminService";
 import { getErrorMessage } from "../../api/apiErrorHandler";
+import { Pencil, Trash2 } from "../../data/svgs";
 
 export default function ExamsList() {
    // eslint-disable-next-line
@@ -155,8 +156,8 @@ export default function ExamsList() {
                     </span>
                   </td>
                   <td className="admin-actions">
-                    <button className="admin-btn-sm" onClick={() => openEdit(exam)}>✏️</button>
-                    <button className="admin-btn-sm admin-btn-danger" onClick={() => handleDelete(exam.id)}>🗑️</button>
+                    <button className="admin-btn-sm" onClick={() => openEdit(exam)}><Pencil /></button>
+                    <button className="admin-btn-sm admin-btn-danger" onClick={() => handleDelete(exam.id)}><Trash2 /></button>
                   </td>
                 </tr>
               ))}
