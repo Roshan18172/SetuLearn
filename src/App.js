@@ -9,6 +9,7 @@ import ScrollToTop from "./components/ScrollToTop";
 import Home from "./pages/Home";
 import Exams from "./pages/Exams";
 import Tests from "./pages/Tests";
+import Practice from "./pages/Practice";
 import TestInstructions from "./pages/TestInstructions";
 import TestInterface from "./pages/TestInterface";
 import TestResult from "./pages/TestResult";
@@ -82,6 +83,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/exams" element={<Exams />} />
             <Route path="/tests" element={<Tests />} />
+            <Route path="/practice" element={<Practice />} />
             <Route path="/instructions" element={<TestInstructions />} />
             <Route path="/test" element={<TestInterface />} />
             <Route path="/result" element={<TestResult />} />

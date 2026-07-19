@@ -26,6 +26,7 @@ export function mapExamToCategory(exam) {
  * Map a backend test to the frontend test shape.
  * @param {object} test - Backend test object
  * @param {string} examName - The exam/category name this test belongs to
+ * @param {array} questions - Optional array of backend question objects to dynamically calculate subject marks
  * @returns {object} Frontend test object
  */
 export function mapTestToFrontend(test, examName = "", questions = []) {
@@ -61,17 +62,47 @@ export function mapTestToFrontend(test, examName = "", questions = []) {
     tags: [],
     description: test.description || "",
 
-      subjects: (test.subjects || []).map((subject) => ({
-        id: subject.id,
-        name: subject.name,
-        questions: subject.count,
-        marks: subject.totalMarks || subjectMarkMap[subject.id] || subject.count * (subject.marksPerQuestion || testMarksPerQuestion),
-      })),
+    subjects: (test.subjects || []).map((subject) => ({
+      id: subject.id,
+      name: subject.name,
+      questions: subject.count,
+      marks: subject.totalMarks || subjectMarkMap[subject.id] || subject.count * (subject.marksPerQuestion || testMarksPerQuestion),
+    })),
 
     instructions: parseInstructions(test.instructions),
     attemptedBy: 0,
     avgScore: 0,
     negativeMarking: test.negativeMarking,
+  };
+}
+
+/**
+ * Map a backend subject to the frontend practice-subject shape.
+ * @param {object} subject - Backend subject object
+ * @returns {object} Frontend subject object
+ */
+export function mapPracticeSubjectToFrontend(subject) {
+  return {
+    id: subject.id,
+    name: subject.name,
+    slug: subject.slug,
+    description: subject.description || "",
+    topicCount: subject.topicCount ?? subject.topicsCount ?? 0,
+    questionCount: subject.questionCount ?? subject.totalQuestions ?? 0,
+  };
+}
+
+/**
+ * Map a backend topic to the frontend practice-topic shape.
+ * @param {object} topic - Backend topic object
+ * @returns {object} Frontend topic object
+ */
+export function mapTopicToFrontend(topic) {
+  return {
+    id: topic.id,
+    name: topic.name,
+    subjectId: topic.subjectId,
+    questionCount: topic.questionCount ?? topic.totalQuestions ?? 0,
   };
 }
 
@@ -156,6 +187,25 @@ function parseInstructions(raw) {
     return raw.split("\n").filter(Boolean);
   }
   return ["Attempt all questions. Each question carries 4 marks. Wrong answers carry -1."];
+}
+
+const SUBJECT_COLORS = [
+  "#5A1EAD", "#FD860D", "#2196F3", "#00BFA6", "#FF6363",
+  "#ac63ff", "#31adff", "#ff9151", "#00BCD4", "#e91e8c",
+];
+
+/**
+ * Deterministically pick a color for a subject name (for practice-mode
+ * subject cards), so the same subject always gets the same color.
+ * @param {string} name
+ * @returns {string} hex color
+ */
+export function getSubjectColor(name = "") {
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return SUBJECT_COLORS[Math.abs(hash) % SUBJECT_COLORS.length];
 }
 
 function getCategoryColor(name) {

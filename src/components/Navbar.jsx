@@ -11,6 +11,7 @@ export default function Navbar() {
 
   const navItems = [
     { path: "/", label: "Home" },
+    { path: "/practice", label: "Practice" },
     { path: "/tests", label: "Tests" },
     { path: "/about", label: "About" },
     { path: "/contact", label: "Contact" },
@@ -36,7 +37,7 @@ export default function Navbar() {
             </button>
           ))}
 
-          <button className="btn-primary nav-cta" onClick={() => navigate("/tests")} >
+          <button className="btn-primary nav-cta" onClick={() => navigate("/practice")} >
             Start Practicing
           </button>
 

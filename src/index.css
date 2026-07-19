@@ -976,6 +976,250 @@ button:disabled {
   flex-wrap: wrap;
 }
 
+/* ─── Start Practicing page ─── */
+
+.prac-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  color: var(--primary);
+  font-weight: 600;
+  font-size: 0.86rem;
+  padding: 0;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.prac-back-link:hover {
+  text-decoration: underline;
+}
+
+.prac-topic-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.prac-topic-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  box-shadow: var(--shadow-sm, none);
+}
+
+.prac-topic-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.prac-topic-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: var(--primary-light);
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.prac-topic-name {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.prac-topic-meta {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.prac-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.prac-header h1 {
+  font-size: 1.4rem;
+}
+
+.prac-score {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.prac-progress-bar {
+  width: 100%;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--border);
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+
+.prac-progress-fill {
+  height: 100%;
+  background: var(--primary);
+  transition: width 0.25s ease;
+}
+
+.prac-question-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px;
+  box-shadow: var(--shadow-sm, none);
+}
+
+.prac-question-text {
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 22px;
+  line-height: 1.6;
+}
+
+.prac-options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.prac-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  text-align: left;
+  padding: 14px 16px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border);
+  background: var(--surface);
+  cursor: pointer;
+  font-size: 0.95rem;
+  color: var(--text);
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.prac-option:hover:not(:disabled) {
+  border-color: var(--primary);
+  background: var(--primary-light);
+}
+
+.prac-option:disabled {
+  cursor: default;
+}
+
+.prac-option .opt-letter {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.82rem;
+  background: var(--secondary-bg, #f3f4f6);
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+
+.prac-option .opt-text {
+  flex: 1;
+}
+
+.prac-option.correct {
+  border-color: #22c55e;
+  background: #e8fff0;
+  color: #15803d;
+}
+
+.prac-option.correct .opt-letter {
+  background: #22c55e;
+  color: #fff;
+}
+
+.prac-option.correct svg {
+  color: #22c55e;
+  flex-shrink: 0;
+}
+
+.prac-option.incorrect {
+  border-color: #ef4444;
+  background: #fff1f0;
+  color: #b91c1c;
+}
+
+.prac-option.incorrect .opt-letter {
+  background: #ef4444;
+  color: #fff;
+}
+
+.prac-option.incorrect svg {
+  color: #ef4444;
+  flex-shrink: 0;
+}
+
+.prac-solution-toggle-wrap {
+  margin-top: 20px;
+}
+
+.prac-solution-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.prac-solution {
+  margin-top: 14px;
+  padding: 14px 16px;
+  background: var(--secondary-bg, #f3f4f6);
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  color: var(--text);
+  line-height: 1.6;
+}
+
+.prac-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 22px;
+}
+
+.prac-nav button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+@media (max-width: 640px) {
+  .prac-topic-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .prac-question-card {
+    padding: 18px;
+  }
+}
+
 .load-more-wrap {
   text-align: center;
   margin-top: 28px;
