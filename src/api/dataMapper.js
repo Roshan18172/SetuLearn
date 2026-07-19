@@ -28,7 +28,26 @@ export function mapExamToCategory(exam) {
  * @param {string} examName - The exam/category name this test belongs to
  * @returns {object} Frontend test object
  */
-export function mapTestToFrontend(test, examName = "") {
+export function mapTestToFrontend(test, examName = "", questions = []) {
+  // Calculate marks per question from test-level data as a better fallback
+  const testMarksPerQuestion =
+    test.totalMarks && test.totalQuestions
+      ? test.totalMarks / test.totalQuestions
+      : 4;
+
+  // If actual questions with per-question marks are provided,
+  // compute per-subject totals by summing individual question marks
+  const hasQuestionsWithMarks = questions.some((q) => q.marks != null);
+  const subjectMarkMap = {};
+  if (hasQuestionsWithMarks) {
+    questions.forEach((q) => {
+      const subId = q.subjectId || q.subject_id;
+      if (subId != null) {
+        subjectMarkMap[subId] = (subjectMarkMap[subId] || 0) + Number(q.marks);
+      }
+    });
+  }
+
   return {
     id: test.id,
     title: test.title,
@@ -42,12 +61,12 @@ export function mapTestToFrontend(test, examName = "") {
     tags: [],
     description: test.description || "",
 
-     subjects: (test.subjects || []).map((subject) => ({
-       id: subject.id,
-       name: subject.name,
-       questions: subject.count,
-       marks: subject.totalMarks || subject.count * 4,
-     })),
+      subjects: (test.subjects || []).map((subject) => ({
+        id: subject.id,
+        name: subject.name,
+        questions: subject.count,
+        marks: subject.totalMarks || subjectMarkMap[subject.id] || subject.count * (subject.marksPerQuestion || testMarksPerQuestion),
+      })),
 
     instructions: parseInstructions(test.instructions),
     attemptedBy: 0,
@@ -115,7 +134,7 @@ function mapSubjectToFrontend(sub) {
     incorrect: sub.incorrect || 0,
     unattempted: sub.unattempted ?? Math.max(0, (sub.totalQuestions || 0) - (sub.correct || 0) - (sub.incorrect || 0)),
     score: sub.score ?? sub.obtainedMarks ?? 0,
-    total: sub.totalMarks ?? (sub.totalQuestions || 0) * 4,
+    total: sub.totalMarks ?? (sub.totalQuestions || 0) * (sub.marksPerQuestion || 4),
     accuracy: sub.accuracy ?? (sub.correct && (sub.correct + sub.incorrect) ? Math.round((sub.correct / (sub.correct + sub.incorrect)) * 100) : 0),
     timeSpent: sub.timeSpent ?? sub.timeSpentSeconds ?? 0,
     marksPerQuestion: sub.marksPerQuestion ?? 4,

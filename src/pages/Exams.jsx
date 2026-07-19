@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import examService from "../api/examService";
 import { mapExamToCategory } from "../api/dataMapper";
 import { getErrorMessage } from "../api/apiErrorHandler";
+import SEO from "../components/SEO";
 import { ClockLoader } from "../data/svgs";
 
 export default function Exams() {
@@ -92,6 +93,11 @@ export default function Exams() {
 
   return (
     <div className="tests-page">
+      <SEO
+        title="All Exam Categories"
+        description="Browse all exam categories on SetuLearn including Engineering (JEE Main, JEE Advanced, BITSAT), Medical (NEET), Government Jobs (SSC, UPSC, Banking), and College Entrance exams (CUET)."
+        canonical="/exams"
+      />
       <div className="tests-header">
         <h1>All Exam Categories</h1>
         <p>{categories.length} exam Categories available</p>

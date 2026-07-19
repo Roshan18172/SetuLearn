@@ -4,6 +4,7 @@ import examService from "../api/examService";
 import { mapExamToCategory, mapTestToFrontend } from "../api/dataMapper";
 import { getErrorMessage } from "../api/apiErrorHandler";
 import { ClockLoader, QuestionMarkRound, Time } from "../data/svgs";
+import SEO from "../components/SEO";
 
 const difficulties = ["All Difficulty", "Easy", "Medium", "Hard"];
 const durations = ["All Duration", "< 60 Mins", "60-120 Mins", "> 120 Mins"];
@@ -87,9 +88,13 @@ export default function Tests() {
     try {
       const fullTest = await examService.getTestById(test.id);
 
+      // Pass questions array so per-subject marks can be calculated
+      // by summing individual question marks (which may vary e.g. 4, 1)
+      const questions = fullTest.questions || [];
       const mappedTest = mapTestToFrontend(
         fullTest,
-        fullTest.exam?.name || test.exam
+        fullTest.exam?.name || test.exam,
+        questions
       );
 
       navigate("/instructions", {
@@ -156,6 +161,11 @@ export default function Tests() {
 
   return (
     <div className="tests-page">
+      <SEO
+        title="All Mock Tests"
+        description="Browse and practice free mock tests for government jobs (SSC CGL, UPSC, Banking), engineering (JEE Main, JEE Advanced, BITSAT), medical (NEET), and college entrance exams (CUET). Filter by exam, difficulty, and duration."
+        canonical="/tests"
+      />
       <div className="tests-header">
         <h1>All Tests</h1>
         <p>{filtered.length} test{filtered.length !== 1 ? "s" : ""} available</p>

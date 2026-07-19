@@ -5,6 +5,7 @@ import examService from "../api/examService";
 import { mapExamToCategory, mapTestToFrontend } from "../api/dataMapper";
 import { getErrorMessage } from "../api/apiErrorHandler";
 import { ArrowRight, QuestionMarkRound, Time } from "../data/svgs";
+import SEO from "../components/SEO";
 
 /* ── Skeleton helpers ──────────────────────────────────── */
 function SkeletonBox({ width, height, borderRadius = "8px" }) {
@@ -46,9 +47,6 @@ export default function Home() {
   const [featuredTests, setFeaturedTests] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    document.title = "Home - SetuLearn";
-  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -106,6 +104,11 @@ export default function Home() {
 
   return (
     <div className="home-page">
+      <SEO
+        title="Home"
+        description="SetuLearn - India's #1 free mock test platform for government jobs (SSC, UPSC, Banking), engineering (JEE, BITSAT), medical (NEET), and college entrance exams. Practice with real exam patterns, get detailed analytics, and track your progress."
+        canonical="/"
+      />
       {/* Hero */}
       <section className="hero">
         <div className="hero-section">

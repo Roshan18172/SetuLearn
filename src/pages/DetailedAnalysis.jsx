@@ -125,7 +125,7 @@ function normalizeSubject(subject = {}, index = 0) {
   );
   const total = toNumber(
     subject.total ?? subject.totalMarks ?? subject.maxMarks,
-    questions * 4,
+    questions * (subject.marksPerQuestion || 4),
   );
   const score = toNumber(
     subject.score ?? subject.obtainedMarks ?? subject.marksObtained,

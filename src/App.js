@@ -1,5 +1,6 @@
 import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { MathJaxContext } from "better-react-mathjax";
+import { HelmetProvider } from "react-helmet-async";
 
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
@@ -69,6 +70,7 @@ function App() {
   };
 
   return (
+    <HelmetProvider>
     <MathJaxContext config={config}>
       <div className="app-root">
 
@@ -134,6 +136,7 @@ function App() {
         {!hideLayout && <Footer />}
       </div>
     </MathJaxContext>
+    </HelmetProvider>
   );
 }
 

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import SEO from "../../components/SEO";
 
 const faqData = [
   {
@@ -90,6 +91,11 @@ export default function FAQ() {
 
   return (
     <div className="faq-page">
+      <SEO
+        title="FAQ"
+        description="Frequently asked questions about SetuLearn mock test platform. Learn about timed mode, practice mode, score calculation, exam categories, and how to get started with free mock tests."
+        canonical="/faq"
+      />
       <div className="faq-header">
         <div className="section-eyebrow">Help Center</div>
         <h1 className="faq-title">Frequently Asked Questions</h1>

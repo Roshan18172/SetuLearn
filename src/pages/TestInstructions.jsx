@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { ArrowLeft, ArrowRight } from "../data/svgs";
+import SEO from "../components/SEO";
 
 export default function TestInstructions() {
   const [mode, setMode] = useState("timed");
   const location = useLocation();
   const navigate = useNavigate();
   const { test } = location.state || {};
-  document.title = "Test Instructions - SetuLearn";
 
   if (!test) {
     return (
@@ -34,6 +34,11 @@ export default function TestInstructions() {
 
   return (
     <div className="instructions-page">
+      <SEO
+        title={test?.title ? `Test Instructions - ${test.title}` : "Test Instructions"}
+        description="Review test instructions, question distribution, marking scheme, and exam pattern before starting your SetuLearn mock test."
+        canonical="/instructions"
+      />
       <div className="instructions-card">
         <div className="instr-header">
           <h1>Test Instructions</h1>

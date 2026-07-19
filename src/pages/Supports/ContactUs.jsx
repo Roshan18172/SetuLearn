@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import contactService from "../../api/contactService";
 import { getErrorMessage } from "../../api/apiErrorHandler";
 import { ArrowRight, Send } from "../../data/svgs";
+import SEO from "../../components/SEO";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -147,6 +148,11 @@ export default function ContactUs() {
 
   return (
     <div className="contact-page">
+      <SEO
+        title="Contact Us"
+        description="Get in touch with SetuLearn. Have questions, suggestions, or found an issue? Contact our support team via email at support@setulearn.in or call +91 89082 21784. We're here to help."
+        canonical="/contact"
+      />
       {/* Hero */}
       <section className="contact-hero">
         <div className="contact-hero-content">

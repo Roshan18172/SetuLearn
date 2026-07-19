@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import SEO from "../components/SEO";
 
 export default function About() {
   const navigate = useNavigate();
@@ -6,6 +7,11 @@ export default function About() {
 
   return (
     <div className="about-page">
+      <SEO
+        title="About Us"
+        description="Learn about SetuLearn - India's free mock test platform for government jobs, engineering, medical, and college entrance exam preparation. Our mission is to help students practice smarter and succeed."
+        canonical="/about"
+      />
       {/* Hero Section */}
       <section className="about-hero">
         <div className="about-hero-content">

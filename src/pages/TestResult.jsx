@@ -46,7 +46,6 @@ export function calculateAggregatedResults(resultsData, test = {}, questions = [
       subQuestionsCount = subCorrect + subIncorrect + subUnattempted;
     }
 
-    totalScore += subScore;
     totalCorrect += subCorrect;
     totalIncorrect += subIncorrect;
     totalUnattempted += subUnattempted;
@@ -54,6 +53,10 @@ export function calculateAggregatedResults(resultsData, test = {}, questions = [
 
     // Backend now provides subject-wise analysis
     if (Array.isArray(sub.subjectAnalysis) && sub.subjectAnalysis.length > 0) {
+      // Calculate score from per-subject questionAnalysis instead of using
+      // the backend summary sub.score, because each question may have different marks
+      // and different negative marks per question.
+      // totalScore will be recalculated from displaySubjects at the end
 
       sub.subjectAnalysis.forEach((subject) => {
 
@@ -75,58 +78,66 @@ export function calculateAggregatedResults(resultsData, test = {}, questions = [
         if (Array.isArray(subject.questionAnalysis) && subject.questionAnalysis.length > 0) {
           // Sum up marks from all questions in this subject (each question has its own marks)
           // Handle fractional marks by keeping decimal precision
-          const marksSum = subject.questionAnalysis.reduce((sum, q) => {
-            const marks = parseFloat(q.marks) || 0;
-            return sum + marks;
-          }, 0);
+          const marksSum = Number(
+            subject.questionAnalysis.reduce((sum, q) => {
+              const marks = parseFloat(q.marks) || 0;
+              return sum + marks;
+            }, 0),
+          ).toFixed(4);
 
           // Calculate score from questionAnalysis using each question's actual marks and negative marks
-          const scoreFromQuestions = subject.questionAnalysis.reduce((sum, q) => {
-            const marks = parseFloat(q.marks) || 0;
-            const negativeMarks = parseFloat(q.negativeMarks) || 0;
-            // If question was answered correctly: add full marks
-            // If question was answered incorrectly (has selectedOptionId but not correct): subtract negative marks
-            // Note: selectedOptionId exists when user attempted but answer was wrong
-            if (q.isCorrect || q.correct) {
-              return sum + marks;
-            } else if (q.selectedOptionId !== undefined && q.selectedOptionId !== null && !q.isCorrect) {
-              return sum - negativeMarks;
-            }
-            return sum;
-          }, 0);
+          const scoreFromQuestions = Number(
+            subject.questionAnalysis.reduce((sum, q) => {
+              const marks = parseFloat(q.marks) || 0;
+              const negativeMarks = parseFloat(q.negativeMarks) || 0;
+              // If question was answered correctly: add full marks
+              // If question was answered incorrectly (has selectedOptionId but not correct): subtract negative marks
+              // Note: selectedOptionId exists when user attempted but answer was wrong
+              if (q.isCorrect || q.correct) {
+                return sum + marks;
+              } else if (q.selectedOptionId !== undefined && q.selectedOptionId !== null && !q.isCorrect) {
+                return sum - negativeMarks;
+              }
+              return sum;
+            }, 0),
+          ).toFixed(4);
 
-          totalMarks = marksSum || subject.totalMarks || subject.maxMarks || config.marks || totalQuestions * 4;
-          subjectScore = subject.score !== undefined ? subject.score : scoreFromQuestions;
+          totalMarks = Number(marksSum) || subject.totalMarks || subject.maxMarks || config.marks || totalQuestions * 4;
+          subjectScore = subject.score !== undefined ? Number(subject.score) : Number(scoreFromQuestions);
         } else if (questions && questions.length > 0) {
           // Use questions array for accurate marks calculation - group by subject
           const subjectQuestions = questions.filter(q => String(q.subjectId) === String(subject.subjectId));
           
           // Sum up individual question marks (supports fractional values)
-          const marksSum = subjectQuestions.reduce((sum, q) => {
-            const marks = parseFloat(q.marks) || 0;
-            return sum + marks;
-          }, 0);
+          const marksSum = Number(
+            subjectQuestions.reduce((sum, q) => {
+              const marks = parseFloat(q.marks) || 0;
+              return sum + marks;
+            }, 0),
+          ).toFixed(4);
 
           // Calculate score based on answers vs correct answers
-          const scoreFromQuestions = subjectQuestions.reduce((sum, q) => {
-            const marks = parseFloat(q.marks) || 0;
-            const negativeMarks = parseFloat(q.negativeMarks) || 0;
-            const questionId = String(q.id);
-            const answer = answers[questionId];
-            const correctOptionId = String(q.correct || q.correctOptionId);
-            
-            if (answer && String(answer) === correctOptionId) {
-              // Correct answer
-              return sum + marks;
-            } else if (answer && String(answer) !== correctOptionId) {
-              // Wrong answer - apply negative marking
-              return sum - negativeMarks;
-            }
-            return sum;
-          }, 0);
+          const scoreFromQuestions = Number(
+            subjectQuestions.reduce((sum, q) => {
+              const marks = parseFloat(q.marks) || 0;
+              const negativeMarks = parseFloat(q.negativeMarks) || 0;
+              const questionId = String(q.id);
+              const answer = answers[questionId];
+              const correctOptionId = String(q.correct || q.correctOptionId);
+              
+              if (answer && String(answer) === correctOptionId) {
+                // Correct answer
+                return sum + marks;
+              } else if (answer && String(answer) !== correctOptionId) {
+                // Wrong answer - apply negative marking
+                return sum - negativeMarks;
+              }
+              return sum;
+            }, 0),
+          ).toFixed(4);
 
-          totalMarks = marksSum || subject.totalMarks || subject.maxMarks || config.marks || totalQuestions * 4;
-          subjectScore = subject.score !== undefined ? subject.score : scoreFromQuestions;
+          totalMarks = Number(marksSum) || subject.totalMarks || subject.maxMarks || config.marks || totalQuestions * 4;
+          subjectScore = subject.score !== undefined ? Number(subject.score) : Number(scoreFromQuestions);
         } else {
           // Fallback to original calculation if no questionAnalysis in subject
           // Use marksPerQuestion and negativePerQuestion from backend if available
@@ -135,7 +146,7 @@ export function calculateAggregatedResults(resultsData, test = {}, questions = [
           
           totalMarks = subject.totalMarks || subject.maxMarks || (marksPerQuestion ? totalQuestions * marksPerQuestion : totalQuestions * 4);
           subjectScore = subject.score !== undefined
-            ? subject.score
+            ? Number(subject.score)
             : (marksPerQuestion ? correct * marksPerQuestion : correct * 4) - 
               (negativePerQuestion ? incorrect * negativePerQuestion : incorrect * 1);
         }
@@ -200,6 +211,18 @@ export function calculateAggregatedResults(resultsData, test = {}, questions = [
     const subAttempted = subCorrect + subIncorrect;
     const subAccuracy = subAttempted === 0 ? 0 : Math.round((subCorrect / subAttempted) * 100);
 
+    // Calculate total marks from actual question marks if questions array is provided,
+    // otherwise fall back to test-level marksPerQuestion
+    let subTotal = subQuestionsCount * 4;
+    if (questions && questions.length > 0) {
+      const subQuestions = questions.filter(q =>
+        String(q.subjectId) === String(sub.subTestId || sub.sectionId || sub.id || index)
+      );
+      if (subQuestions.length > 0) {
+        subTotal = subQuestions.reduce((sum, q) => sum + (parseFloat(q.marks) || 0), 0);
+      }
+    }
+
     displaySubjects.push({
       name: sectionName,
       questions: subQuestionsCount,
@@ -207,12 +230,20 @@ export function calculateAggregatedResults(resultsData, test = {}, questions = [
       correct: subCorrect,
       incorrect: subIncorrect,
       score: subScore,
-      total: subQuestionsCount * 4,
+      total: subTotal,
       accuracy: subAccuracy
     });
   });
 
-  const grandTotalMarks = totalQuestionsCount * 4;
+  // Recalculate totalScore from per-subject scores for accuracy
+  // (when subjectAnalysis is present, totalScore was reset to 0)
+  totalScore = displaySubjects.reduce((sum, s) => sum + Number(s.score), 0);
+
+  // Calculate grand total from displaySubjects totals for accuracy
+  let grandTotalMarks = displaySubjects.reduce((sum, s) => sum + Number(s.total), 0);
+  if (grandTotalMarks === 0) {
+    grandTotalMarks = totalQuestionsCount * 4;
+  }
   const grandPercentage = grandTotalMarks > 0
     ? Math.max(0, Math.round((totalScore / grandTotalMarks) * 100))
     : 0;
