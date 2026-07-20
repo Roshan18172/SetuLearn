@@ -9,16 +9,57 @@ import { Helmet } from "react-helmet-async";
  * @param {string} props.description - Meta description for this page
  * @param {string} props.canonical - Canonical URL relative to https://www.setulearn.in/
  * @param {string} props.image - OG image path relative to public folder
+ * @param {string} props.type - JSON-LD type hint (default: WebPage)
  */
 export default function SEO({
   title = "SetuLearn | Bridge to Excellence",
   description = "India's premier mock test platform for government jobs, engineering, medical, and college entrance exam preparation. Practice, analyze, and excel.",
   canonical = "/",
   image = "/OG-image.jpg",
+  type = "WebPage",
 }) {
   const siteUrl = "https://www.setulearn.in";
   const fullTitle = title.includes("|") ? title : `${title} | SetuLearn`;
   const canonicalUrl = `${siteUrl}${canonical}`;
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": `${siteUrl}/#website`,
+        "url": siteUrl,
+        "name": title.includes("|") ? "SetuLearn" : title,
+        "description": description,
+        "publisher": { "@id": `${siteUrl}/#organization` }
+      },
+      {
+        "@type": type,
+        "@id": `${canonicalUrl}#webpage`,
+        "url": canonicalUrl,
+        "name": fullTitle,
+        "description": description,
+        "isPartOf": { "@id": `${siteUrl}/#website` },
+        "image": {
+          "@type": "ImageObject",
+          "url": `${siteUrl}${image}`
+        }
+      },
+      {
+        "@type": "Organization",
+        "@id": `${siteUrl}/#organization`,
+        "name": "SetuLearn",
+        "url": siteUrl,
+        "logo": {
+          "@type": "ImageObject",
+          "url": `${siteUrl}/logo.webp`
+        },
+        "sameAs": [
+          "https://twitter.com/SetuLearnOfficial"
+        ]
+      }
+    ]
+  };
 
   return (
     <Helmet>
@@ -43,6 +84,9 @@ export default function SEO({
       <meta name="twitter:title" content={fullTitle} />
       <meta name="twitter:description" content={description} />
       <meta name="twitter:image" content={`${siteUrl}${image}`} />
+
+      {/* JSON-LD Structured Data */}
+      <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
     </Helmet>
   );
 }

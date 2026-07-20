@@ -12,9 +12,9 @@ import {
   ClockLoader, BookOpen, Tag, ChevronLeft, ChevronRight,
   CheckCircle2, XCircle, Eye, EyeOff, ArrowLeft,
 } from "../data/svgs";
+import SEO from "../components/SEO";
 
 export default function Practice() {
-  document.title = "Start Practicing - SetuLearn";
 
   // Wizard step: "subjects" -> "topics" -> "practice"
   const [step, setStep] = useState("subjects");
@@ -126,6 +126,7 @@ export default function Practice() {
   if (isLoading && step === "subjects" && subjects.length === 0) {
     return (
       <div className="tests-page">
+        <SEO title="Start Practicing" description="Practice topic-wise questions on SetuLearn. Pick a subject, choose a topic, and start solving questions with instant feedback and solutions." canonical="/practice" />
         <div className="tests-header">
           <h1>Start Practicing</h1>
         </div>
@@ -141,6 +142,7 @@ export default function Practice() {
   if (fetchError && step === "subjects" && subjects.length === 0) {
     return (
       <div className="tests-page">
+        <SEO title="Start Practicing" description="Practice topic-wise questions on SetuLearn. Pick a subject, choose a topic, and start solving questions with instant feedback and solutions." canonical="/practice" />
         <div className="tests-header">
           <h1>Start Practicing</h1>
         </div>
@@ -160,6 +162,7 @@ export default function Practice() {
   if (step === "subjects") {
     return (
       <div className="tests-page">
+        <SEO title="Start Practicing" description="Practice topic-wise questions on SetuLearn. Pick a subject, choose a topic, and start solving questions with instant feedback and solutions." canonical="/practice" />
         <div className="tests-header">
           <h1>Start Practicing</h1>
           <p>Pick a subject to see its topics and begin practicing.</p>

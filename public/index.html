@@ -11,6 +11,7 @@
     />
     <meta name="keywords" content="SetuLearn, mock test, online exam, JEE, NEET, SSC, UPSC, CUET, government exam preparation, entrance exam, practice test, SetuLearnOfficial" />
     <meta name="author" content="SetuLearn" />
+    <link rel="canonical" href="https://www.setulearn.in/" />
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/favicon.png" />
 
     <!-- Open Graph / Facebook -->
@@ -38,6 +39,38 @@
     <meta name="twitter:image" content="%PUBLIC_URL%/OG-image.jpg" />
 
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "@id": "https://www.setulearn.in/#website",
+            "url": "https://www.setulearn.in/",
+            "name": "SetuLearn",
+            "description": "India's premier mock test platform for government jobs, engineering, medical, and college entrance exam preparation.",
+            "publisher": {
+              "@id": "https://www.setulearn.in/#organization"
+            }
+          },
+          {
+            "@type": "Organization",
+            "@id": "https://www.setulearn.in/#organization",
+            "name": "SetuLearn",
+            "url": "https://www.setulearn.in/",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://www.setulearn.in/logo.webp"
+            },
+            "sameAs": [
+              "https://twitter.com/SetuLearnOfficial"
+            ]
+          }
+        ]
+      }
+    </script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

@@ -1,6 +1,7 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { MathJax } from "better-react-mathjax";
+import SEO from "../components/SEO";
 
 /**
  * The `questions` array (built while the test is in progress) never contains
@@ -147,7 +148,6 @@ export default function Solutions() {
 
   const questionInfoMap = buildQuestionInfoMap(result);
 
-  document.title = `${test?.title || "Exam"} Solutions - SetuLearn`;
 
   const handleDownload = () => {
     const html = generateSolutionsHtml(test, questions, answers, questionInfoMap);
@@ -168,6 +168,11 @@ export default function Solutions() {
 
   return (
     <div className="solution-page">
+      <SEO
+        title={`${test?.title || "Exam"} Solutions`}
+        description="Review solutions and correct answers for your completed SetuLearn mock test. Understand mistakes with detailed explanations."
+        canonical="/solutions"
+      />
       <div className="solution-header">
         <button className="btn-outline" onClick={() => navigate(-1)}>
           {" "}
