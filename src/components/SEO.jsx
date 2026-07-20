@@ -8,14 +8,14 @@ import { Helmet } from "react-helmet-async";
  * @param {string} props.title - Page title (appended with " | SetuLearn")
  * @param {string} props.description - Meta description for this page
  * @param {string} props.canonical - Canonical URL relative to https://www.setulearn.in/
- * @param {string} props.image - OG image path relative to public folder
+ * @param {string} props.image - OG image path relative to public folder (default: /OG-image.webp)
  * @param {string} props.type - JSON-LD type hint (default: WebPage)
  */
 export default function SEO({
   title = "SetuLearn | Bridge to Excellence",
   description = "India's premier mock test platform for government jobs, engineering, medical, and college entrance exam preparation. Practice, analyze, and excel.",
   canonical = "/",
-  image = "/OG-image.jpg",
+  image = "/OG-image.webp",
   type = "WebPage",
 }) {
   const siteUrl = "https://www.setulearn.in";

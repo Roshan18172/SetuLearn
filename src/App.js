@@ -5,6 +5,7 @@ import { HelmetProvider } from "react-helmet-async";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import ScrollToTop from "./components/ScrollToTop";
+import Chatbot from "./components/Chatbot/Chatbot";
 
 import Home from "./pages/Home";
 import Exams from "./pages/Exams";
@@ -51,6 +52,11 @@ function App() {
 
   const hideLayout =
     location.pathname === "/test" || location.pathname.startsWith("/admin");
+
+  // The chatbot floats on almost every page, but it should stay out of the
+  // way on pages where a student needs full focus: reading test
+  // instructions and sitting the live test itself.
+  const hideChatbot = hideLayout || location.pathname === "/instructions";
 
   const config = {
     // 1. Tell MathJax to load the TeX input processor
@@ -136,6 +142,10 @@ function App() {
         </main>
 
         {!hideLayout && <Footer />}
+
+        {/* Setu chatbot floats on every page except the live test screen
+            (and the admin dashboard, which has its own separate UI). */}
+        {!hideChatbot && <Chatbot />}
       </div>
     </MathJaxContext>
     </HelmetProvider>

@@ -12,10 +12,13 @@ import {
   ClockLoader, BookOpen, Tag, ChevronLeft, ChevronRight,
   CheckCircle2, XCircle, Eye, EyeOff, ArrowLeft,
 } from "../data/svgs";
+import {
+  setCurrentPracticeQuestion,
+  clearCurrentPracticeQuestion,
+} from "../utils/chatbotBridge";
 import SEO from "../components/SEO";
 
 export default function Practice() {
-
   // Wizard step: "subjects" -> "topics" -> "practice"
   const [step, setStep] = useState("subjects");
 
@@ -32,6 +35,31 @@ export default function Practice() {
 
   const [isLoading, setIsLoading] = useState(true);
   const [fetchError, setFetchError] = useState(null);
+
+  // Let the Setu chatbot know which question the student is currently
+  // looking at, so its "Help with a practice question" option can surface
+  // the stored explanation instantly instead of asking the student to
+  // describe the question from scratch.
+  useEffect(() => {
+    if (step === "practice" && questions.length > 0) {
+      const activeQ = questions[currentIndex];
+      setCurrentPracticeQuestion(
+        activeQ
+          ? {
+              id: activeQ.id,
+              text: activeQ.text,
+              options: activeQ.options,
+              explanation: activeQ.explanation,
+              subject: selectedSubject?.name,
+              topic: selectedTopic?.name,
+            }
+          : null
+      );
+    } else {
+      clearCurrentPracticeQuestion();
+    }
+    return () => clearCurrentPracticeQuestion();
+  }, [step, questions, currentIndex, selectedSubject, selectedTopic]);
 
   // Step 1: fetch all subjects on mount
   useEffect(() => {
