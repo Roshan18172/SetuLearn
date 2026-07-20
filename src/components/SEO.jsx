@@ -14,7 +14,7 @@ export default function SEO({
   title = "SetuLearn | Bridge to Excellence",
   description = "India's premier mock test platform for government jobs, engineering, medical, and college entrance exam preparation. Practice, analyze, and excel.",
   canonical = "/",
-  image = "/OG-image.webp",
+  image = "/OG-image.jpg",
 }) {
   const siteUrl = "https://www.setulearn.in";
   const fullTitle = title.includes("|") ? title : `${title} | SetuLearn`;
