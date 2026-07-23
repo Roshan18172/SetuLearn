@@ -76,6 +76,15 @@ export default function TestInterface() {
     typeof window !== "undefined" &&
     sessionStorage.getItem(`test_submitted_${test.id}`) === "true";
 
+  // Same idea, but for a deliberate mid-test Exit. Without this, pressing
+  // Back after exiting could land on a stale history entry that still
+  // holds the live exam state and silently resume the session — this flag
+  // makes that entry self-redirect instead (see handleExitExam below).
+  const alreadyExited =
+    !!test?.id &&
+    typeof window !== "undefined" &&
+    sessionStorage.getItem(`test_exited_${test.id}`) === "true";
+
   // Tracks whether the exit modal is currently open, read/written
   // synchronously by the back-button trap below (kept as a ref, not
   // state, so a fast double back-press can't race ahead of a render).
@@ -108,6 +117,11 @@ export default function TestInterface() {
   const [current, setCurrent] = useState(0);
   const [answers, setAnswers] = useState({});
   const [marked, setMarked] = useState({});
+  // Tracks which question INDICES have actually been opened. Deliberately
+  // separate from `current` (a single pointer) — jumping straight from Q1
+  // to Q50 via the palette must NOT mark Q2–Q49 as visited, only Q1 and
+  // Q50. Seeded with {0} since the first question is visited on load.
+  const [visitedIndices, setVisitedIndices] = useState(() => new Set([0]));
   const [showConfirm, setShowConfirm] = useState(false);
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [showExitModal, setShowExitModal] = useState(false);
@@ -121,7 +135,8 @@ export default function TestInterface() {
     }
   }, []);
 
-  // Reset MathJax ready state when navigating to a new question
+  // Reset MathJax ready state when navigating to a new question, and
+  // record that this specific question index has genuinely been opened.
   useEffect(() => {
     setIsReady(false);
     mathJaxReadyCount.current = 0;
@@ -129,6 +144,12 @@ export default function TestInterface() {
     if (currentQ) {
       // question text + options count
       totalMathJaxElements.current = 1 + ((currentQ.options || []).length || 0);
+      setVisitedIndices((prev) => {
+        if (prev.has(current)) return prev;
+        const next = new Set(prev);
+        next.add(current);
+        return next;
+      });
     } else {
       totalMathJaxElements.current = 0;
     }
@@ -136,7 +157,7 @@ export default function TestInterface() {
 
   // Combined effect to handle sub-test session initialization and question mapping seamlessly
   useEffect(() => {
-    if (!test || alreadySubmitted) {
+    if (!test || alreadySubmitted || alreadyExited) {
       setLoadingQuestions(false);
       return;
     }
@@ -272,7 +293,7 @@ export default function TestInterface() {
     };
 
     loadExamDataStructure();
-  }, [test, alreadySubmitted]);
+  }, [test, alreadySubmitted, alreadyExited]);
 
   useEffect(() => {
     const disableRightClick = (e) => {
@@ -418,6 +439,13 @@ export default function TestInterface() {
     // Exiting mid-test goes straight to Tests (not back to Instructions) —
     // replace so it also clears this dead TestInterface entry from history.
     modalOpenRef.current = false;
+    // Mark this test as exited so that if Back later lands on a stale
+    // /test history entry from before this trap logic replaced it, that
+    // entry self-redirects to Tests instead of silently resuming the
+    // exam (see the alreadyExited check above and its useEffect guard).
+    if (test?.id) {
+      sessionStorage.setItem(`test_exited_${test.id}`, "true");
+    }
     navigate("/tests", { replace: true });
   };
   //eslint-disable-next-line
@@ -473,7 +501,7 @@ export default function TestInterface() {
   // catch that to show the modal and push another duplicate to stay
   // armed. A second Back press while the modal is already open is
   // treated as the confirmed exit.
-  const examActive = !!test && !alreadySubmitted && !loadingQuestions && questions.length > 0;
+  const examActive = !!test && !alreadySubmitted && !alreadyExited && !loadingQuestions && questions.length > 0;
   const trapArmedRef = useRef(false);
 
   // Arm the trap once, right when the exam becomes active.
@@ -491,9 +519,8 @@ export default function TestInterface() {
 
     if (modalOpenRef.current) {
       // Second back-press while the modal is already up = confirmed exit.
-      modalOpenRef.current = false;
       setShowExitModal(false);
-      navigate("/tests", { replace: true });
+      handleExitExam();
       return;
     }
 
@@ -528,6 +555,10 @@ export default function TestInterface() {
     return <RedirectToTests message="You have already submitted this test." />;
   }
 
+  if (alreadyExited) {
+    return <RedirectToTests message="You exited this exam." />;
+  }
+
   if (loadingQuestions) {
     return (
       <div
@@ -552,15 +583,61 @@ export default function TestInterface() {
   const q = questions[current] || {};
   const answered = Object.keys(answers).length;
   const markedCount = Object.keys(marked).length;
+  const notVisitedCount = questions.length - visitedIndices.size;
 
   const getQStatus = (index) => {
     const qId = questions[index].id;
     if (marked[qId] && answers[qId]) return "marked-answered";
     if (marked[qId]) return "marked";
     if (answers[qId]) return "answered";
-    if (index < current) return "visited";
-    return "unanswered";
+    if (visitedIndices.has(index)) return "unanswered";
+    return "not-visited";
   };
+
+  const unansweredVisitedCount = questions.filter(
+    (_, idx) => getQStatus(idx) === "unanswered"
+  ).length;
+
+  // Group questions by subject, preserving the order subjects first appear
+  // in — used for the subject tabs and the subject-grouped palette.
+  const subjectGroups = [];
+  const subjectGroupIndex = {};
+  questions.forEach((qq, idx) => {
+    const sid = qq.subjectId || "unknown";
+    if (subjectGroupIndex[sid] === undefined) {
+      subjectGroupIndex[sid] = subjectGroups.length;
+      subjectGroups.push({
+        id: sid,
+        name: subjectsMap[sid] || qq.subjectName || "General",
+        indices: [],
+      });
+    }
+    subjectGroups[subjectGroupIndex[sid]].indices.push(idx);
+  });
+
+  const jumpToSubject = (subjectId) => {
+    const group = subjectGroups.find((g) => g.id === subjectId);
+    if (!group) return;
+    // Prefer the first unanswered question in that subject so switching
+    // subjects is actually useful mid-attempt, not just a cosmetic jump.
+    const target =
+      group.indices.find((idx) => !answers[questions[idx].id]) ?? group.indices[0];
+    setCurrent(target);
+    setPaletteOpen(false);
+  };
+
+  // Fix #11: the Submit button stays disabled until the student has
+  // either answered at least one question, or spent a minimum amount of
+  // time in the exam — prevents an accidental/blank instant submission.
+  const MIN_ANSWERED_TO_SUBMIT = 20;
+  const MIN_SECONDS_TO_SUBMIT = 3600;
+  const canSubmit =
+    answered >= MIN_ANSWERED_TO_SUBMIT || timeSpentSeconds >= MIN_SECONDS_TO_SUBMIT;
+  const submitHint = canSubmit
+    ? null
+    : `Answer at least one question, or wait ${MIN_SECONDS_TO_SUBMIT - timeSpentSeconds}s more, before submitting.`;
+
+  const currentSubjectId = questions[current]?.subjectId;
 
   return (
     <div className="test-interface" style={{ userSelect: "none" }}>
@@ -596,7 +673,12 @@ export default function TestInterface() {
             {" "}
             Exit{" "}
           </button>
-          <button className="btn-end-test" onClick={() => setShowConfirm(true)}>
+          <button
+            className="btn-end-test"
+            onClick={() => setShowConfirm(true)}
+            disabled={!canSubmit}
+            title={submitHint || undefined}
+          >
             {" "}
             End Test{" "}
           </button>
@@ -607,6 +689,26 @@ export default function TestInterface() {
       <div className="ti-body">
         {/* MAIN QUESTION PANEL */}
         <div className="ti-main">
+          {subjectGroups.length > 1 && (
+            <div className="ti-subject-tabs">
+              {subjectGroups.map((g) => {
+                const groupAnswered = g.indices.filter((idx) => answers[questions[idx].id]).length;
+                return (
+                  <button
+                    key={g.id}
+                    className={`ti-subject-tab ${currentSubjectId === g.id ? "active" : ""}`}
+                    onClick={() => jumpToSubject(g.id)}
+                  >
+                    {g.name}
+                    <span className="tab-count">
+                      {groupAnswered}/{g.indices.length}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          )}
+
           <div className="ti-q-header">
             <div className="ti-q-num">
               Question {current + 1} of {questions.length}
@@ -721,11 +823,16 @@ export default function TestInterface() {
               <button
                 className="btn-primary"
                 onClick={() => setShowConfirm(true)}
+                disabled={!canSubmit}
+                title={submitHint || undefined}
               >
                 Submit Test ✓
               </button>
             )}
           </div>
+          {!canSubmit && current === questions.length - 1 && (
+            <p className="ti-submit-hint">{submitHint}</p>
+          )}
         </div>
 
         {/* SIDEBAR */}
@@ -747,29 +854,41 @@ export default function TestInterface() {
                 className="pal-dot unanswered"
                 style={{ marginLeft: 12 }}
               />{" "}
-              Unanswered ({questions.length - answered})
+              Unanswered ({unansweredVisitedCount})
               <span
                 className="pal-dot marked"
                 style={{ marginLeft: 12 }}
               />{" "}
               Marked ({markedCount})
+              <span
+                className="pal-dot not-visited"
+                style={{ marginLeft: 12 }}
+              />{" "}
+              Not Visited ({notVisitedCount})
             </div>
           </div>
           <div className="ti-sidebar-body">
-            <div className="palette-grid">
-              {questions.map((_, index) => (
-                <button
-                  key={index}
-                  className={`pal-btn ${getQStatus(index)} ${current === index ? "current" : ""}`}
-                  onClick={() => {
-                    setCurrent(index);
-                    setPaletteOpen(false);
-                  }}
-                >
-                  {index + 1}
-                </button>
-              ))}
-            </div>
+            {subjectGroups.map((g) => (
+              <div className="palette-subject-group" key={g.id}>
+                {subjectGroups.length > 1 && (
+                  <div className="palette-subject-label">{g.name}</div>
+                )}
+                <div className="palette-grid">
+                  {g.indices.map((index) => (
+                    <button
+                      key={index}
+                      className={`pal-btn ${getQStatus(index)} ${current === index ? "current" : ""}`}
+                      onClick={() => {
+                        setCurrent(index);
+                        setPaletteOpen(false);
+                      }}
+                    >
+                      {index + 1}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ))}
 
             <div className="palette-summary">
               <div className="ps-row">
@@ -788,15 +907,22 @@ export default function TestInterface() {
                 <span>Marked</span>
                 <b className="orange"> {markedCount} </b>
               </div>
+              <div className="ps-row">
+                <span>Not Visited</span>
+                <b> {notVisitedCount} </b>
+              </div>
             </div>
 
             <button
               className="btn-primary w-full"
               onClick={() => setShowConfirm(true)}
+              disabled={!canSubmit}
+              title={submitHint || undefined}
             >
               {" "}
               Submit Test{" "}
             </button>
+            {!canSubmit && <p className="ti-submit-hint">{submitHint}</p>}
           </div>
         </div>
       </div>
