@@ -629,8 +629,8 @@ export default function TestInterface() {
   // Fix #11: the Submit button stays disabled until the student has
   // either answered at least one question, or spent a minimum amount of
   // time in the exam — prevents an accidental/blank instant submission.
-  const MIN_ANSWERED_TO_SUBMIT = 1;
-  const MIN_SECONDS_TO_SUBMIT = 60;
+  const MIN_ANSWERED_TO_SUBMIT = 20;
+  const MIN_SECONDS_TO_SUBMIT = 3600;
   const canSubmit =
     answered >= MIN_ANSWERED_TO_SUBMIT || timeSpentSeconds >= MIN_SECONDS_TO_SUBMIT;
   const submitHint = canSubmit
