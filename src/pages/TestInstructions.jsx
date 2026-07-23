@@ -173,10 +173,12 @@ export default function TestInstructions() {
           <button
             className="btn-primary btn-lg"
             onClick={() => {
-              // Clear any "already submitted" flag from a previous attempt
-              // so a fresh attempt isn't immediately bounced back out.
+              // Clear any "already submitted"/"already exited" flags from
+              // a previous attempt so a fresh attempt isn't immediately
+              // bounced back out.
               if (test?.id) {
                 sessionStorage.removeItem(`test_submitted_${test.id}`);
+                sessionStorage.removeItem(`test_exited_${test.id}`);
               }
               // replace: true — TestInterface takes Instructions' place in
               // history, so pressing Back mid-test goes straight to Tests

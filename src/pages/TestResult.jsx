@@ -103,7 +103,15 @@ export function calculateAggregatedResults(resultsData, test = {}, questions = [
           ).toFixed(4);
 
           totalMarks = Number(marksSum) || subject.totalMarks || subject.maxMarks || config.marks || totalQuestions * 4;
-          subjectScore = subject.score !== undefined ? Number(subject.score) : Number(scoreFromQuestions);
+          // Prefer the score we just recomputed from each question's actual
+          // marks/negative-marks — this is what the comment above says was
+          // intended, but the code previously did the opposite and trusted
+          // subject.score whenever the backend sent one. If that backend
+          // value is ever wrong (e.g. an accuracy percentage instead of a
+          // raw mark total), trusting it silently displayed the wrong
+          // score. Recomputing from the actual question data is provably
+          // correct given the marks/negativeMarks we already have here.
+          subjectScore = Number(scoreFromQuestions);
         } else if (questions && questions.length > 0) {
           // Use questions array for accurate marks calculation - group by subject
           const subjectQuestions = questions.filter(q => String(q.subjectId) === String(subject.subjectId));
@@ -137,7 +145,10 @@ export function calculateAggregatedResults(resultsData, test = {}, questions = [
           ).toFixed(4);
 
           totalMarks = Number(marksSum) || subject.totalMarks || subject.maxMarks || config.marks || totalQuestions * 4;
-          subjectScore = subject.score !== undefined ? Number(subject.score) : Number(scoreFromQuestions);
+          // Same reasoning as the branch above — recomputed from real
+          // question marks/negativeMarks is more trustworthy than an
+          // unverified subject.score from the backend.
+          subjectScore = Number(scoreFromQuestions);
         } else {
           // Fallback to original calculation if no questionAnalysis in subject
           // Use marksPerQuestion and negativePerQuestion from backend if available
@@ -248,6 +259,18 @@ export function calculateAggregatedResults(resultsData, test = {}, questions = [
     ? Math.max(0, Math.round((totalScore / grandTotalMarks) * 100))
     : 0;
 
+  // Fix #6/#7: "accuracy" and "score percentage" are different metrics —
+  // accuracy is correct/attempted, score% is score/maxMarks. The
+  // Subject-wise Breakdown Matrix previously showed real accuracy in each
+  // subject row but silently swapped in score% for the "Total
+  // Consolidated" row's Accuracy column, which looked like a formula
+  // inconsistency. This uses the same correct/attempted formula as the
+  // subject rows (and the scorecard's own "Overall Accuracy" tile) so the
+  // whole column means the same thing top to bottom.
+  const totalAttempted = totalCorrect + totalIncorrect;
+  const overallAccuracy =
+    totalAttempted > 0 ? Math.round((totalCorrect / totalAttempted) * 100) : 0;
+
   // Format timeSpent into human readable string
   const hrs = Math.floor(totalTimeSpent / 3600);
   const mins = Math.floor((totalTimeSpent % 3600) / 60);
@@ -260,6 +283,7 @@ export function calculateAggregatedResults(resultsData, test = {}, questions = [
     score: totalScore,
     totalMarks: grandTotalMarks,
     percentage: grandPercentage,
+    accuracy: overallAccuracy,
     correct: totalCorrect,
     incorrect: totalIncorrect,
     unattempted: totalUnattempted,
@@ -475,7 +499,7 @@ export default function TestResult() {
                 <span className="green">{metrics.correct}</span>
                 <span className="red">{metrics.incorrect}</span>
                 <span>{metrics.score} / {metrics.totalMarks}</span>
-                <span className="green">{metrics.percentage}%</span>
+                <span className="green">{metrics.accuracy}%</span>
               </div>
             </div>
           </div>

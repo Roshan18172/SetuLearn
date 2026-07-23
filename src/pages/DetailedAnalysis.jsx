@@ -789,7 +789,7 @@ function escapeHtml(value) {
 function generateFullReportHtml({ test, analysis }) {
   const r = analysis.metrics;
   const subjects = analysis.subjects;
-  const { questionRows, timeAnalysis, compareData } = analysis;
+  const { timeAnalysis, compareData } = analysis;
 
   const testTitle = test?.title || test?.examName || r.testTitle || "Test";
 
@@ -804,20 +804,6 @@ function generateFullReportHtml({ test, analysis }) {
       <td class="red">${s.incorrect}</td>
       <td>${s.score}/${s.total}</td>
       <td>${s.accuracy}%</td>
-    </tr>`,
-    )
-    .join("");
-
-  const questionRowsHtml = questionRows
-    .map(
-      (row) => `
-    <tr class="${row.status}">
-      <td>${row.number}</td>
-      <td>${escapeHtml(row.text)}</td>
-      <td>${escapeHtml(row.topic)}</td>
-      <td>${escapeHtml(row.selectedOptionText)}</td>
-      <td>${escapeHtml(row.correctOptionText)}</td>
-      <td>${escapeHtml(statusLabels[row.status] || "Answered")}</td>
     </tr>`,
     )
     .join("");
@@ -905,12 +891,6 @@ function generateFullReportHtml({ test, analysis }) {
   <table>
     <thead><tr><th>Section</th><th>Questions</th><th>Attempted</th><th>Correct</th><th>Incorrect</th><th>Score</th><th>Accuracy</th></tr></thead>
     <tbody>${sectionSummaryRows}</tbody>
-  </table>
-
-  <h2>Question Analysis</h2>
-  <table>
-    <thead><tr><th>#</th><th>Question</th><th>Topic</th><th>Your Answer</th><th>Correct Answer</th><th>Status</th></tr></thead>
-    <tbody>${questionRowsHtml}</tbody>
   </table>
 
   <h2>Subject Analysis</h2>
