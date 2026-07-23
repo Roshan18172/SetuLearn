@@ -3825,13 +3825,13 @@ html::-webkit-scrollbar-track {
 
 /* 3. Style the draggable scrollbar handle (thumb) */
 html::-webkit-scrollbar-thumb {
-  background: #7b61ff;
+  background: var(--primary);
   border-radius: 5px;
 }
 
 /* 4. Optional: Change color when hovering over the scrollbar */
 html::-webkit-scrollbar-thumb:hover {
-  background: #5a3eff;
+  background: var(--primary-dark);
 }
 
 /* =========================
