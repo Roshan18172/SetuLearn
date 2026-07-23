@@ -3,19 +3,16 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { BookOpenCheck, ChartPie, Repeat } from "../data/svgs";
 
 /**
- * Aggregates metrics across multiple backend submission results.
- * The backend now returns all computed fields (score, percentage, totalMarks,
- * totalQuestions, subjectAnalysis with per-subject score/totalMarks, and
- * questionAnalysis with marks/negativeMarks). This function only needs to
- * sum up the already-calculated values from each submission chunk.
+ * Aggregates and calculates metrics across multiple backend submissions
  * @param {Array|Object} resultsData - A single result object or an array of result objects from the backend
  * @param {Object} test - The parent test configuration metadata containing section/subtest details
- * @param {Array} _questions - Not needed for calculation; backend already computed everything
- * @param {Object} _answers - Not needed for calculation; backend already computed everything
+ * @param {Array} questions - Full question array with marks/negativeMarks from TestInterface
+ * @param {Object} answers - User answers map keyed by question id
  * @returns {Object} Combined metrics summary
  */
-export function calculateAggregatedResults(resultsData, test = {}, _questions = [], _answers = {}) {
+export function calculateAggregatedResults(resultsData, test = {}, questions = [], answers = {}) {
   // Normalize input into an array of submission data items
+  // console.log("Calculating aggregated results for:", resultsData, test);
   const submissionsList = Array.isArray(resultsData)
     ? resultsData
     : (resultsData?.data ? [resultsData.data] : [resultsData]);
@@ -28,64 +25,175 @@ export function calculateAggregatedResults(resultsData, test = {}, _questions = 
   let totalTimeSpent = 0;
 
   const displaySubjects = [];
-  const seenSubjectKeys = new Set();
 
   submissionsList.forEach((sub, index) => {
     if (!sub) return;
 
-    // Use backend-computed totals
-    totalScore += Number(sub.score ?? 0);
-    totalCorrect += Number(sub.correct ?? 0);
-    totalIncorrect += Number(sub.incorrect ?? 0);
-    totalUnattempted += Number(sub.unattempted ?? 0);
-    totalQuestionsCount += Number(sub.totalQuestions ?? 0);
-    totalTimeSpent += Number(sub.timeTaken ?? sub.timeSpent ?? sub.timeSpentSeconds ?? 0);
+    // Direct performance summary fields per submission chunk
+    const subScore = sub.score ?? sub.obtainedMarks ?? 0;
+    const subCorrect = sub.correct ?? sub.correctAnswers ?? 0;
+    const subIncorrect = sub.incorrect ?? sub.incorrectAnswers ?? 0;
+    const subUnattempted = sub.unattempted ?? 0;
+    totalTimeSpent += Number(sub.timeSpent ?? sub.timeSpentSeconds ?? 0);
 
-    // Backend now returns subjectAnalysis with score and totalMarks per subject
+    // Safely deduce question quantity per module context
+    let subQuestionsCount = 0;
+    if (sub.questionAnalysis && Array.isArray(sub.questionAnalysis)) {
+      subQuestionsCount = sub.questionAnalysis.length;
+    } else if (sub.totalQuestions) {
+      subQuestionsCount = sub.totalQuestions;
+    } else {
+      subQuestionsCount = subCorrect + subIncorrect + subUnattempted;
+    }
+
+    totalCorrect += subCorrect;
+    totalIncorrect += subIncorrect;
+    totalUnattempted += subUnattempted;
+    totalQuestionsCount += subQuestionsCount;
+
+    // Backend now provides subject-wise analysis
     if (Array.isArray(sub.subjectAnalysis) && sub.subjectAnalysis.length > 0) {
+      // Calculate score from per-subject questionAnalysis instead of using
+      // the backend summary sub.score, because each question may have different marks
+      // and different negative marks per question.
+      // totalScore will be recalculated from displaySubjects at the end
+
       sub.subjectAnalysis.forEach((subject) => {
+
         const attempted = subject.attempted || 0;
         const correct = subject.correct || 0;
         const incorrect = subject.incorrect || 0;
         const totalQuestions = subject.totalQuestions || 0;
 
-        const subjectScore = Number(subject.score ?? 0);
-        const totalMarks = Number(subject.totalMarks ?? 0);
+        // Find configured marks from test.subjects
+        const config =
+          test.subjects?.find(
+            s => String(s.id) === String(subject.subjectId)
+          ) || {};
+
+        // Calculate total marks and score from questionAnalysis if available
+        // This gives accurate marks per question instead of hardcoded values
+        let totalMarks, subjectScore;
+
+        if (Array.isArray(subject.questionAnalysis) && subject.questionAnalysis.length > 0) {
+          // Sum up marks from all questions in this subject (each question has its own marks)
+          // Handle fractional marks by keeping decimal precision
+          const marksSum = Number(
+            subject.questionAnalysis.reduce((sum, q) => {
+              const marks = parseFloat(q.marks) || 0;
+              return sum + marks;
+            }, 0),
+          ).toFixed(4);
+
+          // Calculate score from questionAnalysis using each question's actual marks and negative marks
+          const scoreFromQuestions = Number(
+            subject.questionAnalysis.reduce((sum, q) => {
+              const marks = parseFloat(q.marks) || 0;
+              const negativeMarks = parseFloat(q.negativeMarks) || 0;
+              // If question was answered correctly: add full marks
+              // If question was answered incorrectly (has selectedOptionId but not correct): subtract negative marks
+              // Note: selectedOptionId exists when user attempted but answer was wrong
+              if (q.isCorrect || q.correct) {
+                return sum + marks;
+              } else if (q.selectedOptionId !== undefined && q.selectedOptionId !== null && !q.isCorrect) {
+                return sum - negativeMarks;
+              }
+              return sum;
+            }, 0),
+          ).toFixed(4);
+
+          totalMarks = Number(marksSum) || subject.totalMarks || subject.maxMarks || config.marks || totalQuestions * 4;
+          // Prefer the score we just recomputed from each question's actual
+          // marks/negative-marks — this is what the comment above says was
+          // intended, but the code previously did the opposite and trusted
+          // subject.score whenever the backend sent one. If that backend
+          // value is ever wrong (e.g. an accuracy percentage instead of a
+          // raw mark total), trusting it silently displayed the wrong
+          // score. Recomputing from the actual question data is provably
+          // correct given the marks/negativeMarks we already have here.
+          subjectScore = Number(scoreFromQuestions);
+        } else if (questions && questions.length > 0) {
+          // Use questions array for accurate marks calculation - group by subject
+          const subjectQuestions = questions.filter(q => String(q.subjectId) === String(subject.subjectId));
+          
+          // Sum up individual question marks (supports fractional values)
+          const marksSum = Number(
+            subjectQuestions.reduce((sum, q) => {
+              const marks = parseFloat(q.marks) || 0;
+              return sum + marks;
+            }, 0),
+          ).toFixed(4);
+
+          // Calculate score based on answers vs correct answers
+          const scoreFromQuestions = Number(
+            subjectQuestions.reduce((sum, q) => {
+              const marks = parseFloat(q.marks) || 0;
+              const negativeMarks = parseFloat(q.negativeMarks) || 0;
+              const questionId = String(q.id);
+              const answer = answers[questionId];
+              const correctOptionId = String(q.correct || q.correctOptionId);
+              
+              if (answer && String(answer) === correctOptionId) {
+                // Correct answer
+                return sum + marks;
+              } else if (answer && String(answer) !== correctOptionId) {
+                // Wrong answer - apply negative marking
+                return sum - negativeMarks;
+              }
+              return sum;
+            }, 0),
+          ).toFixed(4);
+
+          totalMarks = Number(marksSum) || subject.totalMarks || subject.maxMarks || config.marks || totalQuestions * 4;
+          // Same reasoning as the branch above — recomputed from real
+          // question marks/negativeMarks is more trustworthy than an
+          // unverified subject.score from the backend.
+          subjectScore = Number(scoreFromQuestions);
+        } else {
+          // Fallback to original calculation if no questionAnalysis in subject
+          // Use marksPerQuestion and negativePerQuestion from backend if available
+          const marksPerQuestion = parseFloat(subject.marksPerQuestion) || parseFloat(config.marks) || 0;
+          const negativePerQuestion = parseFloat(subject.negativePerQuestion) || 0;
+          
+          totalMarks = subject.totalMarks || subject.maxMarks || (marksPerQuestion ? totalQuestions * marksPerQuestion : totalQuestions * 4);
+          subjectScore = subject.score !== undefined
+            ? Number(subject.score)
+            : (marksPerQuestion ? correct * marksPerQuestion : correct * 4) - 
+              (negativePerQuestion ? incorrect * negativePerQuestion : incorrect * 1);
+        }
 
         const accuracy =
           attempted === 0
             ? 0
             : Math.round((correct / attempted) * 100);
 
-        // Use a composite key to avoid duplicates when multiple submissions include the same subject
-        const subjectKey = subject.subjectId || subject.subjectName || `section-${index}`;
-        if (!seenSubjectKeys.has(subjectKey)) {
-          seenSubjectKeys.add(subjectKey);
-          displaySubjects.push({
-            name: subject.subjectName,
-            questions: totalQuestions,
-            attempted,
-            correct,
-            incorrect,
-            score: subjectScore,
-            total: totalMarks,
-            accuracy,
-            topics: Array.isArray(subject.topics) ? subject.topics : []
-          });
-        }
+        displaySubjects.push({
+          name: subject.subjectName,
+          questions: totalQuestions,
+          attempted,
+          correct,
+          incorrect,
+          score: subjectScore,
+          total: totalMarks,
+          accuracy,
+          topics: Array.isArray(subject.topics) ? subject.topics : []
+        });
+
       });
 
       return;
     }
 
-    // --- Legacy path: no subjectAnalysis from backend ---
-    // This is only reached for very old data that predates backend subjectAnalysis.
+    // --- STRATEGY TO FIND THE REAL SUBJECT NAME ---
     let sectionName = "";
 
+    // Step A: Check if the backend explicitly returned a name directly on this result element
+    // include `title` which some pages (instruction) use for subject/paper section
     if (sub.subjectName || sub.sectionName || sub.subject || sub.title) {
       sectionName = sub.subjectName || sub.sectionName || sub.subject || sub.title;
     }
 
+    // Step B: Match via ID mapping against test layout configuration schema
     if (!sectionName && test) {
       const targetId = sub.subTestId || sub.sectionId || sub.id;
       const originalSubtestArray = test.subTests || test.sections || [];
@@ -95,39 +203,70 @@ export function calculateAggregatedResults(resultsData, test = {}, _questions = 
       if (foundMatch && (foundMatch.name || foundMatch.title)) {
         sectionName = foundMatch.name || foundMatch.title;
       } else if (originalSubtestArray[index] && (originalSubtestArray[index].name || originalSubtestArray[index].title)) {
+        // Fallback positional configuration index matching
         sectionName = originalSubtestArray[index].name || originalSubtestArray[index].title;
       }
     }
 
+    // Step C: Automated RegEx extraction from dummy solution explanations string matching
+    if (!sectionName && sub.questionAnalysis && sub.questionAnalysis[0]?.explanation) {
+      const match = sub.questionAnalysis[0].explanation.match(/SSC CGL - (.*?) Question/);
+      if (match && match[1]) sectionName = match[1];
+    }
+
+    // Default Fallback if completely undetected
     if (!sectionName) {
       sectionName = `Section ${index + 1}`;
     }
 
-    const subAttempted = sub.correct + sub.incorrect;
-    const subAccuracy = subAttempted === 0 ? 0 : Math.round((sub.correct / subAttempted) * 100);
+    const subAttempted = subCorrect + subIncorrect;
+    const subAccuracy = subAttempted === 0 ? 0 : Math.round((subCorrect / subAttempted) * 100);
+
+    // Calculate total marks from actual question marks if questions array is provided,
+    // otherwise fall back to test-level marksPerQuestion
+    let subTotal = subQuestionsCount * 4;
+    if (questions && questions.length > 0) {
+      const subQuestions = questions.filter(q =>
+        String(q.subjectId) === String(sub.subTestId || sub.sectionId || sub.id || index)
+      );
+      if (subQuestions.length > 0) {
+        subTotal = subQuestions.reduce((sum, q) => sum + (parseFloat(q.marks) || 0), 0);
+      }
+    }
 
     displaySubjects.push({
       name: sectionName,
-      questions: sub.totalQuestions ?? 0,
+      questions: subQuestionsCount,
       attempted: subAttempted,
-      correct: sub.correct ?? 0,
-      incorrect: sub.incorrect ?? 0,
-      score: sub.score ?? 0,
-      total: sub.totalMarks ?? sub.totalQuestions * 4,
+      correct: subCorrect,
+      incorrect: subIncorrect,
+      score: subScore,
+      total: subTotal,
       accuracy: subAccuracy
     });
   });
 
-  // Calculate grand total marks from displaySubjects
+  // Recalculate totalScore from per-subject scores for accuracy
+  // (when subjectAnalysis is present, totalScore was reset to 0)
+  totalScore = displaySubjects.reduce((sum, s) => sum + Number(s.score), 0);
+
+  // Calculate grand total from displaySubjects totals for accuracy
   let grandTotalMarks = displaySubjects.reduce((sum, s) => sum + Number(s.total), 0);
   if (grandTotalMarks === 0) {
     grandTotalMarks = totalQuestionsCount * 4;
   }
-
   const grandPercentage = grandTotalMarks > 0
     ? Math.max(0, Math.round((totalScore / grandTotalMarks) * 100))
     : 0;
 
+  // Fix #6/#7: "accuracy" and "score percentage" are different metrics —
+  // accuracy is correct/attempted, score% is score/maxMarks. The
+  // Subject-wise Breakdown Matrix previously showed real accuracy in each
+  // subject row but silently swapped in score% for the "Total
+  // Consolidated" row's Accuracy column, which looked like a formula
+  // inconsistency. This uses the same correct/attempted formula as the
+  // subject rows (and the scorecard's own "Overall Accuracy" tile) so the
+  // whole column means the same thing top to bottom.
   const totalAttempted = totalCorrect + totalIncorrect;
   const overallAccuracy =
     totalAttempted > 0 ? Math.round((totalCorrect / totalAttempted) * 100) : 0;
@@ -177,13 +316,20 @@ export default function TestResult() {
     questions = [],
     subjectsMap = {},
     timeSpent: passedTimeSpent,
+    // Some pages (e.g. DetailedAnalysis' "Back to Results") may pass the
+    // elapsed time under `timeSpentSeconds` instead of `timeSpent` — accept
+    // either so the displayed time doesn't reset to 0 depending on origin.
     timeSpentSeconds: passedTimeSpentSeconds,
   } = location.state || {};
 
+  console.log(result);
 
   document.title = "Test Performance Result - SetuLearn";
 
   const hasValidResult = !!(test && result);
+  // If someone lands here without a valid result (e.g. a stray refresh or
+  // a direct link), there's nothing to show — bounce straight to Tests
+  // instead of rendering a confusing all-zero scorecard.
   useEffect(() => {
     if (hasValidResult) return;
     const timer = setTimeout(() => {
@@ -206,8 +352,11 @@ export default function TestResult() {
   }
 
   // Parse and aggregate cross-sectional metrics seamlessly passing the test context
-  // Backend now provides all computed values; no need for questions/answers recalculation
+  // Pass questions array and answers for accurate per-question marks calculation
   const metrics = calculateAggregatedResults(result, test, questions, answers);
+  // calculateAggregatedResults sums sub.timeSpent from the backend per section.
+  // If the backend doesn't return per-section time, we fall back to the total
+  // timeSpentSeconds passed directly from TestInterface via location.state.
   const aggregatedTime = metrics.timeSpent;
   const hasAggregatedTime = aggregatedTime && aggregatedTime !== "00m 00s" && aggregatedTime !== "0m 0s";
   const fallbackTimeSpent = passedTimeSpent ?? passedTimeSpentSeconds ?? 0;
@@ -235,11 +384,8 @@ export default function TestResult() {
   return (
     <div className="result-page">
       {/* Visual Header Banner */}
-      <div className="result-banner">        
-        <div className="result-trophy">
-          <img src="/icons/trophy.png" alt="🏆" />
-        </div>
-        
+      <div className="result-banner">
+        <div className="result-trophy">🏆</div>
         <h2>Test Completed Successfully!</h2>
         <p>Combined performance summary compiled from all subject submissions.</p>
         <div className="result-test-name">

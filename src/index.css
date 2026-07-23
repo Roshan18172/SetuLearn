@@ -3919,7 +3919,8 @@ html::-webkit-scrollbar-thumb {
 
 /* 4. Optional: Change color when hovering over the scrollbar */
 html::-webkit-scrollbar-thumb:hover {
-  background: var(--primary-dark);
+  background: var(--primary-dark
+  );
 }
 
 /* =========================
