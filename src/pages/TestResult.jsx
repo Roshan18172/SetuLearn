@@ -1,6 +1,7 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { BookOpenCheck, ChartPie, Repeat } from "../data/svgs";
+import { BookOpenCheck, ChartPie, Repeat, ClipboardList } from "../data/svgs";
+import { addTestHistoryEntry } from "../utils/testHistory";
 
 /**
  * Aggregates and calculates metrics across multiple backend submissions
@@ -338,6 +339,50 @@ export default function TestResult() {
     return () => clearTimeout(timer);
   }, [hasValidResult, navigate]);
 
+  // Parse and aggregate cross-sectional metrics seamlessly passing the test context
+  // Pass questions array and answers for accurate per-question marks calculation.
+  // Computed unconditionally (before the early-return below) so it can also
+  // feed the history-save effect — calculateAggregatedResults tolerates
+  // missing/undefined result & test and just returns zeroed-out metrics.
+  const metrics = calculateAggregatedResults(result, test, questions, answers);
+  const fallbackTimeSpent = passedTimeSpent ?? passedTimeSpentSeconds ?? 0;
+
+  // Save this completed attempt into local Test History (a lightweight
+  // pointer: testId + submissionId per section, plus a cached summary for
+  // the list view). Runs once per mount via the ref guard so re-renders of
+  // this page don't write duplicate entries.
+  const historySavedRef = useRef(false);
+  useEffect(() => {
+    if (!hasValidResult || historySavedRef.current) return;
+    historySavedRef.current = true;
+
+    const submissions = (Array.isArray(result) ? result : [result])
+      .filter(Boolean)
+      .map((r) => ({
+        testId: r.testId || test?.id || null,
+        submissionId: r.submissionId || null,
+      }))
+      .filter((s) => s.submissionId);
+
+    if (submissions.length === 0) return;
+
+    addTestHistoryEntry({
+      testId: test?.id || null,
+      testTitle: test?.title || test?.examName || "Test",
+      examName: test?.examName || test?.exam?.name || "",
+      score: metrics.score,
+      totalMarks: metrics.totalMarks,
+      percentage: metrics.percentage,
+      correct: metrics.correct,
+      incorrect: metrics.incorrect,
+      unattempted: metrics.unattempted,
+      totalQuestions: metrics.totalQuestions,
+      timeSpentSeconds: fallbackTimeSpent,
+      submissions,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hasValidResult]);
+
   if (!hasValidResult) {
     return (
       <div className="empty-state" style={{ padding: "80px 20px", textAlign: "center" }}>
@@ -351,15 +396,11 @@ export default function TestResult() {
     );
   }
 
-  // Parse and aggregate cross-sectional metrics seamlessly passing the test context
-  // Pass questions array and answers for accurate per-question marks calculation
-  const metrics = calculateAggregatedResults(result, test, questions, answers);
   // calculateAggregatedResults sums sub.timeSpent from the backend per section.
   // If the backend doesn't return per-section time, we fall back to the total
   // timeSpentSeconds passed directly from TestInterface via location.state.
   const aggregatedTime = metrics.timeSpent;
   const hasAggregatedTime = aggregatedTime && aggregatedTime !== "00m 00s" && aggregatedTime !== "0m 0s";
-  const fallbackTimeSpent = passedTimeSpent ?? passedTimeSpentSeconds ?? 0;
   const displayTime = hasAggregatedTime ? aggregatedTime : formatTime(fallbackTimeSpent);
 
   // Sync aggregate summaries back into persistent storage for dashboard widgets
@@ -520,6 +561,9 @@ export default function TestResult() {
           </button>
           <button className="btn-outline" onClick={() => navigate("/tests")}>
             Browse More Tests
+          </button>
+          <button className="btn-outline" onClick={() => navigate("/test-history")}>
+            <ClipboardList /> <span>View Test History</span>
           </button>
         </div>
       </div>

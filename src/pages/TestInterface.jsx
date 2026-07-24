@@ -402,7 +402,12 @@ export default function TestInterface() {
             }
           }
 
-          finalMergedResultsArray.push(fullResult);
+          // Tag each merged result with the sub-test id it came from. The
+          // submit/result API responses don't include this themselves, but
+          // Test History (and anything else that needs to re-fetch this
+          // submission's question set later via testService.getTestQuestions)
+          // needs to know which testId each submissionId belongs to.
+          finalMergedResultsArray.push({ ...fullResult, testId: subTestId });
         }
       }
 

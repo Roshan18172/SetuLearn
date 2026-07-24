@@ -296,6 +296,12 @@ export default function Home() {
               <div className="sc-percentile">
                 Percentile: <b>{lastExamPercentile}</b>
               </div>
+              <button
+                className="btn-outline sc-history-btn"
+                onClick={() => navigate("/test-history")}
+              >
+                View All Test History
+              </button>
             </div>
           </div>
         </div>

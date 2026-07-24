@@ -17,6 +17,8 @@ import TestResult from "./pages/TestResult";
 import DetailedAnalysis from "./pages/DetailedAnalysis";
 import About from "./pages/About";
 import Solutions from "./pages/Solutions";
+import TestHistory from "./pages/TestHistory";
+import TestHistoryDetail from "./pages/TestHistoryDetail";
 import NotFound from "./pages/NotFound";
 
 import FAQ from "./pages/QuickLinks/FAQ";
@@ -95,6 +97,8 @@ function App() {
             <Route path="/result" element={<TestResult />} />
             <Route path="/analysis" element={<DetailedAnalysis />} />
             <Route path="/solutions" element={<Solutions />} />
+            <Route path="/test-history" element={<TestHistory />} />
+            <Route path="/test-history/:id" element={<TestHistoryDetail />} />
 
             <Route path="/faq" element={<FAQ />} />
             <Route path="/contact" element={<ContactUs />} />
