@@ -16,7 +16,7 @@
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "react-helmet-async": "^3.0.0",
-    "react-router-dom": "^7.18.1",
+    "react-router-dom": "^6.30.4",
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4"
   },
@@ -24,7 +24,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "test:e2e": "playwright test",
+    "test:ci": "CI=true react-scripts test"
   },
   "eslintConfig": {
     "extends": [
@@ -43,5 +45,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.62.0"
   }
 }
