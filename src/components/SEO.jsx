@@ -10,6 +10,7 @@ import { Helmet } from "react-helmet-async";
  * @param {string} props.canonical - Canonical URL relative to https://www.setulearn.in/
  * @param {string} props.image - OG image path relative to public folder (default: /OG-image.webp)
  * @param {string} props.type - JSON-LD type hint (default: WebPage)
+ * @param {boolean} props.noindex - Whether to add noindex meta tag (default: false)
  */
 export default function SEO({
   title = "SetuLearn | Bridge to Excellence",
@@ -17,6 +18,7 @@ export default function SEO({
   canonical = "/",
   image = "/OG-image.webp",
   type = "WebPage",
+  noindex = false,
 }) {
   const siteUrl = "https://www.setulearn.in";
   const fullTitle = title.includes("|") ? title : `${title} | SetuLearn`;
@@ -84,6 +86,14 @@ export default function SEO({
       <meta name="twitter:title" content={fullTitle} />
       <meta name="twitter:description" content={description} />
       <meta name="twitter:image" content={`${siteUrl}${image}`} />
+
+      {/* SEO Indexing Control */}
+      {noindex && (
+        <>
+          <meta name="robots" content="noindex, nofollow" />
+          <meta name="googlebot" content="noindex, nofollow" />
+        </>
+      )}
 
       {/* JSON-LD Structured Data */}
       <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>

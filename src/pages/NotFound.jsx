@@ -1,24 +1,20 @@
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
-import { MathJax } from "better-react-mathjax";
+import SEO from "../components/SEO";
 
 export default function NotFound() {
   const navigate = useNavigate();
-  const [isReady, setIsReady] = useState(false);
 
   return (
     <div className="not-found-page">
+      <SEO
+        title="404 - Page Not Found"
+        description="The page you are looking for doesn't exist or has been moved. Return to SetuLearn's home page to continue your exam preparation."
+        canonical="/404"
+        noindex
+      />
       <div className="not-found-container">
         <div className="not-found-code">404</div>
         <h1 className="not-found-title">Page Not Found</h1>
-        <div style={{
-              opacity: isReady ? 1 : 0,
-              transition: "opacity 0.2s ease-in-out",
-            }}>
-        <MathJax dynamic onTypeset={() => setIsReady(true)}>
-          The area of a circle is $A = \\pi r^2$.
-        </MathJax>
-        </div>
         <p className="not-found-message">
           The page you are looking for doesn't exist or has been moved.
         </p>

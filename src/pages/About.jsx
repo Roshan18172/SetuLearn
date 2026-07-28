@@ -3,7 +3,6 @@ import SEO from "../components/SEO";
 
 export default function About() {
   const navigate = useNavigate();
-  document.title = "About Us - SetuLearn";
 
   return (
     <div className="about-page">

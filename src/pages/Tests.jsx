@@ -27,7 +27,6 @@ export default function Tests() {
   const [search, setSearch] = useState("");
   const [visible, setVisible] = useState(6);
 
-  document.title = "Tests - SetuLearn";
   useEffect(() => {
     if (location.state?.selectedExam) {
       setExamFilter(location.state.selectedExam);
@@ -162,7 +161,7 @@ export default function Tests() {
   return (
     <div className="tests-page">
       <SEO
-        title="All Mock Tests"
+        title="All Mock Tests | Free Government Job, Engineering, Medical Exam Practice Tests"
         description="Browse and practice free mock tests for government jobs (SSC CGL, UPSC, Banking), engineering (JEE Main, JEE Advanced, BITSAT), medical (NEET), and college entrance exams (CUET). Filter by exam, difficulty, and duration."
         canonical="/tests"
       />
@@ -226,24 +225,15 @@ export default function Tests() {
                 <div className="tr-info">
                   <div className="tr-title">{test.title}</div>
                   <div className="tr-meta">
-                    <span className="tr-cat">{test.exam}</span>                    
+                    <span className="tr-cat">{test.exam}</span>
                     <QuestionMarkRound />
-                    <span>{test.questions} Questions</span>                    
+                    <span>{test.questions} Questions</span>
                     <Time />
                     <span>{test.duration} Mins</span>
                     <span className={`diff-badge ${test.difficulty.toLowerCase()}`}>
                       {test.difficulty}
                     </span>
                   </div>
-                  {/* <div className="tr-sub-info">
-                    <span>Total Marks: {test.marks}</span>
-                    {test.negativeMarking && (
-                      <>
-                        <span>•</span>
-                        <span>Negative Marking</span>
-                      </>
-                    )}
-                  </div> */}
                 </div>
               </div>
 
