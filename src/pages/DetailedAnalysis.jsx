@@ -856,7 +856,7 @@ function generateFullReportHtml({ test, analysis }) {
   .summary-grid .stat { background: #f8f9fb; border-radius: 10px; padding: 12px 18px; min-width: 110px; }
   .summary-grid .stat b { display: block; font-size: 20px; }
   table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 10px; }
-  th, td { border: 1px solid #e2e2e2; padding: 8px 10px; text-align: left; }
+  th, td { border: 1px solid #e2e2e2; padding: 8px 10px; text-align: left; white-space: pre-wrap; word-break: break-word; }
   th { background: #f3f4f6; }
   tr.correct td { background: #f0fdf4; }
   tr.incorrect td { background: #fef2f2; }

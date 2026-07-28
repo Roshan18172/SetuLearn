@@ -1,3 +1,23 @@
+/* ===== CODE-SAFE QUESTION TEXT =====
+   Question/option/explanation text can contain literal code snippets
+   (HTML tags, CSS rules, JS, C) with \n line breaks baked into the string
+   from the question bank. By default the browser collapses \n and long
+   unbroken lines overflow the card. These rules make that content render
+   the way it was authored, without touching how normal LaTeX/MathJax text
+   looks (MathJax typesets inside these elements regardless of white-space).
+   Applies across Practice, Test, Solutions and Test History pages, since
+   they all reuse these class names for question/option/explanation text. */
+.ti-question,
+.opt-text,
+.prac-question-text,
+.prac-solution,
+.solution-question,
+.solution-explanation,
+.option-item {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
 /* ===== TOKENS ===== */
 :root {
   --primary: #5A1EAD;

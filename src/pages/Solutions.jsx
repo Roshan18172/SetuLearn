@@ -109,12 +109,12 @@ function generateSolutionsHtml(test, questions, answers, infoMap) {
   body { font-family: Arial, sans-serif; max-width: 860px; margin: 30px auto; padding: 0 20px; color: #222; }
   h1 { font-size: 24px; margin-bottom: 24px; }
   .q-card { background: #fff; border-radius: 12px; padding: 20px; margin-bottom: 18px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); }
-  .q-card h3 { margin-bottom: 14px; }
+  .q-card h3 { margin-bottom: 14px; white-space: pre-wrap; word-break: break-word; }
   .opts { display: flex; flex-direction: column; gap: 10px; }
-  .opt { padding: 10px 14px; border: 1px solid #ddd; border-radius: 8px; background: #fafafa; }
+  .opt { padding: 10px 14px; border: 1px solid #ddd; border-radius: 8px; background: #fafafa; white-space: pre-wrap; word-break: break-word; }
   .opt.correct { background: #e8fff0; border: 2px solid #22c55e; color: #15803d; font-weight: 600; }
   .opt.wrong { background: #fef2f2; border: 2px solid #ef4444; color: #b91c1c; font-weight: 600; }
-  .explanation { margin-top: 14px; padding: 12px 14px; background: #f3f4f6; border-radius: 8px; font-size: 14px; }
+  .explanation { margin-top: 14px; padding: 12px 14px; background: #f3f4f6; border-radius: 8px; font-size: 14px; white-space: pre-wrap; word-break: break-word; }
 </style>
 </head>
 <body>

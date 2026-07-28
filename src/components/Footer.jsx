@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 // import Setulogo from "../SetuLearn Logo.png";
-import {Telegram, Youtube, Instagram, Twitter} from "iconoir-react";
+import {Telegram, Youtube, Instagram, Twitter, Facebook, Linkedin} from "iconoir-react";
 
 export default function Footer() {
   const navigate = useNavigate();
@@ -60,9 +60,11 @@ export default function Footer() {
             Practice. Improve. Succeed. Your all-in-one platform for government and entrance exam preparation.
           </p>
           <div className="footer-socials">
-            <a href="/" className="social-btn" aria-label="Twitter"><Twitter color="#2d589a" width={20} height={20} /></a>
-            <a href="/" className="social-btn" aria-label="Instagram"><Instagram color="#c41076" width={20} height={20} /></a>
-            <a href="/" className="social-btn" aria-label="YouTube"><Youtube color="#da1010" width={20} height={20} /></a>
+            <a href="https://x.com/setulearn"  target="_blank" rel="noreferrer" className="social-btn" aria-label="Twitter"><Twitter color="#2d589a" width={20} height={20} /></a>
+            <a href="https://www.instagram.com/setulearnofficial/" target="_blank" rel="noreferrer" className="social-btn" aria-label="Instagram"><Instagram color="#c41076" width={20} height={20} /></a>
+            <a href="https://www.facebook.com/setulearnofficial" target="_blank" rel="noreferrer" className="social-btn" aria-label="Facebook"><Facebook color="#1523e5" width={20} height={20} /></a>
+            <a href="https://www.linkedin.com/company/setulearnofficial/" target="_blank" rel="noreferrer" className="social-btn" aria-label="Facebook"><Linkedin color="#3d8dde" width={20} height={20} /></a>
+            <a href="https://www.youtube.com/@SetuLearnOfficial"  target="_blank" rel="noreferrer" className="social-btn" aria-label="YouTube"><Youtube color="#da1010" width={20} height={20} /></a>
             <a href="/" className="social-btn" aria-label="Telegram"><Telegram color="#418abf" width={20} height={20} /></a>
           </div>
         </div>
