@@ -3960,7 +3960,9 @@ button:disabled {
 }
 
 .about-badge {
-  display: inline-block;
+ display: inline-flex;
+   align-items: center;
+   gap: 10px;
   padding: 10px 18px;
   border-radius: 999px;
   background: rgba(255, 255, 255, .15);
@@ -4069,7 +4071,7 @@ button:disabled {
 
 .feature-card {
   background: white;
-  padding: 35px;
+  padding: 30px;
   border-radius: 20px;
   text-align: center;
   box-shadow: 0 8px 25px rgba(0, 0, 0, .08);
@@ -4084,8 +4086,8 @@ button:disabled {
   margin-bottom: 15px;
 }
 .feature-icon img {
-  width: 80px;
-  height: 80px;
+  width: 60px;
+  height: 60px;
 }
 
 /* Stats */

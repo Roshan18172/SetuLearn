@@ -16,7 +16,7 @@ export default function About() {
       <section className="about-hero">
         <div className="about-hero-content">
           <span className="about-badge">
-            <img src="/icons/exam-icons/graduation-cap.png" alt="Graduation" /> Empowering Students Through Practice
+            <img src="/icons/exam-icons/graduation-cap.png" alt="Graduation" height={30} /> Empowering Students Through Practice
           </span>
 
           <h1>
@@ -92,7 +92,7 @@ export default function About() {
 
         <div className="features-grid">
           {[
-            { icon: "/icons/features/computer-test.png", alt: "Pencil Icon", title: "Real Exam Simulation", desc: "Experience actual exam environments with timers, navigation, and question palettes." },
+            { icon: "/icons/features/computer-test.png", alt: "Pencil Icon", title: "Real Exam Simulation", desc: "Experience actual exam environments with timer & question palettes." },
             { icon: "/icons/features/analytics.png", alt: "Analytics Icon", title: "Detailed Analytics", desc: "Understand strengths and weaknesses through detailed reports." },
             { icon: "/icons/features/review.png", alt: "Solution Review Icon", title: "Solution Review", desc: "Learn from mistakes with complete solutions and explanations." },
             { icon: "/icons/features/quick.png", alt: "Instant Results Icon", title: "Instant Results", desc: "Get performance reports immediately after completing a test." },
