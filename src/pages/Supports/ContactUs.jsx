@@ -156,7 +156,7 @@ export default function ContactUs() {
       {/* Hero */}
       <section className="contact-hero">
         <div className="contact-hero-content">
-          <span className="contact-badge">📞 We're Here To Help</span>
+          <span className="contact-badge"><img src="/icons/online-test.png" alt="phone" height={18}/> We're Here To Help</span>
 
           <h1>
             Get In <span>Touch</span>
@@ -172,19 +172,19 @@ export default function ContactUs() {
       {/* Contact Info */}
       <section className="contact-info-grid">
         <div className="contact-card">
-          <div className="contact-icon">📧</div>
+          <div className="contact-icon"><img src="/icons/misc/mail.png" alt="Email" className="emoji-icon-xl" /></div>
           <h3>Email Us</h3>
           <p>support@setulearn.in</p>
         </div>
 
         <div className="contact-card">
-          <div className="contact-icon">📱</div>
+          <div className="contact-icon"><img src="/icons/online-test.png" alt="phone" /></div>
           <h3>Call Us</h3>
           <p>+91 89082 21784</p>
         </div>
 
         <div className="contact-card">
-          <div className="contact-icon">⏰</div>
+          <div className="contact-icon"><img src="/icons/clock.png" alt="hours" /></div>
           <h3>Support Hours</h3>
           <p>Mon - Sat, 9 AM - 6 PM</p>
         </div>
@@ -302,7 +302,7 @@ export default function ContactUs() {
 
             {submitted && (
               <div className="success-message">
-                🎉 Your message has been sent successfully!
+                <img src="/icons/misc/celebrate.png" alt="" className="emoji-icon" /> Your message has been sent successfully!
               </div>
             )}
           </form>
@@ -311,7 +311,7 @@ export default function ContactUs() {
         {/* Side Panel */}
         <div className="contact-side">
           <div className="response-card">
-            <h3>⚡ Quick Response</h3>
+            <h3><img src="/icons/features/quick.png" alt="" className="emoji-icon" /> Quick Response</h3>
             <p>
               Most support requests are answered within
               24 hours.
@@ -319,7 +319,7 @@ export default function ContactUs() {
           </div>
 
           <div className="response-card">
-            <h3>💡 Suggestions Welcome</h3>
+            <h3><img src="/icons/misc/lightbulb.png" alt="" className="emoji-icon" /> Suggestions Welcome</h3>
             <p>
               We continuously improve SetuLearn based
               on student feedback.
@@ -327,7 +327,7 @@ export default function ContactUs() {
           </div>
 
           <div className="response-card">
-            <h3>🐞 Report Issues</h3>
+            <h3><img src="/icons/misc/bug.png" alt="" className="emoji-icon" /> Report Issues</h3>
             <p>
               Found a bug or incorrect question?
               Let us know and we'll fix it quickly.

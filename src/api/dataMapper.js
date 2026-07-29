@@ -13,7 +13,7 @@ export function mapExamToCategory(exam) {
   return {
     id: exam.id,
     name: exam.name,
-    icon: exam.icon ? `/icons/exam-icons/${exam.icon}.png` : "/icons/graduation-cap.png",
+    icon: exam.icon ? `/icons/exam-icons/${exam.icon}.png` : "/icons/exam-icons/graduation-cap.png",
     exams: [], // populated later if needed
     tests: 0,
     color: getCategoryColor(exam.name),

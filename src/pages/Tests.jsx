@@ -147,11 +147,11 @@ export default function Tests() {
           <h1>All Tests</h1>
         </div>
         <div className="empty-state" style={{ padding: "80px 20px" }}>
-          <div className="empty-icon">⚠️</div>
+          <div className="empty-icon"><img src="/icons/misc/warning.png" alt="Warning" className="emoji-icon-xl" /></div>
           <h3>Could not load tests</h3>
           <p style={{ maxWidth: 500, margin: "0 auto 20px" }}>{fetchError}</p>
           <button className="btn-primary" onClick={() => window.location.reload()}>
-            🔄 Retry
+            <img src="/icons/misc/refresh.png" alt="" className="emoji-icon" /> Retry
           </button>
         </div>
       </div>
@@ -200,7 +200,7 @@ export default function Tests() {
         </div>
 
         <div className="search-box">
-          <span className="search-icon">🔍</span>
+          <span className="search-icon"><img src="/icons/how-works/search.png" alt="Search" className="emoji-icon-sm" /></span>
           <input
             type="text"
             placeholder="Search tests..."
@@ -215,7 +215,7 @@ export default function Tests() {
         {filtered.slice(0, visible).map((test) => {
           const category = categories.find((c) => c.name === test.exam);
           const catColor = category?.color || "#6C63FF";
-          const catIcon = category?.icon || "/icons/default.png";
+          const catIcon = category?.icon || "/icons/exam-icons/graduation-cap.png";
           return (
             <div key={test.id} className="test-card">
               <div className="tr-left">
@@ -246,7 +246,7 @@ export default function Tests() {
 
         {filtered.length === 0 && (
           <div className="empty-state">
-            <div className="empty-icon">🔍</div>
+            <div className="empty-icon"><img src="/icons/how-works/search.png" alt="No results" className="emoji-icon-xl" /></div>
             <h3>No tests found</h3>
             <p>Try adjusting your filters or search query.</p>
           </div>

@@ -1282,7 +1282,7 @@ export default function DetailedAnalysis() {
                 className="empty-state"
                 style={{ padding: "40px 20px", textAlign: "center" }}
               >
-                <div className="empty-icon">📭</div>
+                <div className="empty-icon"><img src="/icons/misc/inbox-empty.png" alt="No data" className="emoji-icon-xl" /></div>
                 <p>No question data available.</p>
               </div>
             ) : (

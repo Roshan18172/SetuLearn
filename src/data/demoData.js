@@ -1,8 +1,8 @@
 export const categories = [
-  { id: 1, name: "Engineering", icon: "/icons/graduation-cap.png", exams: ["JEE Main", "JEE Advanced", "BITSAT", "VITEEE"], tests: 12, color: "#6C63FF" },
-  { id: 2, name: "Medical", icon: "/icons/stethoscope.png", exams: ["NEET", "AIIMS", "JIPMER"], tests: 8, color: "#00BFA6" },
-  { id: 3, name: "Government Exams", icon: "/icons/briefcase.png", exams: ["UPSC", "SSC", "Banking", "Railway", "State PSC"], tests: 15, color: "#971eaf" },
-  { id: 4, name: "College Entrance", icon: "/icons/school.png", exams: ["CUET", "IPMAT", "NIFT", "CLAT", "Others"], tests: 10, color: "#FFA726" },
+  { id: 1, name: "Engineering", icon: "/icons/exam-icons/graduation-cap.png", exams: ["JEE Main", "JEE Advanced", "BITSAT", "VITEEE"], tests: 12, color: "#6C63FF" },
+  { id: 2, name: "Medical", icon: "/icons/exam-icons/stethoscope.png", exams: ["NEET", "AIIMS", "JIPMER"], tests: 8, color: "#00BFA6" },
+  { id: 3, name: "Government Exams", icon: "/icons/exam-icons/briefcase.png", exams: ["UPSC", "SSC", "Banking", "Railway", "State PSC"], tests: 15, color: "#971eaf" },
+  { id: 4, name: "College Entrance", icon: "/icons/exam-icons/education.png", exams: ["CUET", "IPMAT", "NIFT", "CLAT", "Others"], tests: 10, color: "#FFA726" },
 ];
 
 export const tests = [

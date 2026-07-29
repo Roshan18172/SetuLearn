@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import SEO from "../components/SEO";
+import Reveal from "../components/Reveal";
 
 export default function About() {
   const navigate = useNavigate();
@@ -15,7 +16,7 @@ export default function About() {
       <section className="about-hero">
         <div className="about-hero-content">
           <span className="about-badge">
-            🎓 Empowering Students Through Practice
+            <img src="/icons/exam-icons/graduation-cap.png" alt="Graduation" /> Empowering Students Through Practice
           </span>
 
           <h1>
@@ -33,7 +34,7 @@ export default function About() {
       {/* Story Section */}
       <section className="about-section">
         <div className="about-grid">
-          <div className="about-text">
+          <Reveal as="div" className="about-text" y={16}>
             <h2>Our Story</h2>
 
             <p>
@@ -53,21 +54,21 @@ export default function About() {
               Railway, or CUET, SetuLearn provides an exam-like experience that
               helps you succeed.
             </p>
-          </div>
+          </Reveal>
 
-          <div className="about-card large">
+          <Reveal as="div" className="about-card large" delay={120}>
             <div className="about-card-icon">
               <img src="/icons/rocket.png" alt="Rocket Icon" />
             </div>
             <h3>Learning Through Practice</h3>
             <p>We believe consistent practice is the key to exam success.</p>
-          </div>
+          </Reveal>
         </div>
       </section>
 
       {/* Mission */}
       <section className="mission-section">
-        <div className="mission-card">
+        <Reveal as="div" className="mission-card">
           <div className="mission-icon">
             <img src="/icons/target.png" alt="Target Icon" />
           </div>
@@ -78,7 +79,7 @@ export default function About() {
             To provide every student with free access to high-quality mock
             tests, performance analytics, and exam preparation tools.
           </p>
-        </div>
+        </Reveal>
       </section>
 
       {/* Features */}
@@ -90,90 +91,45 @@ export default function About() {
         </div>
 
         <div className="features-grid">
-          <div className="feature-card">
-            <div className="feature-icon">
-              <img src="/icons/features/computer-test.png" alt="Pencil Icon" />
-            </div>
-            <h3>Real Exam Simulation</h3>
-            <p>
-              Experience actual exam environments with timers, navigation, and
-              question palettes.
-            </p>
-          </div>
-
-          <div className="feature-card">
-            <div className="feature-icon">
-              <img src="/icons/features/analytics.png" alt="Analytics Icon" />
-            </div>
-            <h3>Detailed Analytics</h3>
-            <p>Understand strengths and weaknesses through detailed reports.</p>
-          </div>
-
-          <div className="feature-card">
-            <div className="feature-icon">
-              <img src="/icons/features/review.png" alt="Solution Review Icon" />
-            </div>
-            <h3>Solution Review</h3>
-            <p>Learn from mistakes with complete solutions and explanations.</p>
-          </div>
-
-          <div className="feature-card">
-            <div className="feature-icon">
-              <img src="/icons/features/quick.png" alt="Instant Results Icon" />
-            </div>
-            <h3>Instant Results</h3>
-            <p>Get performance reports immediately after completing a test.</p>
-          </div>
-
-          <div className="feature-card">
-            <div className="feature-icon">
-              <img
-                src="/icons/features/multiple-exams.png"
-                alt="Multiple Exam Categories Icon"
-              />
-            </div>
-            <h3>Multiple Exam Categories</h3>
-            <p>
-              Practice for engineering, medical, government, and entrance exams.
-            </p>
-          </div>
-
-          <div className="feature-card">
-            <div className="feature-icon">
-              <img src="/icons/features/free.png" alt="Free Icon" />
-            </div>
-            <h3>Completely Free</h3>
-            <p>No subscriptions, no hidden charges, just learning.</p>
-          </div>
+          {[
+            { icon: "/icons/features/computer-test.png", alt: "Pencil Icon", title: "Real Exam Simulation", desc: "Experience actual exam environments with timers, navigation, and question palettes." },
+            { icon: "/icons/features/analytics.png", alt: "Analytics Icon", title: "Detailed Analytics", desc: "Understand strengths and weaknesses through detailed reports." },
+            { icon: "/icons/features/review.png", alt: "Solution Review Icon", title: "Solution Review", desc: "Learn from mistakes with complete solutions and explanations." },
+            { icon: "/icons/features/quick.png", alt: "Instant Results Icon", title: "Instant Results", desc: "Get performance reports immediately after completing a test." },
+            { icon: "/icons/features/multiple-exams.png", alt: "Multiple Exam Categories Icon", title: "Multiple Exam Categories", desc: "Practice for engineering, medical, government, and entrance exams." },
+            { icon: "/icons/features/free.png", alt: "Free Icon", title: "Completely Free", desc: "No subscriptions, no hidden charges, just learning." },
+          ].map((f, i) => (
+            <Reveal key={f.title} delay={i * 80}>
+              <div className="feature-card">
+                <div className="feature-icon">
+                  <img src={f.icon} alt={f.alt} />
+                </div>
+                <h3>{f.title}</h3>
+                <p>{f.desc}</p>
+              </div>
+            </Reveal>
+          ))}
         </div>
       </section>
 
       {/* Stats */}
       <section className="about-stats">
-        <div className="about-stat">
-          <h2>45+</h2>
-          <p>Mock Tests</p>
-        </div>
-
-        <div className="about-stat">
-          <h2>20K+</h2>
-          <p>Students</p>
-        </div>
-
-        <div className="about-stat">
-          <h2>4+</h2>
-          <p>Exam Categories</p>
-        </div>
-
-        <div className="about-stat">
-          <h2>100%</h2>
-          <p>Free Access</p>
-        </div>
+        {[
+          { value: "45+", label: "Mock Tests" },
+          { value: "20K+", label: "Students" },
+          { value: "4+", label: "Exam Categories" },
+          { value: "100%", label: "Free Access" },
+        ].map((s, i) => (
+          <Reveal as="div" className="about-stat" key={s.label} delay={i * 80}>
+            <h2>{s.value}</h2>
+            <p>{s.label}</p>
+          </Reveal>
+        ))}
       </section>
 
       {/* Vision */}
       <section className="vision-section">
-        <div className="vision-card">
+        <Reveal as="div" className="vision-card">
           <div className="vision-icon">
             <img src="/icons/vision.png" alt="Vision Icon" />
           </div>
@@ -188,7 +144,7 @@ export default function About() {
               learners preparing for competitive examinations.
             </p>
           </div>
-        </div>
+        </Reveal>
       </section>
 
       {/* CTA */}

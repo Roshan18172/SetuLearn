@@ -6,32 +6,32 @@ export default function Accessibility() {
 
     const features = [
         {
-            icon: "⌨️",
+            icon: "/icons/misc/keyboard.png",
             title: "Keyboard Navigation",
             desc: "Navigate tests and pages using keyboard shortcuts without relying on a mouse."
         },
         {
-            icon: "👀",
+            icon: "/icons/misc/eye.png",
             title: "Readable Design",
             desc: "Clear typography, proper spacing, and high contrast colors improve readability."
         },
         {
-            icon: "📱",
+            icon: "/icons/online-test.png",
             title: "Responsive Layout",
             desc: "Access SetuLearn seamlessly across desktop, tablet, and mobile devices."
         },
         {
-            icon: "🔍",
+            icon: "/icons/how-works/search.png",
             title: "Zoom Support",
             desc: "The platform remains usable even when browser zoom levels are increased."
         },
         {
-            icon: "🎨",
+            icon: "/icons/misc/palette.png",
             title: "Accessible Colors",
             desc: "Color combinations are selected to improve visibility and reduce eye strain."
         },
         {
-            icon: "🔊",
+            icon: "/icons/misc/speaker.png",
             title: "Screen Reader Friendly",
             desc: "Semantic HTML helps assistive technologies interpret content accurately."
         }
@@ -42,7 +42,7 @@ export default function Accessibility() {
             {/* Hero */}
             <section className="accessibility-hero">
                 <div className="accessibility-badge">
-                    ♿ Inclusive Learning For Everyone
+                    <img src="/icons/misc/accessible.png" alt="" className="emoji-icon" /> Inclusive Learning For Everyone
                 </div>
 
                 <h1>
@@ -77,7 +77,7 @@ export default function Accessibility() {
                 <div className="features-grid">
                     {features.map((feature, index) => (
                         <div key={index} className="access-card">
-                            <div className="access-icon">{feature.icon}</div>
+                            <div className="access-icon">{feature.icon && feature.icon.startsWith('/') ? <img src={feature.icon} alt={feature.title} height={90}/> : feature.icon}</div>
 
                             <h3>{feature.title}</h3>
 
@@ -90,7 +90,7 @@ export default function Accessibility() {
             {/* Standards */}
             <section className="accessibility-standards">
                 <div className="standards-card">
-                    <h2>🌍 Accessibility Standards</h2>
+                    <h2><img src="/icons/misc/globe.png" alt="" className="emoji-icon-lg" /> Accessibility Standards</h2>
 
                     <p>
                         SetuLearn aims to follow modern web accessibility principles and
@@ -99,12 +99,12 @@ export default function Accessibility() {
                     </p>
 
                     <div className="standards-list">
-                        <div className="standard-item">✅ Semantic HTML Structure</div>
-                        <div className="standard-item">✅ Keyboard Friendly Navigation</div>
-                        <div className="standard-item">✅ Responsive Design</div>
-                        <div className="standard-item">✅ Accessible Form Elements</div>
-                        <div className="standard-item">✅ Readable Typography</div>
-                        <div className="standard-item">✅ Proper Color Contrast</div>
+                        <div className="standard-item"><img src="/icons/correct.png" alt="ok" /> Semantic HTML Structure</div>
+                        <div className="standard-item"><img src="/icons/correct.png" alt="ok" /> Keyboard Friendly Navigation</div>
+                        <div className="standard-item"><img src="/icons/correct.png" alt="ok" /> Responsive Design</div>
+                        <div className="standard-item"><img src="/icons/correct.png" alt="ok" /> Accessible Form Elements</div>
+                        <div className="standard-item"><img src="/icons/correct.png" alt="ok" /> Readable Typography</div>
+                        <div className="standard-item"><img src="/icons/correct.png" alt="ok" /> Proper Color Contrast</div>
                     </div>
                 </div>
             </section>
@@ -112,7 +112,7 @@ export default function Accessibility() {
             {/* Feedback */}
             <section className="accessibility-feedback">
                 <div className="feedback-card">
-                    <h2>💬 Need Assistance?</h2>
+                    <h2><img src="/icons/misc/chat.png" alt="" className="emoji-icon-lg" /> Need Assistance?</h2>
 
                     <p>
                         If you encounter accessibility barriers while using SetuLearn,
@@ -120,7 +120,7 @@ export default function Accessibility() {
                         for everyone.
                     </p>
 
-                    <button className="btn-primary btn-lg" onClick={() => navigate("/contact")} >
+                    <button className="btn-primary btn-lg"style={{ margin: "0 auto"}}  onClick={() => navigate("/contact")} >
                         Contact Support →
                     </button>
                 </div>

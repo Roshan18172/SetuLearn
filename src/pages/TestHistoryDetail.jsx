@@ -137,7 +137,7 @@ export default function TestHistoryDetail() {
   if (!entry) {
     return (
       <div className="empty-state" style={{ padding: "80px 20px", textAlign: "center" }}>
-        <div className="empty-icon">📋</div>
+        <div className="empty-icon"><img src="/icons/document.png" alt="No data" className="emoji-icon-xl" /></div>
         <h3>Test not found in history</h3>
         <p>This attempt may have been cleared from this device.</p>
         <button className="btn-primary" style={{ marginTop: 16 }} onClick={() => navigate("/test-history")}>
@@ -238,8 +238,8 @@ export default function TestHistoryDetail() {
                 </h3>
                 {status && (
                   <span className={`qa-status-badge ${status}`}>
-                    {status === "correct" && "✓ Correct"}
-                    {status === "incorrect" && "✗ Incorrect"}
+                    {status === "correct" && (<><img src="/icons/correct.png" alt="" className="emoji-icon-sm" /> Correct</>)}
+                    {status === "incorrect" && (<><img src="/icons/incorrect.png" alt="" className="emoji-icon-sm" /> Incorrect</>)}
                     {status === "unattempted" && "Unattempted"}
                   </span>
                 )}
@@ -263,13 +263,13 @@ export default function TestHistoryDetail() {
                     <div key={opt.id} className={className}>
                       <MathJax dynamic>{opt.text}</MathJax>
                       {isCorrect && isSelected && (
-                        <span className="correct-badge">✓ Your Answer</span>
+                        <span className="correct-badge"><img src="/icons/correct.png" alt="" /> Your Answer</span>
                       )}
                       {isCorrect && !isSelected && (
-                        <span className="correct-badge">✓ Correct</span>
+                        <span className="correct-badge"><img src="/icons/correct.png" alt="" /> Correct</span>
                       )}
                       {isSelected && !isCorrect && (
-                        <span className="wrong-badge">✗ Your Answer</span>
+                        <span className="wrong-badge"><img src="/icons/incorrect.png" alt="" /> Your Answer</span>
                       )}
                     </div>
                   );

@@ -2,10 +2,13 @@ import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { MathJaxContext } from "better-react-mathjax";
 import { HelmetProvider } from "react-helmet-async";
 
+import { useState } from "react";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import ScrollToTop from "./components/ScrollToTop";
 import Chatbot from "./components/Chatbot/Chatbot";
+import HumanVerification from "./components/HumanVerification";
+import CookieConsent from "./components/CookieConsent";
 
 import Home from "./pages/Home";
 import Exams from "./pages/Exams";
@@ -49,8 +52,17 @@ import ContactsList from "./pages/Admin/ContactsList";
 import ReportsList from "./pages/Admin/ReportsList";
 import SubmissionsList from "./pages/Admin/SubmissionsList";
 
+const HUMAN_VERIFIED_KEY = "setulearn_human_verified";
+
 function App() {
   const location = useLocation();
+  const [verified, setVerified] = useState(() => {
+    try {
+      return !!localStorage.getItem(HUMAN_VERIFIED_KEY);
+    } catch {
+      return true; // if storage is unavailable, don't block the site
+    }
+  });
 
   const hideLayout =
     location.pathname === "/test" || location.pathname.startsWith("/admin");
@@ -77,6 +89,14 @@ function App() {
       processEscapes: true, // Allows using regular \$ in text without triggering math
     }
   };
+
+  if (!verified) {
+    return (
+      <HelmetProvider>
+        <HumanVerification onVerified={() => setVerified(true)} />
+      </HelmetProvider>
+    );
+  }
 
   return (
     <HelmetProvider>
@@ -150,6 +170,8 @@ function App() {
         {/* Setu chatbot floats on every page except the live test screen
             (and the admin dashboard, which has its own separate UI). */}
         {!hideChatbot && <Chatbot />}
+
+        {!hideLayout && <CookieConsent />}
       </div>
     </MathJaxContext>
     </HelmetProvider>

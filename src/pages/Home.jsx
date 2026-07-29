@@ -6,6 +6,9 @@ import { mapExamToCategory, mapTestToFrontend } from "../api/dataMapper";
 import { getErrorMessage } from "../api/apiErrorHandler";
 import { ArrowRight, QuestionMarkRound, Time } from "../data/svgs";
 import SEO from "../components/SEO";
+import ShowcaseSlider from "../components/ShowcaseSlider";
+import RecentTestsCarousel from "../components/RecentTestsCarousel";
+import Reveal from "../components/Reveal";
 
 /* ── Skeleton helpers ──────────────────────────────────── */
 function SkeletonBox({ width, height, borderRadius = "8px" }) {
@@ -87,21 +90,6 @@ export default function Home() {
     fetchData();
   }, []);
 
-  const lastExam = JSON.parse(localStorage.getItem("lastexam")) || {};
-  const lastExamTitle = lastExam.testTitle || "N/A";
-  const lastExamScore = lastExam.securedScore || 0;
-  const lastExamTotal = lastExam.totalScore || 0;
-  const lastExamPercentage = lastExam.totalScore
-    ? ((lastExam.securedScore / lastExam.totalScore) * 100).toFixed(2)
-    : 0;
-  const lastExamCorrect = lastExam.correct || 0;
-  const lastExamIncorrect = lastExam.incorrect || 0;
-  const lastExamUnattempted = lastExam.unattempted || 0;
-  const lastExamQuestions =
-    lastExam.totalQuestions ||
-    lastExam.correct + lastExam.incorrect + lastExam.unattempted;
-  const lastExamPercentile = lastExam.percentile || 0;
-
   return (
     <div className="home-page">
       <SEO
@@ -114,7 +102,7 @@ export default function Home() {
         <div className="hero-section">
           <div className="hero-content">
             <div className="hero-badge">
-              🎯 India's #1 Free Mock Test Platform
+              <img src="/icons/target.png" alt="target" height={20} /> India's #1 Free Mock Test Platform
             </div>
             <h1 className="hero-title">
               Practice. Improve.
@@ -171,6 +159,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Auto-scrolling Practice/Improve/Succeed showcase */}
+      <ShowcaseSlider />
 
       {/* Categories */}
       <section className="section">
@@ -261,48 +252,19 @@ export default function Home() {
                   </div>
                   <div>
                     <div className="why-point-title">{p.title}</div>
-                    <div className="why-point-desc">{p.desc}</div>
+                    <div
+                      className="why-point-desc"
+                      style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}
+                    >
+                      {p.desc}
+                    </div>
                   </div>
                 </div>
               ))}
             </div>
           </div>
           <div className="why-visual">
-            <div className="score-card">
-              <div className="sc-header">Test Completed!</div>
-              <div className="sc-header">{lastExamTitle}</div>
-              <div className="sc-score">
-                {lastExamScore} <span>/ {lastExamTotal}</span>
-              </div>
-              <div className="sc-percent">{lastExamPercentage}% Score</div>
-              <div className="sc-row">
-                <span>✅ Correct</span>
-                <b>
-                  {lastExamCorrect}/{lastExamQuestions}
-                </b>
-              </div>
-              <div className="sc-row">
-                <span>❌ Incorrect</span>
-                <b>
-                  {lastExamIncorrect}/{lastExamQuestions}
-                </b>
-              </div>
-              <div className="sc-row">
-                <span>⬜ Unattempted</span>
-                <b>
-                  {lastExamUnattempted}/{lastExamQuestions}
-                </b>
-              </div>
-              <div className="sc-percentile">
-                Percentile: <b>{lastExamPercentile}</b>
-              </div>
-              <button
-                className="btn-outline sc-history-btn"
-                onClick={() => navigate("/test-history")}
-              >
-                View All Test History
-              </button>
-            </div>
+            <RecentTestsCarousel />
           </div>
         </div>
       </section>
@@ -376,6 +338,107 @@ export default function Home() {
                   </div>
                 );
               })}
+        </div>
+      </section>
+
+      {/* Trust / Commitment */}
+      <section className="section trust-section">
+        <div className="section-header-center">
+          <div className="section-eyebrow">Our Promise</div>
+          <h2 className="section-title">Built to Be On Your Side</h2>
+        </div>
+        <div className="trust-grid">
+          {[
+            {
+              icon: "/icons/misc/shield.png",
+              title: "Your Data Stays Yours",
+              desc: "Test history lives on your own device. We don't sell or share your practice data.",
+            },
+            {
+              icon: "/icons/free.png",
+              title: "Free, Forever",
+              desc: "No paywalls, no premium tiers, no surprise charges — every test stays free.",
+            },
+            {
+              icon: "/icons/features/analytics.png",
+              title: "Real Exam Analytics",
+              desc: "Question-level, topic-level, and time-based analysis after every single attempt.",
+            },
+            {
+              icon: "/icons/misc/puzzle.png",
+              title: "Built by Students, for Students",
+              desc: "Designed around how JEE, NEET, UPSC, SSC & CUET aspirants actually prepare.",
+            },
+          ].map((t, i) => (
+            <Reveal key={t.title} delay={i * 90}>
+              <div className="trust-card">
+                <div className="trust-icon">
+                  {t.icon && typeof t.icon === 'string' && t.icon.startsWith('/') ? (
+                    <img src={t.icon} alt={t.title} height={35} />
+                  ) : (
+                    t.icon
+                  )}
+                </div>
+                <h3>{t.title}</h3>
+                <p>{t.desc}</p>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+      </section>
+
+      {/* Journey / testimonials */}
+      <section className="section journey-section">
+        <div className="section-header-center">
+          <div className="section-eyebrow">Your Journey</div>
+          <h2 className="section-title">From First Attempt to Exam Day</h2>
+        </div>
+        <div className="journey-strip">
+            {[
+            { icon: "/icons/how-works/search.png", label: "Browse Tests" },
+            { icon: "/icons/how-works/give-test.png", label: "Attempt Mock Test" },
+            { icon: "/icons/features/quick.png", label: "Instant Results" },
+            { icon: "/icons/features/analytics.png", label: "Deep Analysis" },
+            { icon: "/icons/trophy.png", label: "Ace the Exam" },
+          ].map((step, i, arr) => (
+            <div className="journey-step-wrap" key={step.label}>
+              <Reveal delay={i * 100}>
+                <div className="journey-step">
+                  <div className="journey-step-icon">{step.icon && typeof step.icon === 'string' && step.icon.startsWith('/') ? <img src={step.icon} alt={step.label} height={30}/> : step.icon}</div>
+                  <span>{step.label}</span>
+                </div>
+              </Reveal>
+              {i < arr.length - 1 && <div className="journey-arrow">→</div>}
+            </div>
+          ))}
+        </div>
+
+        <div className="testimonial-grid">
+          {[
+            {
+              quote:
+                "The topic-wise breakdown showed me I was losing marks in Organic Chemistry, not Physics like I thought.",
+              name: "Aditi, NEET Aspirant",
+            },
+            {
+              quote:
+                "Practicing under the real timer stopped me from running out of time in my actual SSC exam.",
+              name: "Rohit, SSC CGL",
+            },
+            {
+              quote:
+                "Free, no login, no ads — I could just open a test and start practicing between classes.",
+              name: "Meera, JEE Aspirant",
+            },
+          ].map((t, i) => (
+            <Reveal key={t.name} delay={i * 100}>
+              <div className="testimonial-card">
+                <div className="testimonial-quote-mark">“</div>
+                <p>{t.quote}</p>
+                <div className="testimonial-name">{t.name}</div>
+              </div>
+            </Reveal>
+          ))}
         </div>
       </section>
 

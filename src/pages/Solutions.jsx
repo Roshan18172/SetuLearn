@@ -243,13 +243,13 @@ export default function Solutions() {
                       {opt.text}
                     </MathJax>
                     {isCorrect && isSelected && (
-                      <span className="correct-badge">✓ Your Answer</span>
+                      <span className="correct-badge"><img src="/icons/correct.png" alt="" /> Your Answer</span>
                     )}
                     {isCorrect && !isSelected && (
-                      <span className="correct-badge">✓ Correct</span>
+                      <span className="correct-badge"><img src="/icons/correct.png" alt="" /> Correct</span>
                     )}
                     {isSelected && !isCorrect && (
-                      <span className="wrong-badge">✗ Your Answer</span>
+                      <span className="wrong-badge"><img src="/icons/incorrect.png" alt="" /> Your Answer</span>
                     )}
                   </div>
                 );

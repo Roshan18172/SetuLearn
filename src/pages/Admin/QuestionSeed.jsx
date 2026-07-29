@@ -155,13 +155,13 @@ export default function QuestionSeed() {
       case "info":
         return "ℹ️";
       case "success":
-        return "✅";
+        return <img src="/icons/correct.png" alt="success" className="emoji-icon-sm" />;
       case "error":
-        return "❌";
+        return <img src="/icons/incorrect.png" alt="error" className="emoji-icon-sm" />;
       case "progress":
         return "⏳";
       case "complete":
-        return "🎉";
+        return <img src="/icons/misc/celebrate.png" alt="complete" className="emoji-icon-sm" />;
       default:
         return "•";
     }

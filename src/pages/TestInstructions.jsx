@@ -12,7 +12,7 @@ export default function TestInstructions() {
   if (!test) {
     return (
       <div className="empty-state" style={{ padding: "80px 20px" }}>
-        <div className="empty-icon">📋</div>
+        <div className="empty-icon"><img src="/icons/document.png" alt="No data" className="emoji-icon-xl" /></div>
         <h3>No test selected</h3>
         <button className="btn-primary" onClick={() => navigate("/tests")}>
           Browse Tests
@@ -71,14 +71,14 @@ export default function TestInstructions() {
               className={`mode-btn ${mode === "timed" ? "active" : ""}`}
               onClick={() => setMode("timed")}
             >
-              ⏱️ Timed Mode
+              <img src="/icons/clock.png" alt="timer" /> Timed Mode
               <span>Simulates real exam with countdown</span>
             </button>
             <button
               className={`mode-btn ${mode === "untimed" ? "active" : ""}`}
               onClick={() => setMode("untimed")}
             >
-              📖 Practice Mode
+              <img src="/icons/document.png" alt="practice" /> Practice Mode
               <span>No timer, go at your own pace</span>
             </button>
           </div>

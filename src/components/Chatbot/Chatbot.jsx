@@ -69,10 +69,10 @@ export default function Chatbot() {
 
   const handleOpen = () => {
     setOpen(true);
-    if (!hasGreeted) {
+      if (!hasGreeted) {
       setHasGreeted(true);
       pushBot(
-        `${getGreeting()}! I'm SetuLearn 👋 How can I help you today?`,
+        <span>{getGreeting()}! I'm SetuLearn <img src="/icons/rocket.png" alt="wave" style={{height:16, verticalAlign:'middle'}}/> How can I help you today?</span>,
         mainMenu,
         250
       );
@@ -193,7 +193,15 @@ export default function Chatbot() {
 
   const handleContact = async () => {
     await pushBot(
-      `You can reach our support team directly:\n\n📧 Email: ${supportDetails.email}\n📱 Phone: ${supportDetails.phone}\n⏰ Support Hours: ${supportDetails.hours}\n🌐 Website: ${supportDetails.website}`
+      <div>
+        <div>You can reach our support team directly:</div>
+        <div style={{marginTop:8}}>
+          <div><strong>Email:</strong> {supportDetails.email}</div>
+          <div style={{display:'flex',alignItems:'center',gap:8}}><img src="/icons/online-test.png" alt="phone" style={{height:16}}/> <strong>Phone:</strong> {supportDetails.phone}</div>
+          <div style={{display:'flex',alignItems:'center',gap:8}}><img src="/icons/clock.png" alt="hours" style={{height:16}}/> <strong>Support Hours:</strong> {supportDetails.hours}</div>
+          <div style={{display:'flex',alignItems:'center',gap:8}}><img src="/icons/vision.png" alt="website" style={{height:16}}/> <strong>Website:</strong> {supportDetails.website}</div>
+        </div>
+      </div>
     );
     await pushBot("Or send us a message here:", [
       { id: "open_contact", label: "Open Contact page" },
@@ -411,9 +419,13 @@ export default function Chatbot() {
                   <img src="/favicon.ico" alt="" className="setu-bubble-avatar" />
                 )}
                 <div className={`setu-bubble setu-bubble-${m.from}`}>
-                  <MathJax dynamic inline>
-                    {m.content}
-                  </MathJax>
+                  {typeof m.content === 'string' ? (
+                    <MathJax dynamic inline>
+                      {m.content}
+                    </MathJax>
+                  ) : (
+                    m.content
+                  )}
                 </div>
               </div>
             ))}

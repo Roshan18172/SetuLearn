@@ -1,5 +1,6 @@
  import { Rocket } from "iconoir-react";
 import { useNavigate } from "react-router-dom";
+import Reveal from "../../components/Reveal";
 
 export default function HowItWorks() {
   const navigate = useNavigate();
@@ -66,7 +67,7 @@ export default function HowItWorks() {
       {/* Hero Section */}
       <section className="how-hero">
         <div className="how-badge">
-          🚀 Simple • Smart • Effective
+          <img src="/icons/rocket.png" alt="rocket" height={20}/> Simple • Smart • Effective
         </div>
 
         <h1>
@@ -88,26 +89,28 @@ export default function HowItWorks() {
 
         <div className="steps-grid">
           {steps.map((step, index) => (
-            <div key={index} className="step-card">
-              <div className="step-number">
-                {index + 1}
+            <Reveal key={index} delay={index * 80}>
+              <div className="step-card">
+                <div className="step-number">
+                  {index + 1}
+                </div>
+
+                <div className="step-icon">
+                  <img src={`/icons/how-works/${step.icon}`} alt={step.title} />
+                </div>
+
+                <h3>{step.title}</h3>
+
+                <p>{step.desc}</p>
               </div>
-
-              <div className="step-icon">
-                <img src={`/icons/how-works/${step.icon}`} alt={step.title} />
-              </div>
-
-              <h3>{step.title}</h3>
-
-              <p>{step.desc}</p>
-            </div>
+            </Reveal>
           ))}
         </div>
       </section>
 
       {/* Flow Section */}
       <section className="workflow-section">
-        <div className="workflow-card">
+        <div className="workflow-card workflow-animated">
           <div className="flow-item">Browse Tests</div>
           <div className="flow-arrow">→</div>
 
@@ -133,44 +136,35 @@ export default function HowItWorks() {
 
         <div className="features-grid">
           {features.map((feature, index) => (
-            <div key={index} className="feature-card">
-              <div className="feature-icon">
-               <img src={`/icons/features/${feature.icon}`} alt={feature.icon} />
+            <Reveal key={index} delay={index * 80}>
+              <div className="feature-card">
+                <div className="feature-icon">
+                 <img src={`/icons/features/${feature.icon}`} alt={feature.icon} />
+                </div>
+
+                <h3>{feature.title}</h3>
+
+                <p>{feature.desc}</p>
               </div>
-
-              <h3>{feature.title}</h3>
-
-              <p>{feature.desc}</p>
-            </div>
+            </Reveal>
           ))}
         </div>
       </section>
 
       {/* Statistics */}
       <section className="stats-section">
-        <div className="stat-box">
-          <img src="/icons/stats/exams.png" alt="Mock Tests" />
-          <h2>45+</h2>
-          <p>Mock Tests</p>
-        </div>
-
-        <div className="stat-box">
-          <img src="/icons/stats/students.png" alt="Students" />
-          <h2>20K+</h2>
-          <p>Students</p>
-        </div>
-
-        <div className="stat-box">
-          <img src="/icons/stats/trophy.png" alt="Success Rate" />
-          <h2>95%</h2>
-          <p>Success Rate</p>
-        </div>
-
-        <div className="stat-box">
-          <img src="/icons/stats/ok.png" alt="Free Access" />
-          <h2>100%</h2>
-          <p>Free Access</p>
-        </div>
+        {[
+          { icon: "/icons/stats/exams.png", alt: "Mock Tests", value: "45+", label: "Mock Tests" },
+          { icon: "/icons/stats/students.png", alt: "Students", value: "20K+", label: "Students" },
+          { icon: "/icons/stats/trophy.png", alt: "Success Rate", value: "95%", label: "Success Rate" },
+          { icon: "/icons/stats/ok.png", alt: "Free Access", value: "100%", label: "Free Access" },
+        ].map((s, i) => (
+          <Reveal as="div" className="stat-box" key={s.label} delay={i * 80}>
+            <img src={s.icon} alt={s.alt} />
+            <h2>{s.value}</h2>
+            <p>{s.label}</p>
+          </Reveal>
+        ))}
       </section>
 
       {/* CTA */}

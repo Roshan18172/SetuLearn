@@ -386,7 +386,7 @@ export default function TestResult() {
   if (!hasValidResult) {
     return (
       <div className="empty-state" style={{ padding: "80px 20px", textAlign: "center" }}>
-        <div className="empty-icon">📋</div>
+        <div className="empty-icon"><img src="/icons/document.png" alt="No data" className="emoji-icon-xl" /></div>
         <h3>No result to show</h3>
         <p>Taking you back to Tests...</p>
         <button className="btn-primary" onClick={() => navigate("/tests", { replace: true })}>
@@ -426,7 +426,7 @@ export default function TestResult() {
     <div className="result-page">
       {/* Visual Header Banner */}
       <div className="result-banner">
-        <div className="result-trophy">🏆</div>
+        <div className="result-trophy"><img src="/icons/trophy.png" alt="Trophy" /></div>
         <h2>Test Completed Successfully!</h2>
         <p>Combined performance summary compiled from all subject submissions.</p>
         <div className="result-test-name">

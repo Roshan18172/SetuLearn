@@ -175,11 +175,11 @@ export default function Practice() {
           <h1>Start Practicing</h1>
         </div>
         <div className="empty-state" style={{ padding: "80px 20px" }}>
-          <div className="empty-icon">⚠️</div>
+          <div className="empty-icon"><img src="/icons/misc/warning.png" alt="Warning" className="emoji-icon-xl" /></div>
           <h3>Could not load subjects</h3>
           <p style={{ maxWidth: 500, margin: "0 auto 20px" }}>{fetchError}</p>
           <button className="btn-primary" onClick={() => window.location.reload()}>
-            🔄 Retry
+            <img src="/icons/misc/refresh.png" alt="" className="emoji-icon" /> Retry
           </button>
         </div>
       </div>
@@ -219,7 +219,7 @@ export default function Practice() {
 
           {subjects.length === 0 && (
             <div className="empty-state">
-              <div className="empty-icon">🔍</div>
+              <div className="empty-icon"><img src="/icons/how-works/search.png" alt="No results" className="emoji-icon-xl" /></div>
               <h3>No subjects found</h3>
               <p>Check back soon — subjects will appear here once added.</p>
             </div>
@@ -250,11 +250,11 @@ export default function Practice() {
 
         {!isLoading && fetchError && (
           <div className="empty-state" style={{ padding: "60px 20px" }}>
-            <div className="empty-icon">⚠️</div>
+            <div className="empty-icon"><img src="/icons/misc/warning.png" alt="Warning" className="emoji-icon-xl" /></div>
             <h3>Could not load topics</h3>
             <p style={{ maxWidth: 500, margin: "0 auto 20px" }}>{fetchError}</p>
             <button className="btn-primary" onClick={() => openSubject(selectedSubject)}>
-              🔄 Retry
+              <img src="/icons/misc/refresh.png" alt="" className="emoji-icon" /> Retry
             </button>
           </div>
         )}
@@ -280,7 +280,7 @@ export default function Practice() {
 
             {topics.length === 0 && (
               <div className="empty-state">
-                <div className="empty-icon">🔍</div>
+                <div className="empty-icon"><img src="/icons/how-works/search.png" alt="No results" className="emoji-icon-xl" /></div>
                 <h3>No topics found</h3>
                 <p>This subject doesn't have any topics yet.</p>
               </div>
@@ -307,11 +307,11 @@ export default function Practice() {
     return (
       <div className="tests-page">
         <div className="empty-state" style={{ padding: "80px 20px" }}>
-          <div className="empty-icon">⚠️</div>
+          <div className="empty-icon"><img src="/icons/misc/warning.png" alt="Warning" className="emoji-icon-xl" /></div>
           <h3>Could not load questions</h3>
           <p style={{ maxWidth: 500, margin: "0 auto 20px" }}>{fetchError}</p>
           <button className="btn-primary" onClick={() => startPractice(selectedTopic)}>
-            🔄 Retry
+            <img src="/icons/misc/refresh.png" alt="" className="emoji-icon" /> Retry
           </button>
         </div>
       </div>
@@ -325,7 +325,7 @@ export default function Practice() {
           <ArrowLeft /> Back to Topics
         </button>
         <div className="empty-state">
-          <div className="empty-icon">🔍</div>
+          <div className="empty-icon"><img src="/icons/how-works/search.png" alt="No results" className="emoji-icon-xl" /></div>
           <h3>No questions available</h3>
           <p>This topic doesn't have any practice questions yet.</p>
         </div>

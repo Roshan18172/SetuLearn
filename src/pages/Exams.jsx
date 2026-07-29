@@ -77,14 +77,14 @@ export default function Exams() {
           <h1>All Exam Categories</h1>
         </div>
         <div className="empty-state" style={{ padding: "80px 20px" }}>
-          <div className="empty-icon">⚠️</div>
+          <div className="empty-icon"><img src="/icons/misc/warning.png" alt="Warning" className="emoji-icon-xl" /></div>
           <h3>Could not load exam categories</h3>
           <p style={{ maxWidth: 500, margin: "0 auto 20px" }}>{fetchError}</p>
           <button
             className="btn-primary"
             onClick={() => window.location.reload()}
           >
-            🔄 Retry
+            <img src="/icons/misc/refresh.png" alt="" className="emoji-icon" /> Retry
           </button>
         </div>
       </div>
@@ -138,7 +138,7 @@ export default function Exams() {
 
         {categories.length === 0 && (
           <div className="empty-state">
-            <div className="empty-icon">🔍</div>
+            <div className="empty-icon"><img src="/icons/how-works/search.png" alt="No results" className="emoji-icon-xl" /></div>
             <h3>No exams found</h3>
             <p>Try adjusting your filters or search query.</p>
           </div>

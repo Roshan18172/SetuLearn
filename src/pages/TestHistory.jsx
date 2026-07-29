@@ -60,7 +60,7 @@ export default function TestHistory() {
 
       {history.length === 0 ? (
         <div className="empty-state">
-          <div className="empty-icon">📋</div>
+          <div className="empty-icon"><img src="/icons/document.png" alt="No data" className="emoji-icon-xl" /></div>
           <h3>No test history yet</h3>
           <p>Complete a mock test and it'll show up here.</p>
           <button className="btn-primary" style={{ marginTop: 16 }} onClick={() => navigate("/tests")}>

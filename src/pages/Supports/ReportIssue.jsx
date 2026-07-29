@@ -167,7 +167,7 @@ export default function ReportIssue() {
       {/* Hero */}
       <section className="report-hero">
         <div className="report-badge">
-          🛠️ Support Center
+          <img src="/icons/misc/gear.png" alt="" className="emoji-icon" /> Support Center
         </div>
 
         <h1>Report an Issue</h1>
@@ -181,25 +181,25 @@ export default function ReportIssue() {
       {/* Quick Categories */}
       <section className="issue-categories">
         <div className="issue-card">
-          <span>🐞</span>
+          <span><img src="/icons/misc/bug.png" alt="Bug" height={40} /></span>
           <h3>Bug Report</h3>
           <p>Something isn't working correctly.</p>
         </div>
 
         <div className="issue-card">
-          <span>📝</span>
+          <span><img src="/icons/document.png" alt="Question error" height={40} /></span>
           <h3>Question Error</h3>
           <p>Incorrect answer or question content.</p>
         </div>
 
         <div className="issue-card">
-          <span>⚡</span>
+          <span><img src="/icons/features/quick.png" alt="Performance" height={40} /></span>
           <h3>Performance</h3>
           <p>Slow loading or website issues.</p>
         </div>
 
         <div className="issue-card">
-          <span>💡</span>
+          <span><img src="/icons/misc/lightbulb.png" alt="Suggestion" height={40} /></span>
           <h3>Suggestion</h3>
           <p>Share ideas to improve SetuLearn.</p>
         </div>
@@ -217,14 +217,14 @@ export default function ReportIssue() {
           </p>
 
           <div className="report-features">
-            <div>✅ Fast Response</div>
-            <div>✅ Issue Tracking</div>
-            <div>✅ Regular Updates</div>
-            <div>✅ Student First Approach</div>
+            <div><img src="/icons/correct.png" alt="ok" /> Fast Response</div>
+            <div><img src="/icons/correct.png" alt="ok" /> Issue Tracking</div>
+            <div><img src="/icons/correct.png" alt="ok" /> Regular Updates</div>
+            <div><img src="/icons/correct.png" alt="ok" /> Student First Approach</div>
+             <div><img src="/icons/clock.png" alt="timer" /> Expected Response Time</div>
           </div>
 
           <div className="response-box">
-            <h4>⏱️ Expected Response Time</h4>
             <p>Most issues are reviewed within 24-48 hours.</p>
           </div>
         </div>
@@ -360,7 +360,7 @@ export default function ReportIssue() {
 
           {submitted && (
             <div className="success-message">
-              🎉 Your issue has been submitted successfully!
+              <img src="/icons/misc/celebrate.png" alt="" className="emoji-icon" /> Your issue has been submitted successfully!
             </div>
           )}
 
@@ -375,25 +375,25 @@ export default function ReportIssue() {
         <div className="help-grid">
 
           <div className="help-item">
-            <span>🔄</span>
+            <span><img src="/icons/misc/refresh.png" alt="Refresh" height={40} /></span>
             <h3>Refresh Page</h3>
             <p>Many temporary issues are fixed by refreshing.</p>
           </div>
 
           <div className="help-item">
-            <span>🌐</span>
+            <span><img src="/icons/vision.png" alt="internet" height={40}/></span>
             <h3>Check Internet</h3>
             <p>Ensure your connection is stable.</p>
           </div>
 
           <div className="help-item">
-            <span>📱</span>
+            <span><img src="/icons/online-test.png" alt="device" height={40} /></span>
             <h3>Try Another Device</h3>
             <p>Test if the issue is device-specific.</p>
           </div>
 
           <div className="help-item">
-            <span>🧹</span>
+            <span><img src="/icons/misc/broom.png" alt="Clear cache" height={40} /></span>
             <h3>Clear Browser Cache</h3>
             <p>Old cache files can sometimes cause issues.</p>
           </div>

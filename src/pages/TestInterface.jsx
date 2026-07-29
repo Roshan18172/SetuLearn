@@ -40,7 +40,7 @@ function RedirectToTests({ message }) {
       className="empty-state"
       style={{ padding: "80px 20px", textAlign: "center" }}
     >
-      <div className="empty-icon">📋</div>
+      <div className="empty-icon"><img src="/icons/document.png" alt="No data" className="emoji-icon-xl" /></div>
       <h3>{message}</h3>
       <p>Taking you back to Tests...</p>
       <button className="btn-primary" style={{ display: "block", margin: "0 auto" }}
@@ -640,7 +640,7 @@ export default function TestInterface() {
     answered >= MIN_ANSWERED_TO_SUBMIT || timeSpentSeconds >= MIN_SECONDS_TO_SUBMIT;
   const submitHint = canSubmit
     ? null
-    : `Answer at least one question, or wait ${MIN_SECONDS_TO_SUBMIT - timeSpentSeconds}s more, before submitting.`;
+    : `Answer at least 20 question, or wait ${MIN_SECONDS_TO_SUBMIT - timeSpentSeconds}s more, before submitting.`;
 
   const currentSubjectId = questions[current]?.subjectId;
 
@@ -728,7 +728,11 @@ export default function TestInterface() {
                 }))
               }
             >
-              {marked[q.id] ? "🔖 Marked" : "🏷️ Mark for Review"}
+              {marked[q.id] ? (
+                <><img src="/icons/misc/bookmark.png" alt="" className="emoji-icon-sm" /> Marked</>
+              ) : (
+                <><img src="/icons/misc/bookmark.png" alt="" className="emoji-icon-sm" /> Mark for Review</>
+              )}
             </button>
           </div>
 
@@ -831,7 +835,7 @@ export default function TestInterface() {
                 disabled={!canSubmit}
                 title={submitHint || undefined}
               >
-                Submit Test ✓
+                Submit Test <img src="/icons/correct.png" alt="" className="emoji-icon-sm" />
               </button>
             )}
           </div>
@@ -934,7 +938,7 @@ export default function TestInterface() {
 
       {/* MOBILE FAB */}
       <button className="palette-fab" onClick={() => setPaletteOpen(true)}>
-        📋 Questions ({answered}/{questions.length})
+        <img src="/icons/document.png" alt="" className="emoji-icon" /> Questions ({answered}/{questions.length})
       </button>
 
       {/* CONFIRM MODAL */}
@@ -953,7 +957,7 @@ export default function TestInterface() {
         </p>
         {questions.length - answered > 0 && (
           <p className="modal-warn">
-            ⚠️ {questions.length - answered} questions are unanswered.
+            <img src="/icons/misc/warning.png" alt="" className="emoji-icon" /> {questions.length - answered} questions are unanswered.
           </p>
         )}
       </Modal>
