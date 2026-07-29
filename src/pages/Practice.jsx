@@ -28,6 +28,9 @@ export default function Practice() {
   const [topics, setTopics] = useState([]);
   const [selectedTopic, setSelectedTopic] = useState(null);
 
+  const [subjectSearch, setSubjectSearch] = useState("");
+  const [topicSearch, setTopicSearch] = useState("");
+
   const [questions, setQuestions] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState({}); // questionId -> selectedOptionId
@@ -85,6 +88,7 @@ export default function Practice() {
     setSelectedSubject(subject);
     setStep("topics");
     setTopics([]);
+    setTopicSearch("");
     try {
       setIsLoading(true);
       setFetchError(null);
@@ -126,6 +130,7 @@ export default function Practice() {
     setStep("subjects");
     setSelectedSubject(null);
     setTopics([]);
+    setTopicSearch("");
   };
 
   const backToTopics = () => {
@@ -149,6 +154,14 @@ export default function Practice() {
 
   const attemptedCount = Object.keys(answers).length;
   const correctCount = questions.filter((q) => answers[q.id] === q.correct).length;
+
+  const filteredSubjects = subjects.filter((s) =>
+    s.name?.toLowerCase().includes(subjectSearch.trim().toLowerCase())
+  );
+
+  const filteredTopics = topics.filter((t) =>
+    t.name?.toLowerCase().includes(topicSearch.trim().toLowerCase())
+  );
 
   // ─── Loading / Error states ───────────────────────────────
   if (isLoading && step === "subjects" && subjects.length === 0) {
@@ -191,13 +204,24 @@ export default function Practice() {
     return (
       <div className="tests-page">
         <SEO title="Start Practicing" description="Practice topic-wise questions on SetuLearn. Pick a subject, choose a topic, and start solving questions with instant feedback and solutions." canonical="/practice" />
-        <div className="tests-header">
-          <h1>Start Practicing</h1>
-          <p>Pick a subject to see its topics and begin practicing.</p>
+        <div className="tests-header prac-header-row">
+          <div>
+            <h1>Start Practicing</h1>
+            <p>Pick a subject to see its topics and begin practicing.</p>
+          </div>
+          <div className="search-box">
+            <span className="search-icon"><img src="/icons/how-works/search.png" alt="Search" className="emoji-icon-sm" /></span>
+            <input
+              type="text"
+              placeholder="Search subjects..."
+              value={subjectSearch}
+              onChange={(e) => setSubjectSearch(e.target.value)}
+            />
+          </div>
         </div>
 
         <div className="all-categories-grid">
-          {subjects.map((s) => (
+          {filteredSubjects.map((s) => (
             <div
               key={s.id}
               className="category-card"
@@ -217,8 +241,16 @@ export default function Practice() {
             </div>
           ))}
 
+          {filteredSubjects.length === 0 && subjects.length > 0 && (
+            <div className="empty-state" style={{ gridColumn: "1 / -1", justifySelf: "center" }}>
+              <div className="empty-icon"><img src="/icons/how-works/search.png" alt="No results" className="emoji-icon-xl" /></div>
+              <h3>No subjects match "{subjectSearch}"</h3>
+              <p>Try a different search term.</p>
+            </div>
+          )}
+
           {subjects.length === 0 && (
-            <div className="empty-state">
+            <div className="empty-state" style={{ gridColumn: "1 / -1", justifySelf: "center" }}>
               <div className="empty-icon"><img src="/icons/how-works/search.png" alt="No results" className="emoji-icon-xl" /></div>
               <h3>No subjects found</h3>
               <p>Check back soon — subjects will appear here once added.</p>
@@ -233,12 +265,25 @@ export default function Practice() {
   if (step === "topics") {
     return (
       <div className="tests-page">
-        <div className="tests-header">
-          <button className="prac-back-link" onClick={backToSubjects}>
-            <ArrowLeft /> All Subjects
-          </button>
-          <h1>{selectedSubject?.name}</h1>
-          <p>Pick a topic to start practicing.</p>
+        <div className="tests-header prac-header-row">
+          <div>
+            <button className="prac-back-link" onClick={backToSubjects}>
+              <ArrowLeft /> All Subjects
+            </button>
+            <h1>{selectedSubject?.name}</h1>
+            <p>Pick a topic to start practicing.</p>
+          </div>
+          {!isLoading && !fetchError && topics.length > 0 && (
+            <div className="search-box">
+              <span className="search-icon"><img src="/icons/how-works/search.png" alt="Search" className="emoji-icon-sm" /></span>
+              <input
+                type="text"
+                placeholder="Search topics..."
+                value={topicSearch}
+                onChange={(e) => setTopicSearch(e.target.value)}
+              />
+            </div>
+          )}
         </div>
 
         {isLoading && (
@@ -261,7 +306,7 @@ export default function Practice() {
 
         {!isLoading && !fetchError && (
           <div className="prac-topic-list">
-            {topics.map((t) => (
+            {filteredTopics.map((t) => (
               <div key={t.id} className="prac-topic-row">
                 <div className="prac-topic-left">
                   <div className="prac-topic-icon"><Tag size={18} /></div>
@@ -277,6 +322,14 @@ export default function Practice() {
                 </button>
               </div>
             ))}
+
+            {filteredTopics.length === 0 && topics.length > 0 && (
+              <div className="empty-state">
+                <div className="empty-icon"><img src="/icons/how-works/search.png" alt="No results" className="emoji-icon-xl" /></div>
+                <h3>No topics match "{topicSearch}"</h3>
+                <p>Try a different search term.</p>
+              </div>
+            )}
 
             {topics.length === 0 && (
               <div className="empty-state">

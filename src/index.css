@@ -194,6 +194,7 @@ button:disabled {
   top: 0;
   left: 0;
   right: 0;
+  height: var(--nav-h);
   background: #fff;
   z-index: 100;
   box-shadow: 0 1px 8px rgba(0, 0, 0, 0.06);
@@ -206,7 +207,7 @@ button:disabled {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 16px;
+  padding: 0 16px;
   gap: 24px;
 }
 
@@ -225,21 +226,26 @@ button:disabled {
 .navbar-right {
   display: flex;
   align-items: center;
+  height: 100%;
   gap: 16px;
 }
 
 .navbar-links {
   display: flex;
   align-items: center;
+  height: 100%;
   gap: 4px;
   transition: all 0.4s;
 }
 
 .nav-link {
+  display: flex;
+  align-items: center;
+  height: 100%;
   color: var(--text-secondary);
   font-weight: 500;
   font-size: 0.9rem;
-  padding: 24px 16px;
+  padding: 0 16px;
   border-bottom: 3px solid transparent;
   transition: all 0.15s;
 }
@@ -863,6 +869,20 @@ button:disabled {
 
 .tests-header {
   margin-bottom: 28px;
+}
+
+.prac-header-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.prac-header-row .search-box {
+  margin-left: 0;
+  flex-shrink: 0;
+  margin-top: 4px;
 }
 
 .tests-header h1 {
@@ -3366,13 +3386,31 @@ button:disabled {
     right: 0;
     bottom: 0;
     width: 300px;
+    height: auto;
     background: #fff;
     flex-direction: column;
+    align-items: stretch;
     padding: 16px;
     border-bottom: 1px solid var(--border);
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
     gap: 4px;
 
+  }
+
+  .navbar-links .nav-link {
+    height: auto;
+    width: 100%;
+    padding: 14px 16px;
+    border-bottom: none;
+    border-left: 3px solid transparent;
+    border-radius: var(--radius-sm);
+  }
+
+  .navbar-links .nav-link:hover,
+  .navbar-links .nav-link.active {
+    border-bottom: none;
+    border-left: 3px solid var(--primary);
+    background: var(--primary-light);
   }
 
   .navbar-links.open {
@@ -3456,6 +3494,15 @@ button:disabled {
 
   .search-box {
     margin-left: 0;
+  }
+
+  .prac-header-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .prac-header-row .search-box {
+    width: 100%;
   }
 
   .search-box input {
