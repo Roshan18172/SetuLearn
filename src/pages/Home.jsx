@@ -252,10 +252,7 @@ export default function Home() {
                   </div>
                   <div>
                     <div className="why-point-title">{p.title}</div>
-                    <div
-                      className="why-point-desc"
-                      style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}
-                    >
+                    <div className="why-point-desc">
                       {p.desc}
                     </div>
                   </div>

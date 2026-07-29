@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Menu, X } from "../data/svgs";
+import NotificationBell from "./NotificationBell";
 // import SetuLogo from "../SetuLearn Logo.png"
 
 export default function Navbar() {
@@ -26,27 +27,33 @@ export default function Navbar() {
           <img src="/logo.webp" alt="SetuLearn" />
         </div>
 
-        <div className={`navbar-links ${menuOpen ? "open" : ""}`}>
+        <div className="navbar-right">
 
-          {navItems.map((item) => (
-            <button
-              key={item.path}
-              className={`nav-link ${location.pathname === item.path ? "active" : ""}`}
-              onClick={() => navigate(item.path)}
-            >
-              {item.label}
+          <div className={`navbar-links ${menuOpen ? "open" : ""}`}>
+
+            {navItems.map((item) => (
+              <button
+                key={item.path}
+                className={`nav-link ${location.pathname === item.path ? "active" : ""}`}
+                onClick={() => navigate(item.path)}
+              >
+                {item.label}
+              </button>
+            ))}
+
+            <button className="btn-primary nav-cta" onClick={() => navigate("/practice")} >
+              Start Practicing
             </button>
-          ))}
 
-          <button className="btn-primary nav-cta" onClick={() => navigate("/practice")} >
-            Start Practicing
+          </div>
+
+          <NotificationBell />
+
+          <button className="hamburger" onClick={() => setMenuOpen(!menuOpen)} >
+            {menuOpen ? <X /> : <Menu />}
           </button>
 
         </div>
-
-        <button className="hamburger" onClick={() => setMenuOpen(!menuOpen)} >
-          {menuOpen ? <X /> : <Menu />}
-        </button>
 
       </div>
     </nav>

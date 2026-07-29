@@ -12,6 +12,8 @@
  * localStorage small and always in sync with the source of truth.
  */
 
+import { addNotification } from "./notifications";
+
 const STORAGE_KEY = "setulearn_test_history";
 const MAX_ENTRIES = 100;
 
@@ -111,6 +113,14 @@ export function addTestHistoryEntry(entry) {
   };
 
   writeAll([newEntry, ...existing].slice(0, MAX_ENTRIES));
+
+  addNotification({
+    type: "test_completed",
+    title: "Test Completed",
+    message: `You have completed ${newEntry.testTitle || "a"} test. Click to view results.`,
+    link: `/test-history/${newEntry.id}`,
+  });
+
   return newEntry;
 }
 
