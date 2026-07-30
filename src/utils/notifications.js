@@ -10,7 +10,7 @@
  */
 
 const STORAGE_KEY = "setulearn_notifications";
-const WELCOME_SEEDED_KEY = "setulearn_welcome_notif_seeded";
+const INITIAL_NOTIFS_SEEDED_KEY = "setulearn_initial_notifs_seeded_v2"; // Incremented version to re-seed for current users
 const MAX_ENTRIES = 50;
 const EVENT_NAME = "setulearn-notifications-updated";
 
@@ -64,7 +64,7 @@ export function getUnreadCount() {
 /**
  * Adds a new notification.
  * @param {object} params
- * @param {string} params.type - e.g. "welcome" | "test_completed"
+ * @param {string} params.type - e.g. "welcome" | "test_completed" | "practice" | "contact"
  * @param {string} params.title
  * @param {string} params.message
  * @param {string} [params.link] - route to navigate to on click
@@ -111,24 +111,40 @@ export function clearAllNotifications() {
 }
 
 /**
- * Seeds a one-time welcome notification the very first time this device
- * ever loads the notification center (won't re-add itself after the user
- * clears or reads it).
+ * Seeds one-time initial notifications the very first time this device
+ * ever loads the notification center.
  */
 export function ensureWelcomeNotification() {
   if (typeof window === "undefined") return;
   try {
-    if (localStorage.getItem(WELCOME_SEEDED_KEY)) return;
-    localStorage.setItem(WELCOME_SEEDED_KEY, "true");
+    if (localStorage.getItem(INITIAL_NOTIFS_SEEDED_KEY)) return;
+    localStorage.setItem(INITIAL_NOTIFS_SEEDED_KEY, "true");
   } catch {
     return;
   }
 
+  // 1. Seed the welcome message
   addNotification({
     type: "welcome",
     title: "Welcome to SetuLearn!",
     message:
       "Explore mock tests across JEE, NEET, UPSC, SSC, CUET & BITSAT. Attempt a test to see your results and analytics show up right here.",
     link: "/tests",
+  });
+
+  // 2. Seed the practice message
+  addNotification({
+    type: "practice",
+    title: "Daily Practice Sessions!",
+    message: "Sharpen your skills with subject-wise practice questions. Track your daily streak and boost your accuracy.",
+    link: "/practice",
+  });
+
+  // 3. Seed the contact message
+  addNotification({
+    type: "contact",
+    title: "Need help or have feedback?",
+    message: "We would love to hear from you! Reach out to our support team for feature requests, bug reports, or general queries.",
+    link: "/contact",
   });
 }
