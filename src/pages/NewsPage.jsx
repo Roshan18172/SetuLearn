@@ -67,6 +67,7 @@ export default function NewsPage() {
 
   const [articles, setArticles] = useState([]);
   const [nextPage, setNextPage] = useState(null);
+  // eslint-disable-next-line
   const [totalResults, setTotalResults] = useState(0);
   const [dateFilterApplied, setDateFilterApplied] = useState(true);
   const [loading, setLoading] = useState(true);
