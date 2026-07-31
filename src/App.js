@@ -9,6 +9,7 @@ import ScrollToTop from "./components/ScrollToTop";
 import Chatbot from "./components/Chatbot/Chatbot";
 import HumanVerification from "./components/HumanVerification";
 import CookieConsent from "./components/CookieConsent";
+import EventModalManager from "./components/EventModalManager";
 
 import Home from "./pages/Home";
 import Exams from "./pages/Exams";
@@ -22,6 +23,7 @@ import About from "./pages/About";
 import Solutions from "./pages/Solutions";
 import TestHistory from "./pages/TestHistory";
 import TestHistoryDetail from "./pages/TestHistoryDetail";
+import CurrentAffairsQuiz from "./pages/CurrentAffairsQuiz";
 import NotFound from "./pages/NotFound";
 
 import FAQ from "./pages/QuickLinks/FAQ";
@@ -119,6 +121,7 @@ function App() {
             <Route path="/solutions" element={<Solutions />} />
             <Route path="/test-history" element={<TestHistory />} />
             <Route path="/test-history/:id" element={<TestHistoryDetail />} />
+            <Route path="/current-affairs-quiz" element={<CurrentAffairsQuiz />} />
 
             <Route path="/faq" element={<FAQ />} />
             <Route path="/contact" element={<ContactUs />} />
@@ -172,6 +175,10 @@ function App() {
         {!hideChatbot && <Chatbot />}
 
         {!hideLayout && <CookieConsent />}
+
+        {/* Festival / current-affairs popup — hides itself on the test,
+            result, solutions, analysis and quiz pages. */}
+        {!hideLayout && <EventModalManager />}
       </div>
     </MathJaxContext>
     </HelmetProvider>

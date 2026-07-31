@@ -8,6 +8,7 @@ import { ArrowRight, QuestionMarkRound, Time } from "../data/svgs";
 import SEO from "../components/SEO";
 import ShowcaseSlider from "../components/ShowcaseSlider";
 import RecentTestsCarousel from "../components/RecentTestsCarousel";
+import EventQuizCarousel from "../components/EventQuizCarousel";
 import Reveal from "../components/Reveal";
 
 /* ── Skeleton helpers ──────────────────────────────────── */
@@ -337,6 +338,8 @@ export default function Home() {
               })}
         </div>
       </section>
+
+      <EventQuizCarousel />
 
       {/* Trust / Commitment */}
       <section className="section trust-section">
