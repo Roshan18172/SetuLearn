@@ -9,6 +9,7 @@ import SEO from "../components/SEO";
 import ShowcaseSlider from "../components/ShowcaseSlider";
 import RecentTestsCarousel from "../components/RecentTestsCarousel";
 import EventQuizCarousel from "../components/EventQuizCarousel";
+import NewsSection from "../components/NewsSection";
 import Reveal from "../components/Reveal";
 
 /* ── Skeleton helpers ──────────────────────────────────── */
@@ -340,6 +341,8 @@ export default function Home() {
       </section>
 
       <EventQuizCarousel />
+
+      <NewsSection />
 
       {/* Trust / Commitment */}
       <section className="section trust-section">
