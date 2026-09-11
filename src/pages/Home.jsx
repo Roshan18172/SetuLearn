@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { ClipboardCheck, CreditCardSlash, Group } from "iconoir-react";
+import { useState, useEffect, useRef } from "react";
+// import { ClipboardCheck, CreditCardSlash, Group } from "iconoir-react";
 import { useNavigate } from "react-router-dom";
 import examService from "../api/examService";
 import { mapExamToCategory, mapTestToFrontend } from "../api/dataMapper";
@@ -11,6 +11,8 @@ import RecentTestsCarousel from "../components/RecentTestsCarousel";
 import EventQuizCarousel from "../components/EventQuizCarousel";
 import NewsSection from "../components/NewsSection";
 import Reveal from "../components/Reveal";
+
+
 
 /* ── Skeleton helpers ──────────────────────────────────── */
 function SkeletonBox({ width, height, borderRadius = "8px" }) {
@@ -46,12 +48,164 @@ function TestCardSkeleton() {
 }
 
 /* ── Main component ────────────────────────────────────── */
+const SLIDES = [
+  {
+    badge: "🎯 India's #1 Free Mock Test Platform",
+    title: (
+      <>
+        Practice.<br />
+        Improve.
+        <br />
+        <span className="hero-accent">Succeed.</span>
+      </>
+    ),
+    desc: "Take free mock tests built around real exam patterns. Practice questions, manage your time, and build confidence for your next exam.",
+    primaryCta: "Browse All Tests",
+    secondaryCta: "Explore Exams",
+    image: "/img/slide.avif",
+    imageAlt: "Student practicing a mock test on SetuLearn",
+    features: [
+      { value: "45+", label: "Mock Tests" },
+      { value: "20K+", label: "Students" },
+      { value: "Free", label: "No Sign-up" },
+    ],
+    primaryRoute: "/tests",
+    secondaryRoute: "/exams",
+  },
+  {
+    badge: "📊 Know Your Performance",
+    title: (
+      <>
+        Don't Just Test.
+        Understand<span className="hero-accent"> Your Score.</span>
+      </>
+    ),
+    desc: "Get instant results and detailed insights into your performance. Discover your strengths, identify weak areas, and know exactly where to improve.",
+    primaryCta: "View Sample Analysis",
+    secondaryCta: "Start a Mock Test",
+    image: "/img/slide-2.avif",
+    imageAlt: "Student analyzing mock test performance on SetuLearn",
+    features: [
+      { value: "Instant", label: "Results" },
+      { value: "Detailed", label: "Analysis" },
+      { value: "Subject-wise", label: "Performance" },
+    ],
+    primaryRoute: "/tests",
+    secondaryRoute: "/tests",
+  },
+  {
+    badge: "🚀 Your Progress. Your Success.",
+    title: (
+      <>
+        Every Test
+        <br />Makes You         
+        <span className="hero-accent"> Stronger.</span>
+      </>
+    ),
+    desc: "Track your progress, improve your weak areas, and get closer to your goal with every test.",
+    primaryCta: "Start Practicing",
+    secondaryCta: "Explore Exams",
+    image: "/img/slide-3.avif",
+    imageAlt: "Student tracking progress and improving exam performance on SetuLearn",
+    features: [
+      { value: "Track", label: "Your Progress" },
+      { value: "Improve", label: "Your Accuracy" },
+      { value: "Achieve", label: "Your Goals" },
+    ],
+    primaryRoute: "/tests",
+    secondaryRoute: "/exams",
+  },
+];
+
 export default function Home() {
   const navigate = useNavigate();
   const [categories, setCategories] = useState([]);
   const [featuredTests, setFeaturedTests] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [activeSlide, setActiveSlide] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
 
+  // ── Seamless infinite loop ──────────────────────────────
+  // Two copies of the slides are rendered per track. A continuous
+  // `pos` counter drives the translateX offset; when it crosses the
+  // edge we teleport (no transition) to an identical slide so the
+  // carousel loops in one direction forever with no reverse swipe.
+  const N = SLIDES.length;
+  const LOOP = [...SLIDES, ...SLIDES];
+  const MAX = 2 * N;
+  const posRef = useRef(0);
+
+  const syncActive = () => {
+    const tracks = document.querySelectorAll(".hero-carousel-track");
+    tracks.forEach((t) => {
+      t.querySelectorAll(".hero-slide").forEach((s) => {
+        const on = Number(s.dataset.slide) === posRef.current;
+        s.classList.toggle("active", on);
+        s.setAttribute("aria-hidden", String(!on));
+      });
+    });
+  };
+
+  const setSlidePos = (p, animate) => {
+    const tracks = document.querySelectorAll(".hero-carousel-track");
+    tracks.forEach((t) => {
+      t.style.transition = animate ? "" : "none";
+      t.style.transform = `translateX(-${p * 100}%)`;
+    });
+    if (tracks.length) void tracks[0].offsetWidth;
+  };
+
+  const commit = () => {
+    setActiveSlide(((posRef.current % N) + N) % N);
+  };
+
+  const step = (dir) => {
+    const cur = posRef.current;
+    const next = cur + dir;
+    if (next >= MAX || next < 0) {
+      const p2 = next - dir * N; // wrap to the other, identical copy
+      setSlidePos(p2 - dir, false); // teleport seamlessly
+      setSlidePos(p2, true); // then animate into view
+      posRef.current = p2;
+    } else {
+      setSlidePos(next, true);
+      posRef.current = next;
+    }
+    syncActive();
+    commit();
+  };
+
+  // const goTo = (idx) => {
+  //   const curSlide = ((posRef.current % N) + N) % N;
+  //   const steps = ((idx - curSlide) + N) % N;
+  //   for (let k = 1; k <= steps; k++) {
+  //     setTimeout(() => step(1), k * 380);
+  //   }
+  // };
+
+  useEffect(() => {
+    // Initial active state (marks slide 0 visible before first advance)
+    syncActive();
+    commit();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (isPaused) return;
+    const timer = setInterval(() => {
+      step(1);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [isPaused]);
+
+  useEffect(() => {
+    const indicators = document.querySelectorAll(".indicator");
+    indicators.forEach((btn, i) => {
+      const isActive = i === activeSlide;
+      btn.classList.toggle("active", isActive);
+      btn.setAttribute("aria-current", isActive ? "true" : "false");
+    });
+  }, [activeSlide]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -99,65 +253,102 @@ export default function Home() {
         description="SetuLearn - India's #1 free mock test platform for government jobs (SSC, UPSC, Banking), engineering (JEE, BITSAT), medical (NEET), and college entrance exams. Practice with real exam patterns, get detailed analytics, and track your progress."
         canonical="/"
       />
-      {/* Hero */}
+      {/* Hero Carousel */}
       <section className="hero">
+        {/* Decorative background: randomly scattered SVG ring + dot shapes */}
+         <img alt="Hero background" src="img/hero-background.svg" style={{position:"absolute", inset:0, width:"100%", height:"100%", opacity: "0.5" }} />
         <div className="hero-section">
           <div className="hero-content">
-            <div className="hero-badge">
-              <img src="/icons/target.png" alt="target" height={20} /> India's #1 Free Mock Test Platform
-            </div>
-            <h1 className="hero-title">
-              Practice. Improve.
-              <br />
-              <span className="hero-accent">Succeed.</span>
-            </h1>
-            <p className="hero-desc">
-              Explore and attempt mock tests for various government and college
-              entrance exams. Real exam patterns, instant results, detailed
-              analytics — all free.
-            </p>
-            <div className="hero-actions">
-              <button
-                className="btn-primary btn-lg"
-                onClick={() => navigate("/tests")}
-              >
-                Browse All Tests
-              </button>
-              <button
-                className="btn-outline btn-lg"
-                onClick={() => navigate("/exams")}
-              >
-                View Categories <ArrowRight />
-              </button>
-            </div>
-            <div className="hero-stats">
-              <div className="hstat">
-                <ClipboardCheck color="#5A1EAD" width={32} height={32} />
-                <div>
-                  <h3>45+</h3>
-                  <span>Mock Tests</span>
-                </div>
+            <div
+              className="hero-carousel"
+              role="region"
+              aria-label="Featured content"
+              onMouseEnter={() => setIsPaused(true)}
+              onMouseLeave={() => setIsPaused(false)}
+            >
+              <div className="hero-carousel-track" id="heroCarouselTrack">
+                {LOOP.map((slide, idx) => (
+                  <div
+                    className={`hero-slide${idx === 0 ? " active" : ""}`}
+                    data-slide={idx}
+                    key={`txt-${idx}`}
+                  >
+                    <div className="hero-badge">
+                      <img src="/icons/target.png" alt="target" height={20} />
+                      {slide.badge.split(' ').slice(1).join(' ')}
+                    </div>
+                    <h1 className="hero-title">{slide.title}</h1>
+                    <p className="hero-desc">{slide.desc}</p>
+                    <div className="hero-actions">
+                      <button
+                        className="btn-primary btn-lg"
+                        onClick={() => navigate(slide.primaryRoute)}
+                      >
+                        {slide.primaryCta}
+                      </button>
+                      <button
+                        className="btn-outline btn-lg"
+                        onClick={() => navigate(slide.secondaryRoute)}
+                      >
+                        {slide.secondaryCta} <ArrowRight />
+                      </button>
+                    </div>
+                    <div className="hero-stats">
+                      {slide.features.map((f) => (
+                        <div className="hstat" key={f.label}>
+                          <div>
+                            <h3>{f.value}</h3>
+                            <span>{f.label}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
               </div>
-              <div className="hstat-div" />
-              <div className="hstat">
-                <Group color="#5A1EAD" height={32} width={32} />
-                <div>
-                  <h3>20K+</h3>
-                  <span>Students</span>
+              {/* <div className="hero-carousel-controls">
+                <button
+                  className="carousel-btn carousel-prev"
+                  aria-label="Previous slide"
+                  onClick={() => step(-1)}
+                >
+                  ‹
+                </button>
+                <div className="hero-carousel-indicators">
+                  {SLIDES.map((_, idx) => (
+                    <button
+                      key={idx}
+                      className={`indicator ${idx === activeSlide ? 'active' : ''}`}
+                      aria-label={`Slide ${idx + 1}`}
+                      aria-current={idx === activeSlide ? 'true' : 'false'}
+                      onClick={() => goTo(idx)}
+                    />
+                  ))}
                 </div>
-              </div>
-              <div className="hstat-div" />
-              <div className="hstat">
-                <CreditCardSlash color="#5A1EAD" width={32} height={32} />
-                <div>
-                  <h3>Free</h3>
-                  <span>No Sign-up</span>
-                </div>
-              </div>
+                <button
+                  className="carousel-btn carousel-next"
+                  aria-label="Next slide"
+                  onClick={() => step(1)}
+                >
+                  ›
+                </button>
+              </div> */}
             </div>
           </div>
-          <div className="hero-visual">
-            <img src="/img/hero-image.png" alt="Mock Test Illustration" />
+                    <div className="hero-visual">
+            <div className="hero-image-wrap" id="heroImageWrap">
+              <div className="hero-carousel-track" id="heroSlideImageTrack">
+                {LOOP.map((slide, idx) => (
+                  <div
+                    className={`hero-slide${idx === 0 ? " active" : ""}`}
+                    data-slide={idx}
+                    key={`hero-img-${idx}`}
+                  >
+                    <img src={slide.image} alt={slide.imageAlt} />
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </section>

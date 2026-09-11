@@ -80,8 +80,8 @@ export default function Exams() {
           <div className="empty-icon"><img src="/icons/misc/warning.png" alt="Warning" className="emoji-icon-xl" /></div>
           <h3>Could not load exam categories</h3>
           <p style={{ maxWidth: 500, margin: "0 auto 20px" }}>{fetchError}</p>
-          <button
-            className="btn-primary"
+          <button 
+            className="btn-primary mx-auto"
             onClick={() => window.location.reload()}
           >
             <img src="/icons/misc/refresh.png" alt="" className="emoji-icon" /> Retry
