@@ -400,12 +400,12 @@ button:disabled {
   z-index: 1;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 80px 24px 0px;
+  padding: 40px 24px 0px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 60px;
-  min-height: 600px;
+  min-height: 560px;
   flex-wrap: wrap;
 }
 
