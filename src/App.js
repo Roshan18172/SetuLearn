@@ -55,6 +55,7 @@ import TopicsList from "./pages/Admin/TopicsList";
 import ContactsList from "./pages/Admin/ContactsList";
 import ReportsList from "./pages/Admin/ReportsList";
 import SubmissionsList from "./pages/Admin/SubmissionsList";
+import NotificationBell from "./components/NotificationBell";
 
 const HUMAN_VERIFIED_KEY = "setulearn_human_verified";
 
@@ -183,6 +184,8 @@ function App() {
         {/* Festival / current-affairs popup — hides itself on the test,
             result, solutions, analysis and quiz pages. */}
         {!hideLayout && <EventModalManager />}
+
+        {!hideLayout && <NotificationBell />}
       </div>
     </MathJaxContext>
     </HelmetProvider>

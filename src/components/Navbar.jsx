@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Menu, X } from "../data/svgs";
-import NotificationBell from "./NotificationBell";
+// import NotificationBell from "./NotificationBell";
 // import SetuLogo from "../SetuLearn Logo.png"
 
 export default function Navbar() {
@@ -47,7 +47,7 @@ export default function Navbar() {
 
           </div>
 
-          <NotificationBell />
+          {/* <NotificationBell /> */}
 
           <button className="hamburger" onClick={() => setMenuOpen(!menuOpen)} >
             {menuOpen ? <X /> : <Menu />}

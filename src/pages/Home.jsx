@@ -62,7 +62,7 @@ const SLIDES = [
     desc: "Take free mock tests built around real exam patterns. Practice questions, manage your time, and build confidence for your next exam.",
     primaryCta: "Browse All Tests",
     secondaryCta: "Explore Exams",
-    image: "/img/slide.avif",
+    image: "/img/slide-1.avif",
     imageAlt: "Student practicing a mock test on SetuLearn",
     features: [
       { value: "45+", label: "Mock Tests" },
@@ -174,6 +174,8 @@ export default function Home() {
     syncActive();
     commit();
   };
+  const stepRef = useRef(step);
+  stepRef.current = step;
 
   // const goTo = (idx) => {
   //   const curSlide = ((posRef.current % N) + N) % N;
@@ -193,7 +195,7 @@ export default function Home() {
   useEffect(() => {
     if (isPaused) return;
     const timer = setInterval(() => {
-      step(1);
+      stepRef.current(1);
     }, 5000);
     return () => clearInterval(timer);
   }, [isPaused]);
