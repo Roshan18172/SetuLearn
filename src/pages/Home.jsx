@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 // import { ClipboardCheck, CreditCardSlash, Group } from "iconoir-react";
 import { useNavigate } from "react-router-dom";
 import examService from "../api/examService";
@@ -135,7 +135,7 @@ export default function Home() {
   const MAX = 2 * N;
   const posRef = useRef(0);
 
-  const syncActive = () => {
+  const syncActive = useCallback(() => {
     const tracks = document.querySelectorAll(".hero-carousel-track");
     tracks.forEach((t) => {
       t.querySelectorAll(".hero-slide").forEach((s) => {
@@ -144,20 +144,20 @@ export default function Home() {
         s.setAttribute("aria-hidden", String(!on));
       });
     });
-  };
+  }, []);
 
-  const setSlidePos = (p, animate) => {
+  const setSlidePos = useCallback((p, animate) => {
     const tracks = document.querySelectorAll(".hero-carousel-track");
     tracks.forEach((t) => {
       t.style.transition = animate ? "" : "none";
       t.style.transform = `translateX(-${p * 100}%)`;
     });
     if (tracks.length) void tracks[0].offsetWidth;
-  };
+  }, []);
 
-  const commit = () => {
+  const commit = useCallback(() => {
     setActiveSlide(((posRef.current % N) + N) % N);
-  };
+  }, [N]);
 
   const step = (dir) => {
     const cur = posRef.current;
@@ -174,8 +174,6 @@ export default function Home() {
     syncActive();
     commit();
   };
-  const stepRef = useRef(step);
-  stepRef.current = step;
 
   // const goTo = (idx) => {
   //   const curSlide = ((posRef.current % N) + N) % N;
@@ -198,7 +196,7 @@ export default function Home() {
       stepRef.current(1);
     }, 5000);
     return () => clearInterval(timer);
-  }, [isPaused]);
+  }, [isPaused, step]);
 
   useEffect(() => {
     const indicators = document.querySelectorAll(".indicator");
