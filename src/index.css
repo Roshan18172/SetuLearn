@@ -39,7 +39,7 @@
   --radius-sm: 8px;
   --shadow: 0 2px 12px rgba(108, 99, 255, 0.08);
   --shadow-md: 0 4px 24px rgba(108, 99, 255, 0.14);
-  --nav-h: 64px;
+  --nav-h: 80px;
 }
 
 *,
@@ -400,7 +400,7 @@ button:disabled {
   z-index: 1;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 80px 24px 0px;
+  padding: 0px 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;

@@ -159,7 +159,7 @@ export default function Home() {
     setActiveSlide(((posRef.current % N) + N) % N);
   }, [N]);
 
-  const step = (dir) => {
+  const step = useCallback((dir) => {
     const cur = posRef.current;
     const next = cur + dir;
     if (next >= MAX || next < 0) {
@@ -173,7 +173,7 @@ export default function Home() {
     }
     syncActive();
     commit();
-  };
+  }, [MAX, N, commit, setSlidePos, syncActive]);
 
   // const goTo = (idx) => {
   //   const curSlide = ((posRef.current % N) + N) % N;
@@ -193,7 +193,7 @@ export default function Home() {
   useEffect(() => {
     if (isPaused) return;
     const timer = setInterval(() => {
-      stepRef.current(1);
+      step(1);
     }, 5000);
     return () => clearInterval(timer);
   }, [isPaused, step]);
