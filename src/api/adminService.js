@@ -151,6 +151,22 @@ const adminService = {
     return response.data.data;
   },
 
+  // Students
+  getStudents: async (params = {}) => {
+    const response = await api.get("/admin/students", { params });
+    return response.data.data;
+  },
+
+  getStudent: async (id) => {
+    const response = await api.get(`/admin/students/${id}`);
+    return response.data.data;
+  },
+
+  updateStudentStatus: async (id, isActive) => {
+    const response = await api.patch(`/admin/students/${id}/status`, { isActive });
+    return response.data.data;
+  },
+
   // Reports
   getReports: async (params = {}) => {
     const response = await api.get("/admin/reports", { params });

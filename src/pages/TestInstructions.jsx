@@ -2,11 +2,13 @@ import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { ArrowLeft, ArrowRight } from "../data/svgs";
 import SEO from "../components/SEO";
+import { useStudentAuth } from "../context/StudentAuthContext";
 
 export default function TestInstructions() {
   const [mode, setMode] = useState("timed");
   const location = useLocation();
   const navigate = useNavigate();
+  const { isAuthenticated, loading } = useStudentAuth();
   const { test } = location.state || {};
 
   if (!test) {
@@ -32,6 +34,26 @@ export default function TestInstructions() {
           "Wrong answers carry penalty rules if active.",
         ];
 
+  const handleStart = () => {
+    if (loading) return;
+
+    if (!isAuthenticated) {
+      navigate("/login", {
+        state: {
+          from: "/instructions",
+          // Preserve test so after login we can return here
+          pendingTest: { test, mode },
+        },
+      });
+      return;
+    }
+
+    if (test?.id) {
+      sessionStorage.removeItem(`test_submitted_${test.id}`);
+      sessionStorage.removeItem(`test_exited_${test.id}`);
+    }
+    navigate("/test", { replace: true, state: { test, mode } });
+  };
   return (
     <div className="instructions-page">
       <SEO
@@ -172,21 +194,12 @@ export default function TestInstructions() {
           </button>
           <button
             className="btn-primary btn-lg"
-            onClick={() => {
-              // Clear any "already submitted"/"already exited" flags from
-              // a previous attempt so a fresh attempt isn't immediately
-              // bounced back out.
-              if (test?.id) {
-                sessionStorage.removeItem(`test_submitted_${test.id}`);
-                sessionStorage.removeItem(`test_exited_${test.id}`);
-              }
-              // replace: true — TestInterface takes Instructions' place in
-              // history, so pressing Back mid-test goes straight to Tests
-              // instead of back through here.
-              navigate("/test", { replace: true, state: { test, mode } });
-            }}
+            onClick={handleStart}
+            disabled={loading}
           >
-            <span>Start Test</span>
+            <span>
+              {!loading && !isAuthenticated ? "Login & Start Test" : "Start Test"}
+            </span>
             <ArrowRight />
           </button>
         </div>

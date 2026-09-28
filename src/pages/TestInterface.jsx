@@ -276,6 +276,9 @@ export default function TestInterface() {
               `Failed loading workflow actions for chunk element ${sub.id}:`,
               err,
             );
+            if (err?.response?.status === 401) {
+              throw err;
+            }
             return [];
           }
         });
@@ -286,6 +289,13 @@ export default function TestInterface() {
         setSubmissionMap(internalSubmissionMapping);
       } catch (error) {
         console.error("Error aggregating master exam structure:", error);
+        if (error?.response?.status === 401) {
+          navigate("/login", {
+            replace: true,
+            state: { from: "/instructions", pendingTest: { test, mode } },
+          });
+          return;
+        }
       } finally {
         dataLoadedRef.current = true;
         if (mountedRef.current) setLoadingQuestions(false);
@@ -293,7 +303,7 @@ export default function TestInterface() {
     };
 
     loadExamDataStructure();
-  }, [test, alreadySubmitted, alreadyExited]);
+  }, [test, mode, alreadySubmitted, alreadyExited, navigate]);
 
   useEffect(() => {
     const disableRightClick = (e) => {

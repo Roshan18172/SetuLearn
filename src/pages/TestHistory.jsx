@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import SEO from "../components/SEO";
 import { getTestHistory, clearTestHistory } from "../utils/testHistory";
+import { useStudentAuth } from "../context/StudentAuthContext";
 import { ChevronRight, Trash2 } from "../data/svgs";
 
 function formatDate(timestamp) {
@@ -24,7 +25,14 @@ function formatDuration(seconds) {
 
 export default function TestHistory() {
   const navigate = useNavigate();
+  const { isAuthenticated, loading } = useStudentAuth();
   const [history, setHistory] = useState(() => getTestHistory());
+
+  useEffect(() => {
+    if (!loading && isAuthenticated) {
+      navigate("/dashboard", { replace: true });
+    }
+  }, [loading, isAuthenticated, navigate]);
 
   document.title = "Test History - SetuLearn";
 
