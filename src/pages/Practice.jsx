@@ -93,7 +93,11 @@ export default function Practice() {
       setIsLoading(true);
       setFetchError(null);
       const raw = await practiceService.getTopics(subject.id);
-      setTopics((raw || []).map(mapTopicToFrontend));
+      setTopics(
+        (raw || [])
+          .map(mapTopicToFrontend)
+          .filter((t) => (t.questionCount ?? 0) > 0)
+      );
     } catch (err) {
       console.error("Failed to fetch topics:", err);
       setFetchError(
@@ -335,7 +339,7 @@ export default function Practice() {
               <div className="empty-state">
                 <div className="empty-icon"><img src="/icons/how-works/search.png" alt="No results" className="emoji-icon-xl" /></div>
                 <h3>No topics found</h3>
-                <p>This subject doesn't have any topics yet.</p>
+                <p>This subject doesn't have any topics with practice questions yet.</p>
               </div>
             )}
           </div>
