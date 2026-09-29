@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import adminService from "../../api/adminService";
 import { getErrorMessage } from "../../api/apiErrorHandler";
 import { Eye, Search } from "../../data/svgs";
@@ -18,7 +18,7 @@ export default function StudentsList() {
 
   document.title = "Manage Students - Admin";
 
-  const fetchStudents = async () => {
+  const fetchStudents = useCallback(async () => {
     try {
       setLoading(true);
       setError("");
@@ -35,12 +35,11 @@ export default function StudentsList() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [page, search]);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     fetchStudents();
-  }, [page, search]);
+  }, [fetchStudents]);
 
   const handleSearch = (e) => {
     e.preventDefault();
