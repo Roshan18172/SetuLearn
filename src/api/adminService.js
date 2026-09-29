@@ -28,8 +28,18 @@ const adminService = {
     return response.data.data;
   },
 
+  createContentAdmin: async (data) => {
+    const response = await api.post("/admin/content-admins", data);
+    return response.data.data;
+  },
+
   toggleAdminStatus: async (id, isActive) => {
     const response = await api.patch(`/admin/${id}/status`, { isActive });
+    return response.data.data;
+  },
+
+  resetAdminPassword: async (id, password) => {
+    const response = await api.patch(`/admin/${id}/password`, { password });
     return response.data.data;
   },
 

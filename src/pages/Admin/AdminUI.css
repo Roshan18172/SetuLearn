@@ -980,6 +980,14 @@
   margin-bottom: 32px;
 }
 
+.admin-stats-grid.admin-stats-5 {
+  grid-template-columns: repeat(5, 1fr);
+}
+
+.admin-stats-grid.admin-stats-8 {
+  grid-template-columns: repeat(4, 1fr);
+}
+
 .admin-stat-card {
   background: var(--surface);
   border: 1px solid var(--border);

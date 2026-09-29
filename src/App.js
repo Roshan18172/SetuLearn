@@ -66,6 +66,7 @@ import ContactsList from "./pages/Admin/ContactsList";
 import ReportsList from "./pages/Admin/ReportsList";
 import SubmissionsList from "./pages/Admin/SubmissionsList";
 import StudentsList from "./pages/Admin/StudentsList";
+import AdminsList from "./pages/Admin/AdminsList";
 import NotificationBell from "./components/NotificationBell";
 
 const HUMAN_VERIFIED_KEY = "setulearn_human_verified";
@@ -196,6 +197,7 @@ function AppRoutes() {
                   <Route path="questions" element={<QuestionsList />} />
                   <Route path="questions/seed" element={<QuestionSeed />} />
                   <Route path="students" element={<StudentsList />} />
+                  <Route path="admins" element={<AdminsList />} />
                   <Route path="contacts" element={<ContactsList />} />
                   <Route path="reports" element={<ReportsList />} />
                   <Route path="submissions" element={<SubmissionsList />} />

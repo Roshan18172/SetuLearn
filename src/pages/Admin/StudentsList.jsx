@@ -134,6 +134,33 @@ export default function StudentsList() {
                 <strong>Attempts:</strong> {selected.submissionsCount}
               </div>
               <div className="admin-detail-row">
+                <strong>Target exam:</strong> {selected.targetExam || "—"}
+              </div>
+              <div className="admin-detail-row">
+                <strong>Class:</strong> {selected.studyClass || "—"}
+              </div>
+              <div className="admin-detail-row">
+                <strong>State:</strong> {selected.state || "—"}
+              </div>
+              <div className="admin-detail-row">
+                <strong>City:</strong> {selected.city || "—"}
+              </div>
+              <div className="admin-detail-row">
+                <strong>Gender:</strong> {selected.gender || "—"}
+              </div>
+              <div className="admin-detail-row">
+                <strong>DOB:</strong>{" "}
+                {selected.dateOfBirth
+                  ? new Date(selected.dateOfBirth).toLocaleDateString()
+                  : "—"}
+              </div>
+              <div className="admin-detail-row">
+                <strong>Language:</strong> {selected.preferredLanguage || "—"}
+              </div>
+              <div className="admin-detail-row">
+                <strong>School / coaching:</strong> {selected.schoolOrCoaching || "—"}
+              </div>
+              <div className="admin-detail-row">
                 <strong>Joined:</strong> {new Date(selected.createdAt).toLocaleString()}
               </div>
             </div>
