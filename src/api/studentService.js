@@ -5,12 +5,37 @@ import api from "./axios";
  * Backend wraps responses in { success, message, data }.
  */
 const studentService = {
-  signup: async ({ name, email, phone, password }) => {
-    const response = await api.post("/student/signup", {
+  // Manual signup is two steps: request an OTP (sent by e-mail + SMS), then verify it to create the account.
+  requestSignupOtp: async ({ name, email, phone, password }) => {
+    const response = await api.post("/student/signup/request-otp", {
       name,
       email,
       phone,
       password,
+    });
+    return response.data.data;
+  },
+
+  resendSignupOtp: async (email) => {
+    const response = await api.post("/student/signup/resend-otp", { email });
+    return response.data.data;
+  },
+
+  verifySignupOtp: async ({ email, otp }) => {
+    const response = await api.post("/student/signup/verify-otp", { email, otp });
+    return response.data.data;
+  },
+
+  forgotPassword: async (email) => {
+    const response = await api.post("/student/forgot-password", { email });
+    return response.data.data;
+  },
+
+  resetPassword: async ({ email, otp, newPassword }) => {
+    const response = await api.post("/student/reset-password", {
+      email,
+      otp,
+      newPassword,
     });
     return response.data.data;
   },
@@ -20,9 +45,8 @@ const studentService = {
     return response.data.data;
   },
 
-  googleAuth: async ({ idToken, phone, name }) => {
+  googleAuth: async ({ idToken, name }) => {
     const payload = { idToken };
-    if (phone) payload.phone = phone;
     if (name) payload.name = name;
     const response = await api.post("/student/google", payload);
     return response.data.data;

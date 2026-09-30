@@ -77,9 +77,20 @@ export function StudentAuthProvider({ children }) {
     };
   }, [token, clearSession]);
 
-  const signup = useCallback(
-    async ({ name, email, phone, password }) => {
-      const data = await studentService.signup({ name, email, phone, password });
+  // Step 1 of signup: sends the OTP. No session is created until the code is verified.
+  const requestSignupOtp = useCallback(
+    (details) => studentService.requestSignupOtp(details),
+    []
+  );
+
+  const resendSignupOtp = useCallback(
+    (email) => studentService.resendSignupOtp(email),
+    []
+  );
+
+  const verifySignupOtp = useCallback(
+    async ({ email, otp }) => {
+      const data = await studentService.verifySignupOtp({ email, otp });
       applySession(data.accessToken, data.student);
       return data.student;
     },
@@ -96,10 +107,10 @@ export function StudentAuthProvider({ children }) {
   );
 
   const googleLogin = useCallback(
-    async ({ idToken, phone, name }) => {
-      const data = await studentService.googleAuth({ idToken, phone, name });
+    async ({ idToken, name }) => {
+      const data = await studentService.googleAuth({ idToken, name });
       applySession(data.accessToken, data.student);
-      return data.student;
+      return data;
     },
     [applySession]
   );
@@ -122,7 +133,9 @@ export function StudentAuthProvider({ children }) {
         token,
         loading,
         isAuthenticated: !!token && !!student,
-        signup,
+        requestSignupOtp,
+        resendSignupOtp,
+        verifySignupOtp,
         login,
         googleLogin,
         logout,

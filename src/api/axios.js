@@ -8,7 +8,9 @@ const api = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
-  timeout: 15000,
+  // Render's free tier sleeps after ~15 min idle and needs 30-60s to wake up; 15s made the first
+  // login / Google sign-in of the day fail with a timeout.
+  timeout: 60000,
 });
 
 // Response interceptor — log errors and always reject so callers handle them
@@ -17,20 +19,10 @@ api.interceptors.response.use(
   (error) => {
     if (error.response) {
       const responseData = error.response.data;
-      const responseMessage = [responseData?.message, ...(responseData?.errors || [])]
-        .filter(Boolean)
-        .join(" ");
-      const isExpectedGooglePhoneStep =
-        error.response.status === 400 &&
-        error.config?.url?.includes("/student/google") &&
-        /phone/i.test(responseMessage);
-
-      if (!isExpectedGooglePhoneStep) {
-        console.error(
-          `[API] ${error.response.status} ${error.config?.method?.toUpperCase()} ${error.config?.url}:`,
-          responseData
-        );
-      }
+      console.error(
+        `[API] ${error.response.status} ${error.config?.method?.toUpperCase()} ${error.config?.url}:`,
+        responseData
+      );
     } else if (error.request) {
       console.error("[API] Network error — no response received:", error.message);
     } else {

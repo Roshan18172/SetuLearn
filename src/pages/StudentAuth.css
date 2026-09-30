@@ -268,3 +268,120 @@
     display: none;
   }
 }
+
+/* ---------- password eye toggle ---------- */
+.password-field {
+  position: relative;
+  display: flex;
+}
+
+.student-form-group .password-field-input,
+.admin-form-group .password-field-input {
+  width: 100%;
+  padding-right: 44px;
+  box-sizing: border-box;
+}
+
+.password-field-toggle {
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border: none;
+  background: transparent;
+  color: #6f6a85;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.password-field-toggle:hover,
+.password-field-toggle:focus-visible {
+  color: #5a1ead;
+  background: #f1e9fc;
+  outline: none;
+}
+
+/* ---------- OTP boxes ---------- */
+.otp-boxes {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin: 4px 0 18px;
+}
+
+.otp-box {
+  width: 46px;
+  height: 54px;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #3e1478;
+  border: 1.5px solid #e7e4f2;
+  border-radius: 12px;
+  outline: none;
+  background: #faf8ff;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.otp-box:focus {
+  border-color: #5a1ead;
+  box-shadow: 0 0 0 3px rgba(90, 30, 173, 0.15);
+  background: #fff;
+}
+
+@media (max-width: 380px) {
+  .otp-boxes { gap: 5px; }
+  .otp-box { width: 40px; height: 48px; font-size: 1.3rem; }
+}
+
+/* ---------- misc auth helpers ---------- */
+.student-auth-success {
+  background: #e8f6ee;
+  color: #1f7a4d;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 0.9rem;
+  margin-bottom: 12px;
+}
+
+.student-auth-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.student-auth-row-center {
+  justify-content: center;
+}
+
+.student-auth-link {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #5a1ead;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.student-auth-link:hover {
+  text-decoration: underline;
+}
+
+.student-auth-muted {
+  font-size: 0.88rem;
+  color: #9d98b0;
+}
+
+.student-auth-hint-small {
+  font-size: 0.78rem;
+  margin-top: 10px;
+}

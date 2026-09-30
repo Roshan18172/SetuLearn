@@ -29,6 +29,7 @@ import NewsPage from "./pages/NewsPage";
 import NewsArticle from "./pages/NewsArticle";
 import NotFound from "./pages/NotFound";
 import StudentAuth from "./pages/StudentAuth";
+import ForgotPassword from "./pages/ForgotPassword";
 import { StudentAuthProvider } from "./context/StudentAuthContext";
 
 import RequireStudent from "./pages/Student/RequireStudent";
@@ -142,6 +143,7 @@ function AppRoutes() {
 
                 <Route path="/login" element={<StudentAuth />} />
                 <Route path="/signup" element={<StudentAuth />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/profile" element={<Navigate to="/dashboard/profile" replace />} />
 
                 <Route

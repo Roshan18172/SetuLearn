@@ -117,7 +117,7 @@ export default function StudentsList() {
                 <strong>Email:</strong> {selected.email}
               </div>
               <div className="admin-detail-row">
-                <strong>Phone:</strong> {selected.phone}
+                <strong>Phone:</strong> {selected.phone || "—"}
               </div>
               <div className="admin-detail-row">
                 <strong>Status:</strong>{" "}
@@ -205,7 +205,7 @@ export default function StudentsList() {
                   <tr key={s.id}>
                     <td className="admin-td-bold">{s.name}</td>
                     <td>{s.email}</td>
-                    <td>{s.phone}</td>
+                    <td>{s.phone || "—"}</td>
                     <td>{s.submissionsCount}</td>
                     <td>{s.hasGoogle ? "Google" : "Email"}</td>
                     <td>

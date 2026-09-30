@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useStudentAuth } from "../../context/StudentAuthContext";
 import { getErrorMessage } from "../../api/apiErrorHandler";
+import PasswordInput from "../../components/PasswordInput";
+import "../StudentAuth.css";
 
 function toDateInput(value) {
   if (!value) return "";
@@ -67,7 +69,6 @@ export default function StudentProfile() {
       const payload = {
         name: name.trim(),
         email: email.trim(),
-        phone: phone.trim(),
         targetExam: nullable(extra.targetExam),
         studyClass: nullable(extra.studyClass),
         state: nullable(extra.state),
@@ -77,6 +78,8 @@ export default function StudentProfile() {
         preferredLanguage: nullable(extra.preferredLanguage),
         schoolOrCoaching: nullable(extra.schoolOrCoaching),
       };
+      // Google sign-ups may not have a phone yet; an empty value must not be sent.
+      if (phone.trim()) payload.phone = phone.trim();
       if (password.trim().length >= 8) {
         payload.password = password.trim();
       }
@@ -132,18 +135,18 @@ export default function StudentProfile() {
                 type="tel"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
-                required
+                placeholder="10-digit mobile number"
               />
             </div>
             <div className="admin-form-group">
               <label htmlFor="profile-password">New password (optional)</label>
-              <input
+              <PasswordInput
                 id="profile-password"
-                type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Leave blank to keep current"
                 minLength={8}
+                autoComplete="new-password"
               />
             </div>
           </div>

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useStudentAuth } from "../../context/StudentAuthContext";
 import studentService from "../../api/studentService";
+import AddPhoneModal from "../../components/AddPhoneModal";
 import { getErrorMessage } from "../../api/apiErrorHandler";
 import {
   ClipboardList,
@@ -91,6 +92,7 @@ export default function StudentDashboard() {
 
   return (
     <div className="admin-dashboard">
+      <AddPhoneModal />
       <div className="admin-dash-header">
         <div>
           <h1>
