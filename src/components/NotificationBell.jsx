@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { useNavigate } from "react-router-dom";
 import { Bell, X } from "../data/svgs";
 import {
@@ -28,7 +29,11 @@ function timeAgo(timestamp) {
   return new Date(timestamp).toLocaleDateString(undefined, { day: "numeric", month: "short" });
 }
 
-export default function NotificationBell() {
+/**
+ * `variant="inline"` renders the bell in normal flow (used inside the student dashboard header);
+ * the default is the floating button used on public pages.
+ */
+export default function NotificationBell({ variant = "floating" }) {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [notifications, setNotifications] = useState([]);
@@ -68,7 +73,7 @@ export default function NotificationBell() {
   return (
     <>
       <button
-        className="notif-bell-btn"
+        className={`notif-bell-btn${variant === "inline" ? " notif-bell-inline" : ""}`}
         onClick={() => setOpen(true)}
         aria-label="Notifications"
       >
@@ -78,7 +83,8 @@ export default function NotificationBell() {
         )}
       </button>
 
-      {open && (
+      {open &&
+        createPortal(
         <div className="notif-overlay" onClick={() => setOpen(false)}>
           <aside
             className="notif-sidebar notif-sidebar-open"
@@ -137,7 +143,8 @@ export default function NotificationBell() {
               )}
             </div>
           </aside>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   );

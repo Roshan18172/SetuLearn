@@ -4,14 +4,20 @@ import App from "./App";
 
 // Home (the "/" route) fetches exams/tests on mount — mock the service so
 // this stays a fast, offline smoke test instead of hitting a real API.
+// Plain async functions (not jest.fn): CRA's default `resetMocks: true` would wipe mockResolvedValue before each test.
 jest.mock("./api/examService", () => ({
   __esModule: true,
   default: {
-    getExams: jest.fn().mockResolvedValue([]),
-    getTestsByExam: jest.fn().mockResolvedValue([]),
-    getAllTests: jest.fn().mockResolvedValue([]),
+    getExams: async () => [],
+    getTestsByExam: async () => [],
+    getAllTests: async () => [],
   },
 }));
+
+beforeEach(() => {
+  // The app shows a one-time human-verification gate first; start as an already-verified visitor.
+  window.localStorage.setItem("setulearn_human_verified", JSON.stringify({ ts: Date.now() }));
+});
 
 test("renders the app shell (navbar + logo) without crashing", async () => {
   render(

@@ -8508,3 +8508,38 @@ html::-webkit-scrollbar-thumb:hover {
     width: 200px;
   }
 }
+/* ---------- Notification bell inside the student dashboard ---------- */
+.notif-bell-btn.notif-bell-inline {
+  position: relative;
+  right: auto;
+  bottom: auto;
+  z-index: 1;
+  margin-left: auto;
+  width: 38px;
+  height: 38px;
+}
+
+.student-sidebar-bell {
+  position: static;
+  margin-left: auto;
+  display: inline-flex;
+}
+
+.student-sidebar-bell .notif-bell-btn.notif-bell-inline {
+  margin-left: 0;
+  width: 34px;
+  height: 34px;
+}
+
+/* Mobile top bar is dark: give the bell the same glass style as the burger button. */
+@media (max-width: 900px) {
+  .admin-topbar .notif-bell-btn.notif-bell-inline {
+    margin-left: 0;
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: #fff;
+  }
+  .student-sidebar-bell {
+    display: none; /* the top bar already has one */
+  }
+}

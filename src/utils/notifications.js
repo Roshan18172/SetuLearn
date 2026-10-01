@@ -148,3 +148,81 @@ export function ensureWelcomeNotification() {
     link: "/contact",
   });
 }
+
+/* ------------------------------------------------------------------ */
+/* Exam-submission notifications for signed-in students                */
+/* ------------------------------------------------------------------ */
+
+const NOTIFIED_KEY = "setulearn_notified_submissions";
+const MAX_TRACKED = 300;
+const RECENT_MS = 24 * 60 * 60 * 1000;
+
+function readNotifiedIds() {
+  try {
+    const raw = localStorage.getItem(NOTIFIED_KEY);
+    if (raw === null) return null; // never synced on this device
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+function writeNotifiedIds(ids) {
+  try {
+    localStorage.setItem(NOTIFIED_KEY, JSON.stringify(ids.slice(-MAX_TRACKED)));
+  } catch {
+    /* storage full / disabled */
+  }
+}
+
+/** Records submission ids that already produced a notification so the dashboard sync won't repeat them. */
+export function markSubmissionsNotified(ids = []) {
+  const clean = ids.filter(Boolean);
+  if (clean.length === 0) return;
+  const existing = readNotifiedIds() || [];
+  writeNotifiedIds([...new Set([...existing, ...clean])]);
+}
+
+/**
+ * Turns the student's completed server-side submissions into "Test Completed" notifications, once each.
+ * Covers attempts finished on another device or in another tab. The first sync on a device only
+ * announces attempts from the last 24h, so a returning student isn't flooded with old results.
+ * @returns {number} how many notifications were added
+ */
+export function syncSubmissionNotifications(submissions = []) {
+  if (typeof window === "undefined" || !Array.isArray(submissions)) return 0;
+
+  const known = readNotifiedIds();
+  const firstSync = known === null;
+  const seen = new Set(known || []);
+  const completed = submissions.filter((s) => s && s.id && s.submittedAt);
+
+  // oldest first, so the newest ends up on top of the list
+  const fresh = completed
+    .filter((s) => !seen.has(s.id))
+    .sort((a, b) => new Date(a.submittedAt) - new Date(b.submittedAt));
+
+  let added = 0;
+  fresh.forEach((s) => {
+    const recent = Date.now() - new Date(s.submittedAt).getTime() < RECENT_MS;
+    if (!firstSync || recent) {
+      const title = s.test?.title || "a";
+      const total = s.test?.totalMarks;
+      addNotification({
+        type: "test_completed",
+        title: "Test Completed",
+        message:
+          total !== undefined && total !== null
+            ? `You scored ${s.score} / ${total} (${s.percentage}%) in ${title} test. Tap to see the full analysis.`
+            : `You completed ${title} test. Tap to see the full analysis.`,
+        link: `/dashboard/attempts/${s.id}`,
+      });
+      added += 1;
+    }
+    seen.add(s.id);
+  });
+
+  writeNotifiedIds([...seen]);
+  return added;
+}

@@ -2,62 +2,76 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { MemoryRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import Home from "./Home";
+import { addTestHistoryEntry } from "../utils/testHistory";
+import { StudentAuthProvider } from "../context/StudentAuthContext";
 
+// Plain async functions (not jest.fn): CRA's default `resetMocks: true` would wipe mockResolvedValue before each test.
 jest.mock("../api/examService", () => ({
   __esModule: true,
   default: {
-    getExams: jest.fn().mockResolvedValue([]),
-    getAllTests: jest.fn().mockResolvedValue([]),
+    getExams: async () => [],
+    getAllTests: async () => [],
   },
 }));
 
 function renderHome() {
   return render(
     <HelmetProvider>
+      <StudentAuthProvider>
       <MemoryRouter initialEntries={["/"]}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/test-history" element={<div>Test History Page</div>} />
         </Routes>
       </MemoryRouter>
+      </StudentAuthProvider>
     </HelmetProvider>,
   );
 }
 
-describe("<Home /> last-result scorecard", () => {
+describe("<Home /> recent attempts", () => {
   beforeEach(() => {
     window.localStorage.clear();
   });
 
-  it("shows a placeholder scorecard when no test has been taken yet", async () => {
+  it("invites a first-time visitor to take a test when there is no history", async () => {
     renderHome();
 
-    expect(await screen.findByText("N/A")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /view all test history/i })).toBeInTheDocument();
+    expect(await screen.findByText(/take your first mock test/i)).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /start a test/i })).toBeInTheDocument();
   });
 
-  it("shows the last test's real score once one exists in localStorage", async () => {
-    window.localStorage.setItem(
-      "lastexam",
-      JSON.stringify({
-        testTitle: "JEE Main Mock 1",
-        securedScore: 84,
-        totalScore: 100,
-        correct: 21,
-        incorrect: 4,
-        unattempted: 0,
-        totalQuestions: 25,
-        percentile: 92,
-      }),
-    );
+  it("shows the most recent attempt from this device", async () => {
+    addTestHistoryEntry({
+      testId: "t1",
+      testTitle: "JEE Main Mock 1",
+      examName: "JEE Main",
+      score: 84,
+      totalMarks: 100,
+      percentage: 84,
+      correct: 21,
+      incorrect: 4,
+      submissions: [{ testId: "t1", submissionId: "s1" }],
+    });
 
     renderHome();
 
     expect(await screen.findByText("JEE Main Mock 1")).toBeInTheDocument();
-    expect(screen.getByText("84")).toBeInTheDocument();
+    expect(screen.getByText("84/100")).toBeInTheDocument();
   });
 
   it('navigates to /test-history when "View All Test History" is clicked', async () => {
+    addTestHistoryEntry({
+      testId: "t1",
+      testTitle: "JEE Main Mock 1",
+      score: 10,
+      totalMarks: 100,
+      percentage: 10,
+      correct: 2,
+      incorrect: 1,
+      submissions: [{ testId: "t1", submissionId: "s1" }],
+    });
+
     renderHome();
 
     fireEvent.click(await screen.findByRole("button", { name: /view all test history/i }));

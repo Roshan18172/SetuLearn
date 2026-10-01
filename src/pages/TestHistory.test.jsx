@@ -2,11 +2,13 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { MemoryRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import TestHistory from "./TestHistory";
+import { StudentAuthProvider } from "../context/StudentAuthContext";
 import { addTestHistoryEntry } from "../utils/testHistory";
 
 function renderPage() {
   return render(
     <HelmetProvider>
+      <StudentAuthProvider>
       <MemoryRouter initialEntries={["/test-history"]}>
         <Routes>
           <Route path="/test-history" element={<TestHistory />} />
@@ -14,6 +16,7 @@ function renderPage() {
           <Route path="/tests" element={<div>Tests page</div>} />
         </Routes>
       </MemoryRouter>
+      </StudentAuthProvider>
     </HelmetProvider>,
   );
 }

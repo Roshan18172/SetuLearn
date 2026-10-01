@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useStudentAuth } from "../../context/StudentAuthContext";
 import { getErrorMessage } from "../../api/apiErrorHandler";
 import PasswordInput from "../../components/PasswordInput";
+import { ExamSelect, StateCitySelect } from "../../components/ProfileSelects";
 import "../StudentAuth.css";
 
 function toDateInput(value) {
@@ -153,15 +154,10 @@ export default function StudentProfile() {
 
           <h2 style={{ fontSize: 16, margin: "20px 0 12px" }}>Study profile</h2>
           <div className="admin-form-row">
-            <div className="admin-form-group">
-              <label htmlFor="profile-exam">Target exam</label>
-              <input
-                id="profile-exam"
-                value={extra.targetExam}
-                onChange={setField("targetExam")}
-                placeholder="e.g. JEE Main, NEET, UPSC"
-              />
-            </div>
+            <ExamSelect
+              value={extra.targetExam}
+              onChange={(v) => setExtra((prev) => ({ ...prev, targetExam: v }))}
+            />
             <div className="admin-form-group">
               <label htmlFor="profile-class">Class / stage</label>
               <select id="profile-class" value={extra.studyClass} onChange={setField("studyClass")}>
@@ -175,24 +171,11 @@ export default function StudentProfile() {
             </div>
           </div>
           <div className="admin-form-row">
-            <div className="admin-form-group">
-              <label htmlFor="profile-state">State</label>
-              <input
-                id="profile-state"
-                value={extra.state}
-                onChange={setField("state")}
-                placeholder="State"
-              />
-            </div>
-            <div className="admin-form-group">
-              <label htmlFor="profile-city">City</label>
-              <input
-                id="profile-city"
-                value={extra.city}
-                onChange={setField("city")}
-                placeholder="City"
-              />
-            </div>
+            <StateCitySelect
+              state={extra.state}
+              city={extra.city}
+              onChange={(state, city) => setExtra((prev) => ({ ...prev, state, city }))}
+            />
           </div>
           <div className="admin-form-row">
             <div className="admin-form-group">

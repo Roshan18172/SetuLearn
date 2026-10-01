@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import { useStudentAuth } from "../../context/StudentAuthContext";
+import studentService from "../../api/studentService";
+import NotificationBell from "../../components/NotificationBell";
+import { syncSubmissionNotifications } from "../../utils/notifications";
 import {
   LayoutDashboard,
   ClipboardList,
@@ -35,6 +38,27 @@ export default function StudentLayout() {
     setNavOpen(false);
   }, [location.pathname]);
 
+  // Turn finished exam attempts into bell notifications (also catches attempts made on another device).
+  useEffect(() => {
+    let cancelled = false;
+    const sync = async () => {
+      try {
+        const data = await studentService.getSubmissions();
+        if (!cancelled) syncSubmissionNotifications(Array.isArray(data) ? data : []);
+      } catch {
+        /* notifications are best-effort */
+      }
+    };
+    sync();
+    const timer = setInterval(sync, 60_000);
+    window.addEventListener("focus", sync);
+    return () => {
+      cancelled = true;
+      clearInterval(timer);
+      window.removeEventListener("focus", sync);
+    };
+  }, [location.pathname]);
+
   useEffect(() => {
     document.body.style.overflow = navOpen ? "hidden" : "";
     return () => {
@@ -64,6 +88,7 @@ export default function StudentLayout() {
           <span />
         </button>
         <div className="admin-topbar-title">{currentLabel}</div>
+        <NotificationBell variant="inline" />
         <div className="admin-topbar-avatar">
           {student?.name?.charAt(0)?.toUpperCase() || "S"}
         </div>
@@ -108,6 +133,9 @@ export default function StudentLayout() {
               <div className="admin-sidebar-name">{student?.name || "Student"}</div>
               <div className="admin-sidebar-role">Student</div>
             </div>
+            <span className="student-sidebar-bell">
+              <NotificationBell variant="inline" />
+            </span>
           </div>
           <button className="admin-sidebar-logout" onClick={handleLogout}>
             <Logout /> Logout

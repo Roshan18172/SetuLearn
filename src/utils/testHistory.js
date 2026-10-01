@@ -12,7 +12,7 @@
  * localStorage small and always in sync with the source of truth.
  */
 
-import { addNotification } from "./notifications";
+import { addNotification, markSubmissionsNotified } from "./notifications";
 
 const STORAGE_KEY = "setulearn_test_history";
 const MAX_ENTRIES = 100;
@@ -120,6 +120,8 @@ export function addTestHistoryEntry(entry) {
     message: `You have completed ${newEntry.testTitle || "a"} test. Click to view results.`,
     link: `/test-history/${newEntry.id}`,
   });
+  // The dashboard sync must not announce the same attempt a second time.
+  markSubmissionsNotified((newEntry.submissions || []).map((s) => s.submissionId));
 
   return newEntry;
 }
