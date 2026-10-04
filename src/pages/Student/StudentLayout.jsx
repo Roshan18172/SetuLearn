@@ -109,6 +109,10 @@ export default function StudentLayout() {
           <img src="/footer-logo.webp" alt="SetuLearn" height="40" />
         </div>
 
+        <span className="student-sidebar-bell">
+          <NotificationBell variant="inline" />
+        </span>
+
         <nav className="admin-sidebar-nav">
           {navItems.map((item) => (
             <button
@@ -133,9 +137,6 @@ export default function StudentLayout() {
               <div className="admin-sidebar-name">{student?.name || "Student"}</div>
               <div className="admin-sidebar-role">Student</div>
             </div>
-            <span className="student-sidebar-bell">
-              <NotificationBell variant="inline" />
-            </span>
           </div>
           <button className="admin-sidebar-logout" onClick={handleLogout}>
             <Logout /> Logout

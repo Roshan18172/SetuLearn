@@ -38,3 +38,17 @@ if (typeof window.IntersectionObserver === "undefined") {
     }
   };
 }
+
+// jsdom doesn't implement media playback ("Not implemented: HTMLMediaElement.prototype.play").
+if (typeof window.HTMLMediaElement !== "undefined") {
+  window.HTMLMediaElement.prototype.play = function play() {
+    Object.defineProperty(this, "paused", { configurable: true, value: false });
+    this.dispatchEvent(new Event("play"));
+    return Promise.resolve();
+  };
+  window.HTMLMediaElement.prototype.pause = function pause() {
+    Object.defineProperty(this, "paused", { configurable: true, value: true });
+    this.dispatchEvent(new Event("pause"));
+  };
+  window.HTMLMediaElement.prototype.load = function load() {};
+}

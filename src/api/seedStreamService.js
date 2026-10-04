@@ -1,3 +1,4 @@
+import API_BASE_URL from "./baseUrl";
 /**
  * Seed Stream Service
  * Consumes the SSE (Server-Sent Events) stream from the seed-excel endpoint.
@@ -5,7 +6,6 @@
  * streaming response bodies.
  */
 
-const API_BASE_URL = process.env.REACT_APP_API_URL;
 
 /** Read the admin JWT from localStorage (set by AdminAuthContext). */
 function getAuthToken() {

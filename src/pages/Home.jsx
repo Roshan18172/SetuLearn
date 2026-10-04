@@ -10,6 +10,7 @@ import ShowcaseSlider from "../components/ShowcaseSlider";
 import RecentTestsCarousel from "../components/RecentTestsCarousel";
 import EventQuizCarousel from "../components/EventQuizCarousel";
 import NewsSection from "../components/NewsSection";
+import IntroVideoSection from "../components/IntroVideoSection";
 import Reveal from "../components/Reveal";
 
 
@@ -355,6 +356,9 @@ export default function Home() {
 
       {/* Auto-scrolling Practice/Improve/Succeed showcase */}
       <ShowcaseSlider />
+
+      {/* Intro video in a phone frame, with copy on the left */}
+      <IntroVideoSection />
 
       {/* Categories */}
       <section className="section">
