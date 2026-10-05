@@ -11,6 +11,7 @@ import RecentTestsCarousel from "../components/RecentTestsCarousel";
 import EventQuizCarousel from "../components/EventQuizCarousel";
 import NewsSection from "../components/NewsSection";
 import IntroVideoSection from "../components/IntroVideoSection";
+import FeatureTourSection from "../components/FeatureTourSection";
 import Reveal from "../components/Reveal";
 
 
@@ -536,6 +537,9 @@ export default function Home() {
       </section>
 
       <EventQuizCarousel />
+
+      {/* Landscape product-tour video in a laptop frame */}
+      <FeatureTourSection />
 
       <NewsSection />
 
