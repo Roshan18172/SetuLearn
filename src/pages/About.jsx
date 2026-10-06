@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import SEO from "../components/SEO";
 import Reveal from "../components/Reveal";
+import AboutVideoSection from "../components/AboutVideoSection";
 
 export default function About() {
   const navigate = useNavigate();
@@ -65,6 +66,9 @@ export default function About() {
           </Reveal>
         </div>
       </section>
+
+      {/* Overview video in a MacBook frame */}
+      <AboutVideoSection />
 
       {/* Mission */}
       <section className="mission-section">

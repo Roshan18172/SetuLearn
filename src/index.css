@@ -9201,3 +9201,109 @@ html::-webkit-scrollbar-thumb:hover {
   .ftv-btn.is-muted { animation: none; }
   .ftv-controls, .ftv-chip { transition: none; }
 }
+
+/* =====================================================================
+   About page: overview video in a MacBook frame
+   ===================================================================== */
+.avs {
+  padding: 72px 24px 84px;
+  background: linear-gradient(180deg, #ffffff 0%, #f5effd 100%);
+}
+.avs-inner { max-width: 1080px; margin: 0 auto; }
+.avs-head { text-align: center; max-width: 760px; margin: 0 auto 44px; }
+.avs-head h2 {
+  margin: 4px 0 14px;
+  font-size: clamp(1.7rem, 3.4vw, 2.4rem);
+  line-height: 1.2;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+.avs-accent { color: var(--primary); }
+.avs-head p { margin: 0; font-size: 1.05rem; line-height: 1.7; color: var(--text-secondary); }
+.avs-pills {
+  list-style: none;
+  margin: 40px auto 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+.avs-pills li {
+  padding: 9px 18px;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--primary);
+  background: #fff;
+  border: 1.5px solid #e4d9f6;
+  border-radius: 999px;
+  box-shadow: var(--shadow);
+}
+
+/* MacBook frame: aluminium rim -> thin black bezel -> screen, camera notch, hinge base */
+.mbv { max-width: 940px; margin: 0 auto; }
+.mbv-lid {
+  position: relative;
+  padding: 14px 14px 16px;
+  border-radius: 22px 22px 6px 6px;
+  background: #07070a;
+  box-shadow:
+    0 0 0 2px #c9cad3,
+    0 0 0 3.5px #8f909b,
+    inset 0 0 0 1px rgba(255, 255, 255, 0.07),
+    0 44px 70px -26px rgba(42, 14, 84, 0.55);
+}
+.mbv-screen { border-radius: 8px; }
+.mbv-notch {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  z-index: 6;
+  width: 128px;
+  height: 20px;
+  margin-left: -64px;
+  border-radius: 0 0 12px 12px;
+  background: #07070a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.mbv-notch i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #3c4768 0%, #121522 60%, #07070a 100%);
+  box-shadow: 0 0 0 1.5px #1a1b24;
+}
+.mbv-base {
+  position: relative;
+  height: 15px;
+  margin: 0 -5.5%;
+  border-radius: 0 0 20px 20px / 0 0 14px 14px;
+  background: linear-gradient(#eceef3 0%, #cfd0d9 45%, #a8a9b4 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 22px 34px -14px rgba(42, 14, 84, 0.5);
+}
+.mbv-base span {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 17%;
+  height: 7px;
+  margin-left: -8.5%;
+  border-radius: 0 0 12px 12px;
+  background: linear-gradient(#9d9eaa, #c4c5cf);
+  box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.5);
+}
+
+@media (max-width: 720px) {
+  .avs { padding: 52px 14px 60px; }
+  .avs-head { margin-bottom: 30px; }
+  .mbv-lid { padding: 9px 8px 10px; border-radius: 15px 15px 5px 5px; }
+  .mbv-notch { width: 70px; height: 12px; margin-left: -35px; border-radius: 0 0 8px 8px; }
+  .mbv-notch i { width: 4.5px; height: 4.5px; }
+  .mbv-base { height: 11px; margin: 0 -3.2%; }
+  .mbv-base span { height: 5px; }
+}
