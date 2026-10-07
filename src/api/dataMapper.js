@@ -115,15 +115,18 @@ export function mapQuestionToFrontend(q) {
   return {
     id: q.id,
     text: q.questionText,
+    imageUrl: q.questionImageUrl || null,
     topic: q.topic?.name || q.subject?.name || "General",
     options: (q.options || []).map((opt) => ({
       id: opt.id,
       text: opt.optionText,
+      imageUrl: opt.optionImageUrl || null,
     })),
     correct: q.options?.find((opt) => opt.isCorrect)?.id || null,
     marks: q.marks,
     negativeMarks: q.negativeMarks,
     explanation: q.explanation || "",
+    explanationImageUrl: q.explanationImageUrl || null,
   };
 }
 

@@ -110,3 +110,81 @@ export function seedQuestionsStream(file, clearExisting, callbacks) {
     abort: () => controller.abort(),
   };
 }
+
+/**
+ * Upload a question-paper PDF and stream extraction progress.
+ * Nothing is saved yet: onComplete receives { drafts, stats, pages, existingImportIds } to review.
+ *
+ * @param {File} file
+ * @param {{ importPrefix: string, startNumber?: number, generateMissing?: boolean }} options
+ * @param {{ onEvent(event), onError(error), onComplete(data) }} callbacks
+ */
+export function extractPdfStream(file, options, callbacks) {
+  const { onEvent, onError, onComplete } = callbacks;
+  const controller = new AbortController();
+
+  const formData = new FormData();
+  formData.append("importPrefix", options.importPrefix);
+  formData.append("startNumber", String(options.startNumber || 1));
+  formData.append("generateMissing", options.generateMissing === false ? "false" : "true");
+  formData.append("file", file); // file last so the text fields are parsed first
+
+  const token = getAuthToken();
+
+  (async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/admin/questions/pdf/extract`, {
+        method: "POST",
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+        body: formData,
+        signal: controller.signal,
+      });
+
+      if (!response.ok) {
+        let msg = `HTTP ${response.status}`;
+        try {
+          const body = await response.json();
+          msg = body.message || msg;
+        } catch (_) {
+          /* ignore */
+        }
+        onError?.(new Error(msg));
+        return;
+      }
+
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+      let finished = false;
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        const parts = buffer.split("\n\n");
+        buffer = parts.pop() || "";
+        for (const part of parts) {
+          for (const line of part.split("\n")) {
+            if (!line.startsWith("data: ")) continue;
+            try {
+              const event = JSON.parse(line.slice(6));
+              onEvent?.(event);
+              if (event.type === "complete") {
+                finished = true;
+                onComplete?.(event.data);
+              }
+            } catch (parseErr) {
+              console.warn("[SeedStream] Failed to parse SSE event:", parseErr);
+            }
+          }
+        }
+      }
+      if (!finished) onComplete?.(null);
+    } catch (err) {
+      if (err.name === "AbortError") return;
+      onError?.(err);
+    }
+  })();
+
+  return { abort: () => controller.abort() };
+}

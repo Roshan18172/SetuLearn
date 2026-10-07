@@ -2,6 +2,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { MathJax } from "better-react-mathjax";
 import SEO from "../components/SEO";
+import QuestionImage from "../components/QuestionImage";
 
 /**
  * The `questions` array (built while the test is in progress) never contains
@@ -26,6 +27,7 @@ function buildQuestionInfoMap(result) {
         correctId: item.correctOption?.id,
         correctText: item.correctOption?.text,
         explanation: item.explanation || "",
+        explanationImageUrl: item.explanationImageUrl || null,
       };
     });
   });
@@ -198,6 +200,7 @@ export default function Solutions() {
         const correctId = info.correctId ?? q.correct ?? q.correctOptionId;
         const correctText = info.correctText ?? q.correctOptionText;
         const explanation = info.explanation || q.explanation || "";
+        const explanationImageUrl = info.explanationImageUrl || q.explanationImageUrl || null;
 
         return (
           <div key={q.id} className="solution-card">
@@ -213,6 +216,7 @@ export default function Solutions() {
                 {q.text}
               </MathJax>
             </h3>
+            <QuestionImage src={q.imageUrl} alt="Question figure" />
 
             <div className="solution-options">
               {q.options.map((opt) => {
@@ -242,6 +246,7 @@ export default function Solutions() {
                     <MathJax dynamic onTypeset={() => setIsReady(true)}>
                       {opt.text}
                     </MathJax>
+                    <QuestionImage src={opt.imageUrl} alt="Option figure" maxHeight={160} />
                     {isCorrect && isSelected && (
                       <span className="correct-badge"><img src="/icons/correct.png" alt="" /> Your Answer</span>
                     )}
@@ -257,7 +262,7 @@ export default function Solutions() {
             </div>
 
             {/* Explanation shown after all options for this question */}
-            {explanation && (
+            {(explanation || explanationImageUrl) && (
               <div
                 className="solution-explanation"
                 style={{
@@ -272,9 +277,12 @@ export default function Solutions() {
                 }}
               >
                 <b>Explanation: </b>
-                <MathJax dynamic onTypeset={() => setIsReady(true)}>
-                  {explanation}
-                </MathJax>
+                {explanation && (
+                  <MathJax dynamic onTypeset={() => setIsReady(true)}>
+                    {explanation}
+                  </MathJax>
+                )}
+                <QuestionImage src={explanationImageUrl} alt="Solution figure" />
               </div>
             )}
           </div>

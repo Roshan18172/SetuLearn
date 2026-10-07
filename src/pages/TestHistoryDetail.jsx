@@ -6,6 +6,7 @@ import testService from "../api/testService";
 import { getErrorMessage } from "../api/apiErrorHandler";
 import { getTestHistoryEntry } from "../utils/testHistory";
 import { ArrowLeft } from "../data/svgs";
+import QuestionImage from "../components/QuestionImage";
 
 function formatDate(timestamp) {
   if (!timestamp) return "";
@@ -64,6 +65,7 @@ async function loadAttemptDetails(entry) {
         selectedText: item.selectedOption?.text ?? null,
         status: item.status,
         explanation: item.explanation || "",
+        explanationImageUrl: item.explanationImageUrl || null,
         marks: item.marks,
         negativeMarks: item.negativeMarks,
       };
@@ -76,10 +78,12 @@ async function loadAttemptDetails(entry) {
       combinedQuestions.push({
         id: q.id,
         text: q.questionText,
+        imageUrl: q.questionImageUrl || null,
         subjectName: subjectNameMap[q.subjectId] || "",
         options: (q.options || []).map((opt) => ({
           id: opt.id,
           text: opt.optionText || opt.text,
+          imageUrl: opt.optionImageUrl || null,
         })),
       });
     });
@@ -245,6 +249,7 @@ export default function TestHistoryDetail() {
                 )}
               </div>
               {q.subjectName && <div className="solution-subject">{q.subjectName}</div>}
+              <QuestionImage src={q.imageUrl} alt="Question figure" />
 
               <div className="solution-options">
                 {q.options.map((opt) => {
@@ -262,6 +267,7 @@ export default function TestHistoryDetail() {
                   return (
                     <div key={opt.id} className={className}>
                       <MathJax dynamic>{opt.text}</MathJax>
+                      <QuestionImage src={opt.imageUrl} alt="Option figure" maxHeight={160} />
                       {isCorrect && isSelected && (
                         <span className="correct-badge"><img src="/icons/correct.png" alt="" /> Your Answer</span>
                       )}
@@ -276,10 +282,11 @@ export default function TestHistoryDetail() {
                 })}
               </div>
 
-              {info.explanation && (
+              {(info.explanation || info.explanationImageUrl) && (
                 <div className="solution-explanation">
                   <b>Explanation: </b>
-                  <MathJax dynamic>{info.explanation}</MathJax>
+                  {info.explanation && <MathJax dynamic>{info.explanation}</MathJax>}
+                  <QuestionImage src={info.explanationImageUrl} alt="Solution figure" />
                 </div>
               )}
             </div>

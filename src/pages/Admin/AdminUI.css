@@ -1797,3 +1797,48 @@
     transition-duration: 0.001ms !important;
   }
 }
+
+/* ============================================================
+   Seed Questions: tabs + PDF import review
+   ============================================================ */
+.seed-tabs { display: flex; gap: 8px; margin-bottom: 18px; border-bottom: 1px solid var(--border); }
+.seed-tab {
+  background: none; border: none; border-bottom: 3px solid transparent; padding: 10px 16px;
+  font-size: 0.95rem; font-weight: 600; color: var(--text-muted); cursor: pointer;
+}
+.seed-tab:hover { color: var(--text); }
+.seed-tab.active { color: var(--primary, #4f46e5); border-bottom-color: var(--primary, #4f46e5); }
+
+.pdf-form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; margin-bottom: 8px; }
+.pdf-hint { color: var(--text-muted); font-size: 0.78rem; }
+.pdf-check { display: flex; align-items: center; gap: 8px; font-size: 0.9rem; cursor: pointer; }
+.pdf-progress { height: 8px; background: var(--border); border-radius: 99px; overflow: hidden; margin-bottom: 12px; }
+.pdf-progress > div { height: 100%; background: var(--primary, #4f46e5); transition: width .3s; }
+.pdf-log { max-height: 220px; overflow: auto; font-size: 0.85rem; background: var(--bg, #f8fafc); border-radius: 8px; padding: 10px 12px; }
+.pdf-log-line { padding: 2px 0; }
+.pdf-log-error { color: #b91c1c; }
+.pdf-log-success { color: #047857; }
+
+.pdf-draft { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 16px 18px; margin-bottom: 14px; box-shadow: var(--shadow-sm); }
+.pdf-draft-incomplete { border-color: #f59e0b; }
+.pdf-draft-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 8px; flex-wrap: wrap; }
+.pdf-draft-id { display: flex; align-items: center; gap: 10px; }
+.pdf-id-input { font-family: monospace; font-size: 0.82rem; padding: 4px 8px; border: 1px solid var(--border); border-radius: 6px; min-width: 190px; }
+.pdf-draft-actions { display: flex; gap: 6px; }
+.pdf-warning { background: #fffbeb; color: #92400e; border: 1px solid #fde68a; border-radius: 8px; padding: 6px 10px; font-size: 0.84rem; margin: 6px 0; }
+.pdf-question-text { font-size: 1rem; line-height: 1.55; margin: 6px 0; white-space: pre-wrap; }
+.pdf-options { display: grid; gap: 6px; margin: 10px 0; }
+.pdf-option { display: flex; align-items: flex-start; gap: 8px; padding: 8px 10px; border: 1px solid var(--border); border-radius: 8px; cursor: pointer; }
+.pdf-option-correct { background: #ecfdf5; border-color: #6ee7b7; }
+.pdf-option-label { font-weight: 700; }
+.pdf-option-body { flex: 1; min-width: 0; }
+.pdf-option-input { width: 100%; padding: 4px 8px; border: 1px solid var(--border); border-radius: 6px; }
+.pdf-textarea { width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: 8px; font-family: inherit; }
+.pdf-meta-row { display: flex; gap: 20px; flex-wrap: wrap; font-size: 0.88rem; margin: 6px 0; }
+.pdf-explanation { background: var(--bg, #f8fafc); border-radius: 8px; padding: 8px 12px; font-size: 0.92rem; line-height: 1.55; white-space: pre-wrap; }
+.pdf-image-wrap { display: flex; align-items: flex-end; gap: 10px; }
+.pdf-link-btn { background: none; border: none; color: #b91c1c; font-size: 0.78rem; cursor: pointer; text-decoration: underline; padding: 0; }
+.pdf-badge { font-size: 0.72rem; padding: 2px 8px; border-radius: 99px; font-weight: 600; }
+.pdf-badge-pdf { background: #e0f2fe; color: #075985; }
+.pdf-badge-ai { background: #ede9fe; color: #5b21b6; }
+.pdf-badge-warn { background: #fef3c7; color: #92400e; }

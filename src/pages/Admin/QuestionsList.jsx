@@ -16,6 +16,7 @@ const EMPTY_FORM = {
   marks: 4,
   negativeMarks: -1,
   explanation: "",
+  explanationImageUrl: "",
   source: "",
   year: "",
   options: [
@@ -133,6 +134,7 @@ export default function QuestionsList() {
       marks: q.marks || 4,
       negativeMarks: q.negativeMarks || -1,
       explanation: q.explanation || "",
+      explanationImageUrl: q.explanationImageUrl || "",
       source: q.source || "",
       year: q.year || "",
       options,
@@ -167,6 +169,7 @@ export default function QuestionsList() {
         marks: Number(form.marks),
         negativeMarks: Number(form.negativeMarks),
         explanation: form.explanation || null,
+        explanationImageUrl: form.explanationImageUrl || null,
         source: form.source || null,
         year: form.year ? Number(form.year) : null,
         options: form.options.map((o) => ({
@@ -369,6 +372,17 @@ export default function QuestionsList() {
                   }
                   rows={3}
                   placeholder="Explanation for the correct answer"
+                />
+              </div>
+
+              <div className="admin-form-group">
+                <label>Explanation Image URL</label>
+                <input
+                  value={form.explanationImageUrl}
+                  onChange={(e) =>
+                    setForm({ ...form, explanationImageUrl: e.target.value })
+                  }
+                  placeholder="https://example.com/solution-diagram.png"
                 />
               </div>
 

@@ -17,6 +17,7 @@ import {
   clearCurrentPracticeQuestion,
 } from "../utils/chatbotBridge";
 import SEO from "../components/SEO";
+import QuestionImage from "../components/QuestionImage";
 
 export default function Practice() {
   // Wizard step: "subjects" -> "topics" -> "practice"
@@ -420,7 +421,8 @@ export default function Practice() {
 
       <div className="prac-question-card">
         <div className="prac-question-text">
-          {q.text ? <MathJax dynamic>{q.text}</MathJax> : <p>Question text not available</p>}
+          {q.text ? <MathJax dynamic>{q.text}</MathJax> : !q.imageUrl ? <p>Question text not available</p> : null}
+          <QuestionImage src={q.imageUrl} alt="Question figure" />
         </div>
 
         <div className="prac-options">
@@ -444,7 +446,8 @@ export default function Practice() {
               >
                 <span className="opt-letter">{String.fromCharCode(65 + i)}</span>
                 <span className="opt-text">
-                  {opt.text ? <MathJax dynamic>{opt.text}</MathJax> : "Option text not available"}
+                  {opt.text ? <MathJax dynamic>{opt.text}</MathJax> : !opt.imageUrl ? "Option text not available" : null}
+                  <QuestionImage src={opt.imageUrl} alt={`Option ${String.fromCharCode(65 + i)}`} maxHeight={160} />
                 </span>
                 {isAnswered && isCorrectOpt && <CheckCircle2 size={18} />}
                 {isAnswered && isSelected && !isCorrectOpt && <XCircle size={18} />}
@@ -465,9 +468,10 @@ export default function Practice() {
             <strong>Solution:</strong>{" "}
             {q.explanation ? (
               <MathJax dynamic>{q.explanation}</MathJax>
-            ) : (
+            ) : !q.explanationImageUrl ? (
               <span>No explanation provided for this question.</span>
-            )}
+            ) : null}
+            <QuestionImage src={q.explanationImageUrl} alt="Solution figure" />
           </div>
         )}
       </div>

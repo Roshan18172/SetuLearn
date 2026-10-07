@@ -268,6 +268,12 @@ const adminService = {
     return response.data.data;
   },
 
+  // Question import from PDF (review step -> write to DB)
+  importPdfQuestions: async (payload) => {
+    const response = await api.post("/admin/questions/pdf/import", payload);
+    return response.data.data;
+  },
+
   // Subjects
   getSubjects: async () => {
     const response = await api.get("/admin/subjects");

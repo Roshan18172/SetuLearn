@@ -4,6 +4,7 @@ import { MathJax } from "better-react-mathjax";
 import { ClockLoader } from "../data/svgs";
 import Modal from "../components/Modal";
 import testService from "../api/testService";
+import QuestionImage from "../components/QuestionImage";
 
 function padTwo(n) {
   return String(n).padStart(2, "0");
@@ -242,6 +243,7 @@ export default function TestInterface() {
                   subTestId: sub.id,
 
                   text: q.questionText,
+                  imageUrl: q.questionImageUrl || null,
 
                   marks: q.marks,
                   negativeMarks: q.negativeMarks,
@@ -265,6 +267,7 @@ export default function TestInterface() {
                   options: (q.options || []).map((opt) => ({
                     id: opt.id,
                     text: opt.optionText || opt.text,
+                    imageUrl: opt.optionImageUrl || null,
                     isCorrect: Boolean(opt.isCorrect),
                   })),
                 };
@@ -763,9 +766,10 @@ export default function TestInterface() {
               <MathJax dynamic onTypeset={handleMathJaxTypeset}>
                 {q.text}
               </MathJax>
-            ) : (
+            ) : !q.imageUrl ? (
               <p>Question text not available</p>
-            )}
+            ) : null}
+            <QuestionImage src={q.imageUrl} alt="Question figure" />
           </div>
 
           <div className="ti-options">
@@ -798,9 +802,10 @@ export default function TestInterface() {
                     <MathJax dynamic onTypeset={handleMathJaxTypeset}>
                       {opt.text}
                     </MathJax>
-                  ) : (
+                  ) : !opt.imageUrl ? (
                     "Option text not available"
-                  )}
+                  ) : null}
+                  <QuestionImage src={opt.imageUrl} alt={`Option ${String.fromCharCode(65 + i)}`} maxHeight={160} />
                 </span>
               </label>
             ))}
