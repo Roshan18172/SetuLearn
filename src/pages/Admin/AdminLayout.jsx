@@ -4,7 +4,7 @@ import { useAdminAuth } from "../../context/AdminAuthContext";
 import {
   LayoutDashboard, Library, FileText, Settings, BookOpen,
   Tag, HelpCircle, Upload, Mail, Flag, ClipboardList,
-  Logout, GraduationCap, Users,
+  Logout, GraduationCap, Users, Activity,
 } from "../../data/svgs";
 import "./AdminUI.css";
 
@@ -42,6 +42,7 @@ export default function AdminLayout() {
       { path: "/admin/questions", label: "Questions", icon: HelpCircle },
       { path: "/admin/questions/seed", label: "Seed Questions", icon: Upload },
       { path: "/admin/students", label: "Students", icon: GraduationCap, fullOnly: true },
+      { path: "/admin/activity", label: "Activity Logs", icon: Activity, fullOnly: true },
       { path: "/admin/contacts", label: "Contacts", icon: Mail, fullOnly: true },
       { path: "/admin/reports", label: "Reports", icon: Flag, fullOnly: true },
       { path: "/admin/submissions", label: "Submissions", icon: ClipboardList, fullOnly: true },

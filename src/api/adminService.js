@@ -177,6 +177,47 @@ const adminService = {
     return response.data.data;
   },
 
+  getStudentStats: async () => {
+    const response = await api.get("/admin/students/stats");
+    return response.data.data;
+  },
+
+  getStudentActivity: async (id, params = {}) => {
+    const response = await api.get(`/admin/students/${id}/activity`, { params });
+    return response.data.data;
+  },
+
+  getStudentSubmissions: async (id) => {
+    const response = await api.get(`/admin/students/${id}/submissions`);
+    return response.data.data;
+  },
+
+  // Activity logs (all students + admins)
+  getActivityLogs: async (params = {}) => {
+    const response = await api.get("/admin/activity", { params });
+    return response.data.data;
+  },
+
+  getActivitySummary: async () => {
+    const response = await api.get("/admin/activity/summary");
+    return response.data.data;
+  },
+
+  /** Download a CSV endpoint (needs the auth header, so a plain <a href> will not work). */
+  downloadCsv: async (path, params = {}, fallbackName = "export.csv") => {
+    const response = await api.get(path, { params, responseType: "blob" });
+    const disposition = response.headers?.["content-disposition"] || "";
+    const match = disposition.match(/filename="?([^";]+)"?/i);
+    const url = window.URL.createObjectURL(response.data);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = match ? match[1] : fallbackName;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.URL.revokeObjectURL(url);
+  },
+
   // Reports
   getReports: async (params = {}) => {
     const response = await api.get("/admin/reports", { params });
