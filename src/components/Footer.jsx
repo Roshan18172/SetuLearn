@@ -115,6 +115,7 @@ export default function Footer() {
           <ul>
             <li><a href="/" onClick={(e) => { e.preventDefault(); navigate("/"); }}>Home</a></li>
             <li><a href="/" onClick={(e) => { e.preventDefault(); navigate("/tests"); }}>All Tests</a></li>
+            <li><a href="/" onClick={(e) => { e.preventDefault(); navigate("/games"); }}>Play a Game</a></li>
             <li><a href="/" onClick={(e) => { e.preventDefault(); navigate("/how-it-works"); }}>How It Works</a></li>
             <li><a href="/" onClick={(e) => { e.preventDefault(); navigate("/performance-tips"); }}>Performance Tips</a></li>
             <li><a href="/" onClick={(e) => { e.preventDefault(); navigate("/faq"); }}>FAQ</a></li>

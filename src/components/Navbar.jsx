@@ -14,6 +14,7 @@ export default function Navbar() {
     { path: "/", label: "Home" },
     { path: "/practice", label: "Practice" },
     { path: "/tests", label: "Tests" },
+    { path: "/games", label: "Games" },
     { path: isAuthenticated ? "/dashboard" : "/test-history", label: isAuthenticated ? "Dashboard" : "History" },
     { path: "/about", label: "About" },
     { path: "/contact", label: "Contact" },

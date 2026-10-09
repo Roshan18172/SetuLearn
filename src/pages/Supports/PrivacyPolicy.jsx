@@ -7,7 +7,13 @@ export default function PrivacyPolicy() {
             title: "Information We Collect",
             icon: "/icons/document.png",
             content:
-                "We may collect information such as your name, email address, exam preferences, test attempts, performance analytics, and feedback submitted through the platform."
+                "We may collect information such as your name, email address, phone number, exam preferences, test attempts, performance analytics, and feedback submitted through the platform."
+        },
+        {
+            title: "Activity Logs, IP Address & Device Information",
+            icon: "/icons/misc/eye.png",
+            content:
+                "When you use SetuLearn, our servers keep activity logs that record what happened and when - for example sign-up, login (including failed login attempts), password reset requests, profile updates, and starting or submitting a test. Each log entry may include your IP address and your browser and device information (user agent, such as the browser name and operating system). We never store your password, one-time codes, or login tokens in these logs. Logs are used to keep accounts secure, detect and prevent abuse or unauthorized access, investigate technical problems, and provide support. They can be viewed only by authorized SetuLearn administrators, are not sold or shared for advertising, and are automatically deleted after a limited retention period (180 days by default) unless we are required by law to keep them longer."
         },
         {
             title: "How We Use Information",
@@ -19,7 +25,7 @@ export default function PrivacyPolicy() {
             title: "Cookies & Analytics",
             icon: "/icons/misc/cookie.png",
             content:
-                "SetuLearn may use cookies and analytics tools to understand user behavior, remember preferences, and improve website performance."
+                "SetuLearn may use cookies and analytics tools to understand user behavior, remember preferences, and improve website performance. Some features, such as your best scores in the SetuLearn mini-games, are stored only in your own browser's local storage and are not sent to our servers."
         },
         {
             title: "Data Security",
@@ -71,7 +77,7 @@ export default function PrivacyPolicy() {
                 </p>
 
                 <div className="privacy-date">
-                    Last Updated: June 2026
+                    Last Updated: October 2026
                 </div>
             </section>
 

@@ -13,6 +13,7 @@ import NewsSection from "../components/NewsSection";
 import IntroVideoSection from "../components/IntroVideoSection";
 import FeatureTourSection from "../components/FeatureTourSection";
 import Reveal from "../components/Reveal";
+import GamesSection from "../components/games/GamesSection";
 
 
 
@@ -537,6 +538,9 @@ export default function Home() {
       </section>
 
       <EventQuizCarousel />
+
+      {/* Bored now? Play a game */}
+      <GamesSection />
 
       {/* Landscape product-tour video in a laptop frame */}
       <FeatureTourSection />

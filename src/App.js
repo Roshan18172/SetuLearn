@@ -68,6 +68,8 @@ import ReportsList from "./pages/Admin/ReportsList";
 import SubmissionsList from "./pages/Admin/SubmissionsList";
 import StudentsList from "./pages/Admin/StudentsList";
 import ActivityLogs from "./pages/Admin/ActivityLogs";
+import GamesHub from "./pages/Games/GamesHub";
+import GamePage from "./pages/Games/GamePage";
 import AdminsList from "./pages/Admin/AdminsList";
 import NotificationBell from "./components/NotificationBell";
 
@@ -139,6 +141,8 @@ function AppRoutes() {
                 <Route path="/test-history" element={<TestHistory />} />
                 <Route path="/test-history/:id" element={<TestHistoryDetail />} />
                 <Route path="/current-affairs-quiz" element={<CurrentAffairsQuiz />} />
+                <Route path="/games" element={<GamesHub />} />
+                <Route path="/games/:gameId" element={<GamePage />} />
                 <Route path="/news" element={<NewsPage />} />
                 <Route path="/news/article" element={<NewsArticle />} />
 
