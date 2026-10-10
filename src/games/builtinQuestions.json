@@ -1,0 +1,382 @@
+[
+{
+"text": "Which gas do plants absorb during photosynthesis?",
+"options": [
+"Carbon dioxide",
+"Oxygen",
+"Nitrogen",
+"Hydrogen"
+],
+"subject": "Science"
+},
+{
+"text": "Who was the first Prime Minister of India?",
+"options": [
+"Jawaharlal Nehru",
+"Sardar Patel",
+"Mahatma Gandhi",
+"B. R. Ambedkar"
+],
+"subject": "History"
+},
+{
+"text": "What is the capital of Australia?",
+"options": [
+"Canberra",
+"Sydney",
+"Melbourne",
+"Perth"
+],
+"subject": "Geography"
+},
+{
+"text": "Which is the largest planet in our solar system?",
+"options": [
+"Jupiter",
+"Saturn",
+"Neptune",
+"Earth"
+],
+"subject": "Science"
+},
+{
+"text": "The SI unit of force is?",
+"options": [
+"Newton",
+"Joule",
+"Pascal",
+"Watt"
+],
+"subject": "Science"
+},
+{
+"text": "What is 15% of 200?",
+"options": [
+"30",
+"25",
+"20",
+"35"
+],
+"subject": "Maths"
+},
+{
+"text": "In which year did India become a republic?",
+"options": [
+"1950",
+"1947",
+"1949",
+"1952"
+],
+"subject": "Polity"
+},
+{
+"text": "Which organ pumps blood through the human body?",
+"options": [
+"Heart",
+"Liver",
+"Kidney",
+"Lungs"
+],
+"subject": "Science"
+},
+{
+"text": "Choose the synonym of 'rapid'.",
+"options": [
+"Swift",
+"Slow",
+"Weak",
+"Calm"
+],
+"subject": "English"
+},
+{
+"text": "What is the square root of 144?",
+"options": [
+"12",
+"14",
+"11",
+"13"
+],
+"subject": "Maths"
+},
+{
+"text": "The Battle of Plassey was fought in which year?",
+"options": [
+"1757",
+"1857",
+"1764",
+"1526"
+],
+"subject": "History"
+},
+{
+"text": "Which river is considered the longest in India?",
+"options": [
+"Ganga",
+"Yamuna",
+"Godavari",
+"Narmada"
+],
+"subject": "Geography"
+},
+{
+"text": "What does CPU stand for?",
+"options": [
+"Central Processing Unit",
+"Central Program Utility",
+"Computer Personal Unit",
+"Core Processing Utility"
+],
+"subject": "Computers"
+},
+{
+"text": "What is the chemical symbol of gold?",
+"options": [
+"Au",
+"Ag",
+"Gd",
+"Go"
+],
+"subject": "Science"
+},
+{
+"text": "Who wrote the Indian national anthem?",
+"options": [
+"Rabindranath Tagore",
+"Bankim Chandra Chatterjee",
+"Sarojini Naidu",
+"Muhammad Iqbal"
+],
+"subject": "History"
+},
+{
+"text": "Which is the smallest prime number?",
+"options": [
+"2",
+"1",
+"3",
+"5"
+],
+"subject": "Maths"
+},
+{
+"text": "Choose the antonym of 'ancient'.",
+"options": [
+"Modern",
+"Old",
+"Archaic",
+"Historic"
+],
+"subject": "English"
+},
+{
+"text": "Which vitamin is made in the skin in sunlight?",
+"options": [
+"Vitamin D",
+"Vitamin A",
+"Vitamin C",
+"Vitamin K"
+],
+"subject": "Science"
+},
+{
+"text": "How many sides does a hexagon have?",
+"options": [
+"6",
+"5",
+"7",
+"8"
+],
+"subject": "Maths"
+},
+{
+"text": "Which Article of the Indian Constitution abolishes untouchability?",
+"options": [
+"Article 17",
+"Article 14",
+"Article 21",
+"Article 19"
+],
+"subject": "Polity"
+},
+{
+"text": "What is the boiling point of water at sea level in degrees Celsius?",
+"options": [
+"100",
+"90",
+"110",
+"120"
+],
+"subject": "Science"
+},
+{
+"text": "Which planet is known as the Red Planet?",
+"options": [
+"Mars",
+"Venus",
+"Mercury",
+"Saturn"
+],
+"subject": "Science"
+},
+{
+"text": "A train travels 120 km in 2 hours. What is its speed?",
+"options": [
+"60 km/h",
+"40 km/h",
+"80 km/h",
+"240 km/h"
+],
+"subject": "Maths"
+},
+{
+"text": "Who is known as the Father of the Nation in India?",
+"options": [
+"Mahatma Gandhi",
+"Jawaharlal Nehru",
+"Subhas Chandra Bose",
+"Bhagat Singh"
+],
+"subject": "History"
+},
+{
+"text": "What is the currency of Japan?",
+"options": [
+"Yen",
+"Won",
+"Yuan",
+"Ringgit"
+],
+"subject": "Geography"
+},
+{
+"text": "Which is the largest ocean on Earth?",
+"options": [
+"Pacific Ocean",
+"Atlantic Ocean",
+"Indian Ocean",
+"Arctic Ocean"
+],
+"subject": "Geography"
+},
+{
+"text": "A triangle with all three sides equal is called?",
+"options": [
+"Equilateral",
+"Isosceles",
+"Scalene",
+"Right-angled"
+],
+"subject": "Maths"
+},
+{
+"text": "Which plant tissue carries water from the roots upwards?",
+"options": [
+"Xylem",
+"Phloem",
+"Stomata",
+"Petiole"
+],
+"subject": "Science"
+},
+{
+"text": "The Lok Sabha is also known as the?",
+"options": [
+"House of the People",
+"Council of States",
+"Upper House",
+"Supreme Assembly"
+],
+"subject": "Polity"
+},
+{
+"text": "In which cell organelle does photosynthesis mainly occur?",
+"options": [
+"Chloroplast",
+"Mitochondria",
+"Nucleus",
+"Ribosome"
+],
+"subject": "Science"
+},
+{
+"text": "What is 7 x 8?",
+"options": [
+"56",
+"54",
+"49",
+"64"
+],
+"subject": "Maths"
+},
+{
+"text": "Who invented the telephone?",
+"options": [
+"Alexander Graham Bell",
+"Thomas Edison",
+"Nikola Tesla",
+"Guglielmo Marconi"
+],
+"subject": "Science"
+},
+{
+"text": "Which Indian state is the largest by area?",
+"options": [
+"Rajasthan",
+"Madhya Pradesh",
+"Maharashtra",
+"Uttar Pradesh"
+],
+"subject": "Geography"
+},
+{
+"text": "Choose the correctly spelt word.",
+"options": [
+"Necessary",
+"Neccessary",
+"Necesary",
+"Neccesary"
+],
+"subject": "English"
+},
+{
+"text": "The binary number system uses which digits?",
+"options": [
+"0 and 1",
+"1 and 2",
+"0 to 9",
+"0 and 2"
+],
+"subject": "Computers"
+},
+{
+"text": "Which gas is the most abundant in Earth's atmosphere?",
+"options": [
+"Nitrogen",
+"Oxygen",
+"Argon",
+"Carbon dioxide"
+],
+"subject": "Science"
+},
+{
+"text": "What is the LCM of 4 and 6?",
+"options": [
+"12",
+"24",
+"10",
+"8"
+],
+"subject": "Maths"
+},
+{
+"text": "Which dynasty built the Taj Mahal?",
+"options": [
+"Mughal",
+"Maurya",
+"Gupta",
+"Chola"
+],
+"subject": "History"
+}
+]

@@ -3,6 +3,7 @@ import { Link, Navigate, useParams } from "react-router-dom";
 import practiceService from "../../api/practiceService";
 import { getGame } from "../../games/gamesConfig";
 import { loadTerms } from "../../games/terms";
+import { loadQuestions } from "../../games/questions";
 import { saveScore } from "../../games/utils";
 import GameBackdrop from "../../components/games/GameBackdrop";
 import CrosswordGame from "../../components/games/CrosswordGame";
@@ -10,6 +11,13 @@ import WordSearchGame from "../../components/games/WordSearchGame";
 import MatchingGame from "../../components/games/MatchingGame";
 import UnscrambleGame from "../../components/games/UnscrambleGame";
 import FillBlanksGame from "../../components/games/FillBlanksGame";
+import BlitzGame from "../../components/games/BlitzGame";
+import SurvivalGame from "../../components/games/SurvivalGame";
+import AsteroidGame from "../../components/games/AsteroidGame";
+import BoardRaceGame from "../../components/games/BoardRaceGame";
+import HangmanGame from "../../components/games/HangmanGame";
+import EconomyGame from "../../components/games/EconomyGame";
+import LiveBattle from "../../components/games/LiveBattle";
 import "../../games/games.css";
 
 const COMPONENTS = {
@@ -18,6 +26,13 @@ const COMPONENTS = {
   matching: MatchingGame,
   unscramble: UnscrambleGame,
   fillblanks: FillBlanksGame,
+  blitz: BlitzGame,
+  survival: SurvivalGame,
+  asteroids: AsteroidGame,
+  boardrace: BoardRaceGame,
+  hangman: HangmanGame,
+  economy: EconomyGame,
+  livebattle: LiveBattle,
 };
 
 export default function GamePage() {
@@ -51,14 +66,19 @@ export default function GamePage() {
   }, []);
 
   const Game = COMPONENTS[gameId];
-  const levelCfg = game?.difficulty[level];
+  // games without a "medium" level (e.g. Live Battle) fall back to their first one
+  const levelKey = game?.difficulty[level] ? level : Object.keys(game?.difficulty || {})[0];
+  const levelCfg = game?.difficulty[levelKey];
   const glyphs = useMemo(() => game?.glyphs || ["★"], [game]);
 
   if (!game || !Game) return <Navigate to="/games" replace />;
 
   const start = async () => {
     setPhase("loading");
-    const loaded = await loadTerms({ subjectId: subjectId || undefined, min: 16, limit: 100 });
+    let loaded;
+    if (game.data === "live") loaded = { live: true, source: "tests" };
+    else if (game.data === "questions") loaded = await loadQuestions({ subjectId: subjectId || undefined, limit: 50, min: 14 });
+    else loaded = await loadTerms({ subjectId: subjectId || undefined, min: 16, limit: 100 });
     setData(loaded);
     setRunKey((k) => k + 1);
     setPhase("playing");
@@ -108,18 +128,20 @@ export default function GamePage() {
             </div>
 
             <div className="intro-setup">
+              {Object.keys(game.difficulty).length > 1 && (
               <div className="setup-group">
                 <span className="setup-label">Difficulty</span>
                 <div className="chips" role="radiogroup" aria-label="Difficulty">
                   {Object.entries(game.difficulty).map(([key, d]) => (
-                    <button key={key} type="button" role="radio" aria-checked={level === key}
-                      className={`chip ${level === key ? "chip-on" : ""}`} onClick={() => setLevel(key)}>
+                    <button key={key} type="button" role="radio" aria-checked={levelKey === key}
+                      className={`chip ${levelKey === key ? "chip-on" : ""}`} onClick={() => setLevel(key)}>
                       {d.label}
                       <small>{d.note}</small>
                     </button>
                   ))}
                 </div>
               </div>
+              )}
 
               {(game.options || []).map((o) => (
                 <div className="setup-group" key={o.id}>
@@ -137,7 +159,7 @@ export default function GamePage() {
               ))}
 
               <div className="setup-group">
-                <label className="setup-label" htmlFor="game-subject">Words from</label>
+                <label className="setup-label" htmlFor="game-subject">{game.data === "terms" ? "Words from" : "Questions from"}</label>
                 <select id="game-subject" className="game-select" value={subjectId} onChange={(e) => setSubjectId(e.target.value)}>
                   <option value="">All subjects</option>
                   {subjects.map((s) => (
@@ -156,7 +178,7 @@ export default function GamePage() {
         {phase === "loading" && (
           <div className="game-panel center-panel">
             <div className="game-spinner" aria-hidden="true" />
-            <p>Picking terms from the mock-test bank…</p>
+            <p>{game.data === "terms" ? "Picking terms from the mock-test bank…" : "Getting questions from the mock-test bank…"}</p>
           </div>
         )}
 
@@ -164,9 +186,11 @@ export default function GamePage() {
           <Game
             key={runKey}
             terms={data.terms}
+            questions={data.questions}
+            subjectId={subjectId || undefined}
             source={data.source}
             level={levelCfg}
-            levelKey={level}
+            levelKey={levelKey}
             options={opts}
             onFinish={finish}
             onQuit={() => setPhase("intro")}

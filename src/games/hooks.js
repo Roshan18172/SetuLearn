@@ -46,5 +46,12 @@ export function useCountdown(seconds, onExpire) {
     return () => clearInterval(id);
   }, []);
 
-  return { left, fraction: Math.max(0, Math.min(1, left / seconds)), restart, stop };
+  /** add (or remove, if negative) seconds from the running countdown */
+  const adjust = useCallback((delta) => {
+    if (!deadline.current) return;
+    deadline.current += delta * 1000;
+    setLeft(Math.max(0, (deadline.current - Date.now()) / 1000));
+  }, []);
+
+  return { left, fraction: Math.max(0, Math.min(1, left / seconds)), restart, stop, adjust };
 }

@@ -24,13 +24,14 @@ const renderGame = (id) =>
   );
 
 describe("games", () => {
-  it("home section and hub list all five games", () => {
+  it("home section shows the featured games under the 'Bored now?' heading", () => {
     render(<MemoryRouter><GamesSection /></MemoryRouter>);
     expect(screen.getByText(/Bored now\?/)).toBeInTheDocument();
-    for (const t of ["Crossword", "Word Search", "Matching Pairs", "Unscramble", "Fill the Blanks"]) {
+    for (const t of ["Crossword", "Matching Pairs", "Time Attack", "Live Battle"]) {
       expect(screen.getByRole("button", { name: `Play ${t}` })).toBeInTheDocument();
     }
     render(<MemoryRouter><GamesHub /></MemoryRouter>);
+    expect(screen.getAllByRole("button", { name: "Play Word Search" }).length).toBe(1); // hub only
   });
 
   it.each([

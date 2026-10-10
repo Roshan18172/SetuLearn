@@ -23,13 +23,13 @@ export default function GamesSection() {
         </p>
       </div>
       <div className="games-grid">
-        {GAMES.map((g, i) => (
+        {GAMES.filter((g) => g.featured).map((g, i) => (
           <GameCard key={g.id} game={g} index={i} />
         ))}
       </div>
       <div style={{ textAlign: "center", marginTop: 22 }}>
         <button type="button" className="games-all-btn" onClick={() => navigate("/games")}>
-          See all games →
+          See all {GAMES.length} games →
         </button>
       </div>
     </section>
