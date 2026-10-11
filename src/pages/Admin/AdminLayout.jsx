@@ -4,7 +4,7 @@ import { useAdminAuth } from "../../context/AdminAuthContext";
 import {
   LayoutDashboard, Library, FileText, Settings, BookOpen,
   Tag, HelpCircle, Upload, Mail, Flag, ClipboardList,
-  Logout, GraduationCap, Users, Activity,
+  Logout, GraduationCap, Users, Activity, ChartPie,
 } from "../../data/svgs";
 import "./AdminUI.css";
 
@@ -17,6 +17,7 @@ const CONTENT_ONLY_PATHS = new Set([
   "/admin/subjects",
   "/admin/topics",
   "/admin/questions",
+  "/admin/question-reports",
   "/admin/questions/seed",
 ]);
 
@@ -41,6 +42,8 @@ export default function AdminLayout() {
       { path: "/admin/topics", label: "Topics", icon: Tag },
       { path: "/admin/questions", label: "Questions", icon: HelpCircle },
       { path: "/admin/questions/seed", label: "Seed Questions", icon: Upload },
+      { path: "/admin/question-reports", label: "Question Reports", icon: Flag },
+      { path: "/admin/analytics", label: "Analytics", icon: ChartPie, fullOnly: true },
       { path: "/admin/students", label: "Students", icon: GraduationCap, fullOnly: true },
       { path: "/admin/activity", label: "Activity Logs", icon: Activity, fullOnly: true },
       { path: "/admin/contacts", label: "Contacts", icon: Mail, fullOnly: true },

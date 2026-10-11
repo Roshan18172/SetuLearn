@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+import { playSound } from "../../games/sound";
 import MathContent from "../MathContent";
 import QuestionImage from "../QuestionImage";
 
@@ -12,6 +14,11 @@ const LETTERS = ["A", "B", "C", "D", "E"];
  *  hidden  - indexes to grey out (e.g. already tried)
  */
 export default function McqPanel({ question, picked = null, reveal = false, locked = false, hidden = [], onPick, compact = false }) {
+  // sound effect when the answer is revealed
+  useEffect(() => {
+    if (reveal) playSound(picked === question.correct ? "correct" : "wrong");
+  }, [reveal]); // eslint-disable-line react-hooks/exhaustive-deps
+
   return (
     <div className={`mcq ${compact ? "mcq-compact" : ""}`}>
       <div className="mcq-question">

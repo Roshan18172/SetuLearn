@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import studentService from "../../api/studentService";
 import { getErrorMessage } from "../../api/apiErrorHandler";
 import MathContent from "../../components/MathContent";
+import QuestionImage from "../../components/QuestionImage";
 
 export default function StudentAttemptDetail() {
   const { id } = useParams();
@@ -137,9 +138,10 @@ export default function StudentAttemptDetail() {
                         Selected: {q.selectedOption?.text || "—"} · Correct:{" "}
                         {q.correctOption?.text || "—"}
                       </span>
-                      {q.explanation && (
+                      {(q.explanation || q.explanationImageUrl) && (
                         <span className="admin-mini-sub" style={{ marginTop: 6, display: "block" }}>
-                          <MathContent>{q.explanation}</MathContent>
+                          {q.explanation && <MathContent text={q.explanation} />}
+                          <QuestionImage src={q.explanationImageUrl} alt="Solution figure" maxHeight={200} />
                         </span>
                       )}
                     </div>

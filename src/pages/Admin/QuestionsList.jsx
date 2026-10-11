@@ -17,6 +17,7 @@ const EMPTY_FORM = {
   negativeMarks: -1,
   explanation: "",
   explanationImageUrl: "",
+  hideFromGames: false,
   source: "",
   year: "",
   options: [
@@ -33,7 +34,8 @@ export default function QuestionsList() {
   const [error, setError] = useState("");
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [search, setSearch] = useState("");
+  // ?search=IMPORT-ID lets other admin pages (reports, analytics) link straight to a question
+  const [search, setSearch] = useState(() => new URLSearchParams(window.location.search).get("search") || "");
   const [showForm, setShowForm] = useState(false);
   const [editQuestion, setEditQuestion] = useState(null);
   const [form, setForm] = useState({ ...EMPTY_FORM, options: EMPTY_FORM.options.map((o) => ({ ...o })) });
@@ -135,6 +137,7 @@ export default function QuestionsList() {
       negativeMarks: q.negativeMarks || -1,
       explanation: q.explanation || "",
       explanationImageUrl: q.explanationImageUrl || "",
+      hideFromGames: !!q.hideFromGames,
       source: q.source || "",
       year: q.year || "",
       options,
@@ -170,6 +173,7 @@ export default function QuestionsList() {
         negativeMarks: Number(form.negativeMarks),
         explanation: form.explanation || null,
         explanationImageUrl: form.explanationImageUrl || null,
+        hideFromGames: !!form.hideFromGames,
         source: form.source || null,
         year: form.year ? Number(form.year) : null,
         options: form.options.map((o) => ({
@@ -385,6 +389,11 @@ export default function QuestionsList() {
                   placeholder="https://example.com/solution-diagram.png"
                 />
               </div>
+
+              <label style={{ display: "flex", gap: 8, alignItems: "center", margin: "6px 0 14px", cursor: "pointer" }}>
+                <input type="checkbox" checked={!!form.hideFromGames} onChange={(e) => setForm({ ...form, hideFromGames: e.target.checked })} />
+                Hide this question from the mini-games and the daily challenge (still available in tests and practice)
+              </label>
 
               {/* Options */}
               <div className="admin-section-label">

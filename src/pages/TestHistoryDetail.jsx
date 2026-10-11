@@ -7,6 +7,7 @@ import { getErrorMessage } from "../api/apiErrorHandler";
 import { getTestHistoryEntry } from "../utils/testHistory";
 import { ArrowLeft } from "../data/svgs";
 import QuestionImage from "../components/QuestionImage";
+import QuestionActions from "../components/study/QuestionActions";
 
 function formatDate(timestamp) {
   if (!timestamp) return "";
@@ -250,6 +251,7 @@ export default function TestHistoryDetail() {
               </div>
               {q.subjectName && <div className="solution-subject">{q.subjectName}</div>}
               <QuestionImage src={q.imageUrl} alt="Question figure" />
+              <QuestionActions questionId={q.id} />
 
               <div className="solution-options">
                 {q.options.map((opt) => {

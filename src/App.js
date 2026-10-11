@@ -38,6 +38,9 @@ import StudentDashboard from "./pages/Student/StudentDashboard";
 import StudentAttempts from "./pages/Student/StudentAttempts";
 import StudentAttemptDetail from "./pages/Student/StudentAttemptDetail";
 import StudentProfile from "./pages/Student/StudentProfile";
+import MistakeNotebook from "./pages/Student/MistakeNotebook";
+import StudentProgress from "./pages/Student/StudentProgress";
+import DailyChallenge from "./pages/Student/DailyChallenge";
 
 import FAQ from "./pages/QuickLinks/FAQ";
 import HowItWorks from "./pages/QuickLinks/HowItWorks";
@@ -68,6 +71,8 @@ import ReportsList from "./pages/Admin/ReportsList";
 import SubmissionsList from "./pages/Admin/SubmissionsList";
 import StudentsList from "./pages/Admin/StudentsList";
 import ActivityLogs from "./pages/Admin/ActivityLogs";
+import QuestionReports from "./pages/Admin/QuestionReports";
+import Analytics from "./pages/Admin/Analytics";
 import GamesHub from "./pages/Games/GamesHub";
 import GamePage from "./pages/Games/GamePage";
 import AdminsList from "./pages/Admin/AdminsList";
@@ -163,6 +168,9 @@ function AppRoutes() {
                   <Route path="attempts" element={<StudentAttempts />} />
                   <Route path="attempts/:id" element={<StudentAttemptDetail />} />
                   <Route path="profile" element={<StudentProfile />} />
+                  <Route path="notebook" element={<MistakeNotebook />} />
+                  <Route path="progress" element={<StudentProgress />} />
+                  <Route path="daily" element={<DailyChallenge />} />
                 </Route>
 
                 <Route path="/faq" element={<FAQ />} />
@@ -205,6 +213,8 @@ function AppRoutes() {
                   <Route path="questions/seed" element={<QuestionSeed />} />
                   <Route path="students" element={<StudentsList />} />
                   <Route path="activity" element={<ActivityLogs />} />
+                  <Route path="question-reports" element={<QuestionReports />} />
+                  <Route path="analytics" element={<Analytics />} />
                   <Route path="admins" element={<AdminsList />} />
                   <Route path="contacts" element={<ContactsList />} />
                   <Route path="reports" element={<ReportsList />} />

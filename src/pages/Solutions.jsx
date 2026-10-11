@@ -3,6 +3,8 @@ import { useState } from "react";
 import { MathJax } from "better-react-mathjax";
 import SEO from "../components/SEO";
 import QuestionImage from "../components/QuestionImage";
+import QuestionActions from "../components/study/QuestionActions";
+import { resolveImageUrl } from "../utils/imageUrl";
 
 /**
  * The `questions` array (built while the test is in progress) never contains
@@ -37,6 +39,14 @@ function buildQuestionInfoMap(result) {
 
 // Minimal HTML escaping so question/option/explanation text (which may
 // contain raw LaTeX like \frac{a}{b}) doesn't break the exported markup.
+/** Images in the printable HTML must be absolute: the page is opened outside the app. */
+function imgHtml(url, maxHeight = 260) {
+  if (!url) return "";
+  let abs = resolveImageUrl(url);
+  try { abs = new URL(abs, window.location.origin).href; } catch { /* keep as is */ }
+  return `<img src="${escapeHtml(abs)}" alt="" style="max-width:100%;max-height:${maxHeight}px;display:block;margin:6px 0" />`;
+}
+
 function escapeHtml(value) {
   return String(value ?? "")
     .replace(/&/g, "&amp;")
@@ -81,17 +91,18 @@ function generateSolutionsHtml(test, questions, answers, infoMap) {
             tag = " &#10007; Your Answer";
           }
 
-          return `<div class="${cls}">${escapeHtml(opt.text)}${tag}</div>`;
+          return `<div class="${cls}">${escapeHtml(opt.text)}${tag}${imgHtml(opt.imageUrl, 120)}</div>`;
         })
         .join("\n");
 
       return `
         <div class="q-card">
           <h3>Q${index + 1}. ${escapeHtml(q.text)}</h3>
+          ${imgHtml(q.imageUrl)}
           <div class="opts">${optionsHtml}</div>
           ${
-            explanation
-              ? `<div class="explanation"><b>Explanation:</b> ${escapeHtml(explanation)}</div>`
+            explanation || q.explanationImageUrl
+              ? `<div class="explanation"><b>Explanation:</b> ${escapeHtml(explanation)}${imgHtml(info.explanationImageUrl || q.explanationImageUrl)}</div>`
               : ""
           }
         </div>`;
@@ -217,6 +228,7 @@ export default function Solutions() {
               </MathJax>
             </h3>
             <QuestionImage src={q.imageUrl} alt="Question figure" />
+            <QuestionActions questionId={q.id} />
 
             <div className="solution-options">
               {q.options.map((opt) => {

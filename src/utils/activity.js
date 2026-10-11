@@ -12,6 +12,12 @@ export const ACTION_LABELS = {
   "admin.login": "Admin login",
   "admin.student_status_changed": "Changed student status",
   "admin.questions_imported": "Imported questions",
+  "admin.question_created": "Created a question",
+  "admin.question_updated": "Edited a question",
+  "admin.question_deleted": "Deleted a question",
+  "admin.question_report_reviewed": "Reviewed a question report",
+  "admin.student_data_exported": "Exported student data",
+  "admin.student_deleted": "Deleted a student",
 };
 
 export const actionLabel = (action) => ACTION_LABELS[action] || action;

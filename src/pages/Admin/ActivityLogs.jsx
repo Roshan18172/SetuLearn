@@ -81,6 +81,17 @@ export default function ActivityLogs() {
         </button>
       </div>
 
+      {summary?.suspicious?.length > 0 && (
+        <div className="admin-error-box" style={{ marginBottom: 14 }}>
+          <b>⚠️ Possible break-in attempts in the last hour</b> (5+ failed logins):
+          <ul style={{ margin: "6px 0 0", paddingLeft: 18 }}>
+            {summary.suspicious.map((s) => (
+              <li key={`${s.type}-${s.key}`}>{s.type === "ip" ? "IP address" : "Account"} <b>{s.key}</b> - {s.failures} failed attempts</li>
+            ))}
+          </ul>
+        </div>
+      )}
+
       {summary && (
         <div className="stat-grid" style={{ marginBottom: 16 }}>
           <div className="stat-card"><div className="stat-value">{summary.last24h.registrations}</div><div className="stat-label">Registrations (24h)</div></div>

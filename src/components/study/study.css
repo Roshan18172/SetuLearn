@@ -1,0 +1,49 @@
+.qa-bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 8px 0; }
+.qa-btn { font: inherit; font-size: .82rem; font-weight: 600; padding: 5px 12px; border-radius: 99px; border: 1.5px solid #ddd6f3; background: #fff; color: #4b3a8c; cursor: pointer; }
+.qa-btn:hover { border-color: #8e7bd6; }
+.qa-btn.on { background: #fff4c2; border-color: #f0c400; color: #7a5200; }
+.qa-btn.primary { background: #5b3cc4; color: #fff; border-color: #5b3cc4; }
+.qa-status { font-size: .8rem; color: #5b5379; }
+.qa-overlay { position: fixed; inset: 0; background: rgba(20, 10, 50, .5); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 16px; }
+.qa-modal { background: #fff; border-radius: 18px; padding: 22px; width: min(440px, 100%); display: grid; gap: 12px; box-shadow: 0 24px 60px rgba(0,0,0,.35); }
+.qa-modal h3 { margin: 0; }
+.qa-modal label { display: grid; gap: 4px; font-weight: 600; font-size: .9rem; }
+.qa-modal select, .qa-modal textarea { font: inherit; padding: 8px 10px; border-radius: 10px; border: 1.5px solid #ddd6f3; }
+.qa-actions { display: flex; justify-content: flex-end; gap: 8px; }
+
+/* ----- student study pages (notebook, progress, daily) ----- */
+.study-tabs { display: flex; gap: 6px; border-bottom: 1px solid #e6e0f5; margin-bottom: 16px; flex-wrap: wrap; }
+.study-tab { background: none; border: 0; border-bottom: 3px solid transparent; padding: 10px 14px; font: inherit; font-weight: 700; color: #6a6285; cursor: pointer; }
+.study-tab.active { color: #5b3cc4; border-bottom-color: #5b3cc4; }
+.study-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 16px; }
+.study-card { background: #fff; border: 1px solid #e6e0f5; border-radius: 16px; padding: 14px 16px; }
+.study-card b { display: block; font-size: 1.7rem; color: #46309a; line-height: 1.1; }
+.study-card span { font-size: .82rem; color: #6a6285; }
+.study-card.hot b { color: #d9480f; }
+.study-q { background: #fff; border: 1px solid #e6e0f5; border-radius: 18px; padding: 18px; margin-bottom: 14px; }
+.study-q-text { font-size: 1.05rem; line-height: 1.55; margin-bottom: 12px; }
+.study-opts { display: grid; gap: 8px; }
+.study-opt { text-align: left; font: inherit; padding: 11px 14px; border-radius: 12px; border: 2px solid #e6e0f5; background: #fff; cursor: pointer; color: inherit; }
+.study-opt:hover:not(:disabled) { border-color: #8e7bd6; }
+.study-opt.right { background: #d4f7de; border-color: #34c759; }
+.study-opt.wrong { background: #ffd8d8; border-color: #ff6b6b; }
+.study-opt:disabled { cursor: default; }
+.study-expl { margin-top: 12px; background: #f6f2ff; border-radius: 12px; padding: 12px 14px; font-size: .95rem; line-height: 1.55; }
+.study-meta { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
+.study-pill { font-size: .72rem; font-weight: 700; padding: 3px 10px; border-radius: 99px; background: #efe9ff; color: #46309a; }
+.study-pill.warn { background: #ffe9d6; color: #b45309; } .study-pill.good { background: #d4f7de; color: #166534; }
+.study-bar { height: 10px; background: #ece6fb; border-radius: 99px; overflow: hidden; }
+.study-bar > div { height: 100%; background: linear-gradient(90deg, #7a5cff, #b84fd8); border-radius: 99px; transition: width .4s; }
+.study-bar.green > div { background: linear-gradient(90deg, #34c759, #8be28b); }
+.study-bar.orange > div { background: linear-gradient(90deg, #ff9a3c, #ffcf6b); }
+.badge-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+.badge-tile { border: 1px solid #e6e0f5; border-radius: 16px; padding: 12px; text-align: center; background: #fff; }
+.badge-tile.locked { opacity: .5; filter: grayscale(.8); }
+.badge-tile .icon { font-size: 2rem; }
+.badge-tile b { display: block; font-size: .9rem; }
+.badge-tile small { color: #6a6285; font-size: .72rem; }
+.streak-flame { font-size: 2.4rem; }
+.row-split { display: flex; justify-content: space-between; gap: 10px; font-size: .88rem; margin-bottom: 4px; }
+.lb-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.lb-list li { display: flex; justify-content: space-between; padding: 8px 12px; border-radius: 10px; background: #f6f2ff; font-weight: 600; }
+.lb-list li:first-child { background: #fff0b8; }

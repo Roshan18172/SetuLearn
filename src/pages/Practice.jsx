@@ -18,6 +18,9 @@ import {
 } from "../utils/chatbotBridge";
 import SEO from "../components/SEO";
 import QuestionImage from "../components/QuestionImage";
+import QuestionActions from "../components/study/QuestionActions";
+import studyService from "../api/studyService";
+import { getStudentToken } from "../context/StudentAuthContext";
 
 export default function Practice() {
   // Wizard step: "subjects" -> "topics" -> "practice"
@@ -148,6 +151,8 @@ export default function Practice() {
     // Once answered, the choice is locked in — clicking again shouldn't change it.
     if (answers[question.id]) return;
     setAnswers((prev) => ({ ...prev, [question.id]: optionId }));
+    // logged-in students: a wrong practice answer goes into the mistake notebook
+    if (getStudentToken()) studyService.reviewAnswer(question.id, optionId, "practice").catch(() => undefined);
   };
 
   const toggleSolution = (questionId) => {
@@ -424,6 +429,7 @@ export default function Practice() {
           {q.text ? <MathJax dynamic>{q.text}</MathJax> : !q.imageUrl ? <p>Question text not available</p> : null}
           <QuestionImage src={q.imageUrl} alt="Question figure" />
         </div>
+        <QuestionActions questionId={q.id} />
 
         <div className="prac-options">
           {(q.options || []).map((opt, i) => {

@@ -5,6 +5,9 @@ import { getGame } from "../../games/gamesConfig";
 import { loadTerms } from "../../games/terms";
 import { loadQuestions } from "../../games/questions";
 import { saveScore } from "../../games/utils";
+import { isMuted, playSound, setMuted } from "../../games/sound";
+import studyService from "../../api/studyService";
+import { getStudentToken } from "../../context/StudentAuthContext";
 import GameBackdrop from "../../components/games/GameBackdrop";
 import CrosswordGame from "../../components/games/CrosswordGame";
 import WordSearchGame from "../../components/games/WordSearchGame";
@@ -47,6 +50,8 @@ export default function GamePage() {
   const [data, setData] = useState(null);
   const [result, setResult] = useState(null);
   const [runKey, setRunKey] = useState(0);
+  const [muted, setMutedState] = useState(isMuted());
+  const [board, setBoard] = useState(null); // { leaderboard, saved, rank }
 
   // reset when navigating between games
   useEffect(() => {
@@ -88,14 +93,29 @@ export default function GamePage() {
     const saved = saveScore(game.id, res.score);
     setResult({ ...res, ...saved });
     setPhase("result");
+    playSound("win");
+    // logged-in students: remember the score on their account, then show the leaderboard
+    setBoard(null);
+    const loggedIn = !!getStudentToken();
+    (async () => {
+      let rank = null;
+      let savedRemote = false;
+      if (loggedIn && res.score > 0) {
+        try { const r = await studyService.saveGameScore(game.id, res.score); savedRemote = !!r.saved; rank = r.rank; } catch { /* leaderboard is optional */ }
+      }
+      try { const lb = await studyService.gameLeaderboard(game.id); setBoard({ leaderboard: lb.leaderboard, saved: savedRemote, rank, loggedIn }); } catch { /* ignore */ }
+    })();
   };
+
+  const toggleSound = () => { setMuted(!muted); setMutedState(!muted); };
 
   return (
     <div className={`game-page theme-${game.theme}`}>
       <GameBackdrop glyphs={glyphs} />
       <div className="game-wrap">
-        <nav className="game-crumbs" aria-label="Breadcrumb">
+        <nav className="game-crumbs" aria-label="Breadcrumb" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <Link to="/games">← All games</Link>
+          <button type="button" className="game-ghost sm" onClick={toggleSound} aria-pressed={!muted} title="Sound effects">{muted ? "🔇 Sound off" : "🔊 Sound on"}</button>
         </nav>
 
         {phase === "intro" && (
@@ -212,6 +232,18 @@ export default function GamePage() {
                 <li key={s.label}><strong>{s.value}</strong><span>{s.label}</span></li>
               ))}
             </ul>
+            {board && (
+              <div className="result-board">
+                <h3>🏆 Top players - {game.title}</h3>
+                {board.leaderboard.length === 0 ? <p className="game-note">No scores yet - log in and set the first one!</p> : (
+                  <ol className="live-board">
+                    {board.leaderboard.slice(0, 5).map((r) => <li key={r.rank}><span>{r.rank}. {r.name}</span><b>{r.score}</b></li>)}
+                  </ol>
+                )}
+                {board.saved && board.rank ? <p className="result-best">Your best is ranked #{board.rank} 🎉</p>
+                  : !board.loggedIn && <p className="game-note"><Link to="/login">Log in</Link> to save your scores and join the leaderboard.</p>}
+              </div>
+            )}
             <div className="result-actions">
               <button type="button" className="game-start" onClick={start}>Play again ↻</button>
               <button type="button" className="game-ghost" onClick={() => setPhase("intro")}>Change settings</button>

@@ -9,7 +9,16 @@ import StudentStats from "./StudentStats";
 
 const EMPTY_FILTERS = { status: "", method: "", verified: "", from: "", to: "", sort: "createdAt", order: "desc" };
 
-function StudentModal({ student, onClose, onToggle, toggling }) {
+function StudentModal({ student, onClose, onToggle, toggling, onDeleted }) {
+  const [deleting, setDeleting] = useState(false);
+  const [confirmEmail, setConfirmEmail] = useState("");
+  const [privacyMsg, setPrivacyMsg] = useState("");
+  const doExport = async () => {
+    try { await adminService.downloadCsv(`/admin/students/${student.id}/export`, {}, "student-data.json"); } catch (e) { setPrivacyMsg(getErrorMessage(e)); }
+  };
+  const doDelete = async () => {
+    try { await adminService.deleteStudent(student.id, confirmEmail); onDeleted(); } catch (e) { setPrivacyMsg(getErrorMessage(e)); }
+  };
   const [tab, setTab] = useState("details");
   const [activity, setActivity] = useState(null);
   const [activityPage, setActivityPage] = useState(1);
@@ -131,7 +140,21 @@ function StudentModal({ student, onClose, onToggle, toggling }) {
             !tabError && <div className="admin-loading">Loading…</div>
           ))}
 
+        {privacyMsg && <div className="admin-error-box">{privacyMsg}</div>}
+        {deleting && (
+          <div className="admin-error-box" style={{ marginTop: 12 }}>
+            <b>Permanently delete this student?</b> Their account, attempts, notebook and scores are removed and their log entries are anonymised. This cannot be undone.
+            <div style={{ display: "flex", gap: 8, marginTop: 8, flexWrap: "wrap" }}>
+              <input className="track-input" style={{ flex: 1, minWidth: 220 }} placeholder={`Type ${student.email} to confirm`} value={confirmEmail} onChange={(e) => setConfirmEmail(e.target.value)} />
+              <button className="admin-btn admin-btn-danger" disabled={confirmEmail.trim().toLowerCase() !== student.email.toLowerCase()} onClick={doDelete}>Delete forever</button>
+              <button className="admin-btn" onClick={() => { setDeleting(false); setConfirmEmail(""); }}>Cancel</button>
+            </div>
+          </div>
+        )}
+
         <div className="admin-modal-actions">
+          <button className="admin-btn" onClick={doExport}>Export data (JSON)</button>
+          <button className="admin-btn admin-btn-danger" onClick={() => setDeleting(true)}>Delete account…</button>
           <button className="admin-btn" onClick={() => onToggle(student)} disabled={toggling}>
             {student.isActive ? "Disable account" : "Enable account"}
           </button>
@@ -282,7 +305,8 @@ export default function StudentsList() {
       {error && <div className="admin-error-box">{error}</div>}
 
       {selected && (
-        <StudentModal student={selected} onClose={() => setSelected(null)} onToggle={toggleStatus} toggling={togglingId === selected.id} />
+        <StudentModal student={selected} onClose={() => setSelected(null)} onToggle={toggleStatus} toggling={togglingId === selected.id}
+          onDeleted={() => { setSelected(null); fetchStudents(); setStatsKey((k) => k + 1); }} />
       )}
 
       {loading ? (

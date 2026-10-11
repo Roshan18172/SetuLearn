@@ -177,6 +177,34 @@ const adminService = {
     return response.data.data;
   },
 
+  // Question reports (from students)
+  getQuestionReports: async (params = {}) => {
+    const response = await api.get("/admin/question-reports", { params });
+    return response.data.data;
+  },
+
+  updateQuestionReport: async (id, body) => {
+    const response = await api.patch(`/admin/question-reports/${id}`, body);
+    return response.data.data;
+  },
+
+  // Analytics
+  getAnalyticsOverview: async () => {
+    const response = await api.get("/admin/analytics/overview");
+    return response.data.data;
+  },
+
+  getQuestionAnalytics: async (params = {}) => {
+    const response = await api.get("/admin/analytics/questions", { params });
+    return response.data.data;
+  },
+
+  // Privacy tools
+  deleteStudent: async (id, confirmEmail) => {
+    const response = await api.delete(`/admin/students/${id}`, { data: { confirmEmail } });
+    return response.data.data;
+  },
+
   getStudentStats: async () => {
     const response = await api.get("/admin/students/stats");
     return response.data.data;

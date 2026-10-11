@@ -10,6 +10,9 @@ import {
   Settings,
   Library,
   Logout,
+  BookOpenCheck,
+  Activity,
+  Sparkles,
 } from "../../data/svgs";
 import "../Admin/AdminUI.css";
 
@@ -21,6 +24,9 @@ export default function StudentLayout() {
 
   const navItems = [
     { path: "/dashboard", label: "Dashboard", icon: LayoutDashboard, end: true },
+    { path: "/dashboard/daily", label: "Daily Challenge", icon: Sparkles },
+    { path: "/dashboard/notebook", label: "Mistake Notebook", icon: BookOpenCheck },
+    { path: "/dashboard/progress", label: "My Progress", icon: Activity },
     { path: "/dashboard/attempts", label: "My Attempts", icon: ClipboardList },
     { path: "/dashboard/profile", label: "Profile", icon: Settings },
     { path: "/tests", label: "Browse Tests", icon: Library },
